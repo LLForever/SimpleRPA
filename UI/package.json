@@ -42,6 +42,7 @@
     "core-js": "3.19.1",
     "echarts": "4.9.0",
     "element-ui": "2.15.6",
+    "lodash": "4.17.15",
     "file-saver": "2.0.5",
     "fuse.js": "6.4.3",
     "highlight.js": "9.18.5",
@@ -58,6 +59,7 @@
     "vue-meta": "2.4.0",
     "vue-router": "3.4.9",
     "vuedraggable": "2.24.3",
+    "vue-codemirror": "^4.0.6",
     "vuex": "3.6.0"
   },
   "devDependencies": {

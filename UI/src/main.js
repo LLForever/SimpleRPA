@@ -3,6 +3,8 @@ import Vue from 'vue'
 import Cookies from 'js-cookie'
 
 import Element from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+import '@/components/ef/index.css'
 import './assets/styles/element-variables.scss'
 
 import '@/assets/styles/index.scss' // global css
