@@ -92,10 +92,13 @@ export default {
          * taskId由 用户ID+时间戳(秒级) 组成，任意一个用户都能通过taskId分享rpa任务至大型协作场景。
          * 后端通过LRU来维护一个执行序列，该执行序列维护10000大小，同时系统最大并发执行任务量目前初步设定为100。
          * 对于每一个taskId，先查询LRU中是否存在这样的task实例，如果有，则直接取出执行状态以及执行进度，若没有，则去数据库中找到对应的task记录
-         * task记录结构大概为： taskId | taskStatus | taskProgress | taskInfo(对应前端JSON) | userId(创建task的人)
+         * task数据库记录结构大概为： taskId | taskStatus | taskProgress | taskVersion(时间戳) | lineListJson(JSON) | nodeListJson(JSON) | userId(创建task的人)
+         * 对于task对应的JAVA对象还包括lineList和nodeList，再加上一个oldTaskVersion。
          * 每当用户做移动组件，点击保存等相关导致页面变化的操作时，需要先对操作的node节点中的nodeVersion做一次判断。
          * 如果nodeVersion相同，那么正常修改对应组件的值，反之，提示用户目前组件有最新版本。只有当用户升级到最新版本数据时，才能做后续的修改。
          * nodeVersion初步方案设定为：时间戳(ms级)
+         * 若整个task所维护的所有websocket都断开了，那么一定要刷新一次数据库，做持久化。
+         * 若oldTaskVersion与目前的时间戳相差了30分钟，那么也一定要做一次持久化。(由前端做半小时的定时器，进行触发，或者在更新某个node时，若检查发现符合条件，也触发)
          * */
         taskId: -1
       },
