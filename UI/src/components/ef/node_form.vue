@@ -41,7 +41,7 @@
                 </el-form>
 
                 <el-form :model="line" ref="dataForm" label-width="80px" v-show="type === 'line'">
-                    <el-form-item label="条件">
+                    <el-form-item label="标注">
                         <el-input v-model="line.label"></el-input>
                     </el-form-item>
                     <el-form-item>
@@ -72,6 +72,9 @@
                 line: {},
                 data: {},
                 stateList: [{
+                  state: 'ready',
+                  label: '待开始'
+                }, {
                     state: 'success',
                     label: '成功'
                 }, {

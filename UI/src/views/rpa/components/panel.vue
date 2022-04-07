@@ -11,11 +11,6 @@
           <el-button type="text" icon="el-icon-download" size="large" @click="downloadData"></el-button>
           <div style="float: right;margin-right: 5px">
             <el-button type="info" plain round icon="el-icon-document" @click="dataInfo" size="mini">流程信息</el-button>
-            <el-button type="primary" plain round @click="dataReloadA" icon="el-icon-refresh" size="mini">切换流程A</el-button>
-            <el-button type="primary" plain round @click="dataReloadB" icon="el-icon-refresh" size="mini">切换流程B</el-button>
-            <el-button type="primary" plain round @click="dataReloadC" icon="el-icon-refresh" size="mini">切换流程C</el-button>
-            <el-button type="primary" plain round @click="dataReloadD" icon="el-icon-refresh" size="mini">自定义样式</el-button>
-            <el-button type="primary" plain round @click="dataReloadE" icon="el-icon-refresh" size="mini">力导图</el-button>
             <el-button type="info" plain round icon="el-icon-document" @click="openHelp" size="mini">帮助</el-button>
           </div>
         </div>
@@ -69,12 +64,12 @@ import FlowInfo from '@/components/ef/info'
 import FlowHelp from '@/components/ef/help'
 import FlowNodeForm from '@/components/ef/node_form'
 import lodash from 'lodash'
-import { getDataA } from '@/components/ef/data_A'
-import { getDataB } from '@/components/ef/data_B'
-import { getDataC } from '@/components/ef/data_C'
-import { getDataD } from '@/components/ef/data_D'
-import { getDataE } from '@/components/ef/data_E'
-import { ForceDirected } from '@/components/ef/force-directed'
+// import { getDataA } from '@/components/ef/data_A'
+// import { getDataB } from '@/components/ef/data_B'
+// import { getDataC } from '@/components/ef/data_C'
+// import { getDataD } from '@/components/ef/data_D'
+// import { getDataE } from '@/components/ef/data_E'
+// import { ForceDirected } from '@/components/ef/force-directed'
 
 export default {
   data() {
@@ -89,7 +84,21 @@ export default {
       loadEasyFlowFinish: false,
       flowHelpVisible: false,
       // 数据
-      data: {},
+      data: {
+        name: 'new Panel', // 用户自主配置的任务名称
+        lineList: [],
+        nodeList: [],
+        /**
+         * taskId由 用户ID+时间戳(秒级) 组成，任意一个用户都能通过taskId分享rpa任务至大型协作场景。
+         * 后端通过LRU来维护一个执行序列，该执行序列维护10000大小，同时系统最大并发执行任务量目前初步设定为100。
+         * 对于每一个taskId，先查询LRU中是否存在这样的task实例，如果有，则直接取出执行状态以及执行进度，若没有，则去数据库中找到对应的task记录
+         * task记录结构大概为： taskId | taskStatus | taskProgress | taskInfo(对应前端JSON) | userId(创建task的人)
+         * 每当用户做移动组件，点击保存等相关导致页面变化的操作时，需要先对操作的node节点中的nodeVersion做一次判断。
+         * 如果nodeVersion相同，那么正常修改对应组件的值，反之，提示用户目前组件有最新版本。只有当用户升级到最新版本数据时，才能做后续的修改。
+         * nodeVersion初步方案设定为：时间戳(ms级)
+         * */
+        taskId: -1
+      },
       // 激活的元素、可能是节点、可能是连线
       activeElement: {
         // 可选值 node 、line
@@ -149,10 +158,14 @@ export default {
     this.jsPlumb = jsPlumb.getInstance()
     this.$nextTick(() => {
       // 默认加载流程A的数据、在这里可以根据具体的业务返回符合流程数据格式的数据即可
-      this.dataReload(getDataB())
+      this.initPanelData()
     })
   },
   methods: {
+    // 初始化画板数据
+    initPanelData(){
+      this.dataReload(this.data)
+    },
     // 返回唯一标识
     getUUID() {
       return Math.random().toString(36).substr(3, 10)
@@ -204,6 +217,7 @@ export default {
         this.jsPlumb.bind("beforeDrop", (evt) => {
           let from = evt.sourceId
           let to = evt.targetId
+          console.log(this.data)
           if (from === to) {
             this.$message.error('节点不支持连接自己')
             return false
@@ -375,7 +389,8 @@ export default {
         left: left + 'px',
         top: top + 'px',
         ico: nodeMenu.ico,
-        state: 'success'
+        state: 'ready',
+        nodeVersion: -1
       }
       /**
        * 这里可以进行业务判断、是否能够添加该节点
@@ -473,33 +488,6 @@ export default {
           })
         })
       })
-    },
-    // 模拟载入数据dataA
-    dataReloadA() {
-      this.dataReload(getDataA())
-    },
-    // 模拟载入数据dataB
-    dataReloadB() {
-      this.dataReload(getDataB())
-    },
-    // 模拟载入数据dataC
-    dataReloadC() {
-      this.dataReload(getDataC())
-    },
-    // 模拟载入数据dataD
-    dataReloadD() {
-      this.dataReload(getDataD())
-    },
-    // 模拟加载数据dataE，自适应创建坐标
-    dataReloadE() {
-      let dataE = getDataE()
-      let tempData = lodash.cloneDeep(dataE)
-      let data = ForceDirected(tempData)
-      this.dataReload(data)
-      this.$message({
-        message: '力导图每次产生的布局是不一样的',
-        type: 'warning'
-      });
     },
     zoomAdd() {
       if (this.zoom >= 1) {
