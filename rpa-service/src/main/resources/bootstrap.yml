@@ -5,7 +5,7 @@ server:
 spring:
   application:
     # 应用名称
-    name: cloud-rpa-service
+    name: rpa-service
   profiles:
     # 环境配置
     active: dev
