@@ -129,7 +129,7 @@ public class SysUserController extends BaseController
     /**
      * 注册用户信息
      */
-    @InnerAuth
+    //@InnerAuth
     @PostMapping("/register")
     public R<Boolean> register(@RequestBody SysUser sysUser)
     {
@@ -138,11 +138,31 @@ public class SysUserController extends BaseController
         {
             return R.fail("当前系统没有开启注册功能！");
         }
-        if (UserConstants.NOT_UNIQUE.equals(userService.checkUserNameUnique(username)))
-        {
-            return R.fail("保存用户'" + username + "'失败，注册账号已存在");
+        synchronized (SysUserController.class) {
+            if (UserConstants.NOT_UNIQUE.equals(userService.checkUserNameUnique(sysUser.getUserName())))
+            {
+                return R.fail("新增用户'" + sysUser.getUserName() + "'失败，登录账号已存在");
+            }
+            else if (StringUtils.isNotEmpty(sysUser.getPhonenumber())
+                    && UserConstants.NOT_UNIQUE.equals(userService.checkPhoneUnique(sysUser)))
+            {
+                return R.fail("新增用户'" + sysUser.getUserName() + "'失败，手机号码已存在");
+            }
+            else if (StringUtils.isNotEmpty(sysUser.getEmail())
+                    && UserConstants.NOT_UNIQUE.equals(userService.checkEmailUnique(sysUser)))
+            {
+                return R.fail("新增用户'" + sysUser.getUserName() + "'失败，邮箱账号已存在");
+            }
+            sysUser.setRoleIds(new Long[]{100L});
+            int status = userService.insertUser(sysUser);
+            return R.ok(status > 0);
         }
-        return R.ok(userService.registerUser(sysUser));
+        /*
+        if (UserConstants.NOT_UNIQUE.equals(userService.checkUserNameUnique(username))) {
+                return R.fail("保存用户'" + username + "'失败，注册账号已存在");
+            }
+            return R.ok(userService.registerUser(sysUser));
+        */
     }
 
     /**

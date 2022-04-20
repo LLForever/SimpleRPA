@@ -22,11 +22,18 @@ export default {
   watch: {
   },
   mounted(){
-    rpa_fun_test().then((res) => {
-      console.log(res);
-    }).finally(()=>{
-      console.log("request end");
-    })
+    // const data = {
+    //   nickName: 'test1',
+    //   userName: 'test1',
+    //   status: '0',
+    //   roleIds: [100],
+    //   password: 123456
+    // }
+    // rpa_fun_test(data).then((res) => {
+    //   console.log(res);
+    // }).finally(()=>{
+    //   console.log("request end");
+    // })
   },
   created() {
   },

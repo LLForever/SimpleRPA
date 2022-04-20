@@ -1,9 +1,10 @@
 import request from '@/utils/request'
 import { parseStrEmpty } from "@/utils/ruoyi";
 
-export function rpa_fun_test() {
+export function rpa_fun_test(data) {
   return request({
-    url: '/rpa/panel-task/test',
-    method: 'get'
+    url: '/system/user/register',
+    method: 'post',
+    data: data
   })
 }
