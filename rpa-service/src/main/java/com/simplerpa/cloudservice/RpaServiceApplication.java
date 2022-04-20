@@ -1,5 +1,8 @@
 package com.simplerpa.cloudservice;
 
+import com.ruoyi.common.security.annotation.EnableCustomConfig;
+import com.ruoyi.common.security.annotation.EnableRyFeignClients;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
@@ -11,6 +14,9 @@ import org.springframework.context.annotation.ComponentScan;
  */
 
 @SpringBootApplication
+@EnableCustomConfig
+@EnableRyFeignClients
+@MapperScan("com.simplerpa.cloudservice.mapper.**")
 public class RpaServiceApplication {
     public static void main(String[] args){
         SpringApplication.run(RpaServiceApplication.class, args);

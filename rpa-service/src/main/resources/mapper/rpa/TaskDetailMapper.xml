@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.simplerpa.cloudservice.mapper.TaskDetailMapper">
+    
+    <resultMap type="TaskDetail" id="TaskDetailResult">
+        <result property="id"    column="id"    />
+        <result property="taskId"    column="task_id"    />
+        <result property="taskStatus"    column="task_status"    />
+        <result property="taskProgress"    column="task_progress"    />
+        <result property="taskVersion"    column="task_version"    />
+        <result property="lineListJson"    column="line_list_json"    />
+        <result property="nodeListJson"    column="node_list_json"    />
+        <result property="userId"    column="user_id"    />
+    </resultMap>
+
+    <sql id="selectTaskDetailVo">
+        select id, task_id, task_status, task_progress, task_version, line_list_json, node_list_json, user_id from rpa_panel_task_detail
+    </sql>
+
+    <select id="selectTaskDetailList" parameterType="TaskDetail" resultMap="TaskDetailResult">
+        <include refid="selectTaskDetailVo"/>
+        <where>  
+            <if test="taskId != null "> and task_id = #{taskId}</if>
+            <if test="taskStatus != null  and taskStatus != ''"> and task_status = #{taskStatus}</if>
+            <if test="taskProgress != null "> and task_progress = #{taskProgress}</if>
+            <if test="taskVersion != null "> and task_version = #{taskVersion}</if>
+            <if test="lineListJson != null  and lineListJson != ''"> and line_list_json = #{lineListJson}</if>
+            <if test="nodeListJson != null  and nodeListJson != ''"> and node_list_json = #{nodeListJson}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+        </where>
+    </select>
+    
+    <select id="selectTaskDetailById" parameterType="Long" resultMap="TaskDetailResult">
+        <include refid="selectTaskDetailVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTaskDetail" parameterType="TaskDetail" useGeneratedKeys="true" keyProperty="id">
+        insert into rpa_panel_task_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">task_id,</if>
+            <if test="taskStatus != null">task_status,</if>
+            <if test="taskProgress != null">task_progress,</if>
+            <if test="taskVersion != null">task_version,</if>
+            <if test="lineListJson != null">line_list_json,</if>
+            <if test="nodeListJson != null">node_list_json,</if>
+            <if test="userId != null">user_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">#{taskId},</if>
+            <if test="taskStatus != null">#{taskStatus},</if>
+            <if test="taskProgress != null">#{taskProgress},</if>
+            <if test="taskVersion != null">#{taskVersion},</if>
+            <if test="lineListJson != null">#{lineListJson},</if>
+            <if test="nodeListJson != null">#{nodeListJson},</if>
+            <if test="userId != null">#{userId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTaskDetail" parameterType="TaskDetail">
+        update rpa_panel_task_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="taskStatus != null">task_status = #{taskStatus},</if>
+            <if test="taskProgress != null">task_progress = #{taskProgress},</if>
+            <if test="taskVersion != null">task_version = #{taskVersion},</if>
+            <if test="lineListJson != null">line_list_json = #{lineListJson},</if>
+            <if test="nodeListJson != null">node_list_json = #{nodeListJson},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTaskDetailById" parameterType="Long">
+        delete from rpa_panel_task_detail where id = #{id}
+    </delete>
+
+    <delete id="deleteTaskDetailByIds" parameterType="String">
+        delete from rpa_panel_task_detail where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,5 +1,8 @@
 package com.simplerpa.cloudservice.controller;
 
+import com.ruoyi.common.core.utils.bean.BeanUtils;
+import com.simplerpa.cloudservice.entity.TaskDetail;
+import com.simplerpa.cloudservice.entity.VO.TaskDetailVO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

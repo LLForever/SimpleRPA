@@ -87,6 +87,11 @@ export const constantRoutes = [
         meta: { title: '个人中心', icon: 'user' }
       }
     ]
+  },
+  {
+    path: '/myPanelDetail',
+    name: 'panel_detail',
+    component: () => import('@/views/rpa/panel_detail')
   }
 ]
 
