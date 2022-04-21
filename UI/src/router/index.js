@@ -89,9 +89,17 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/myPanelDetail',
-    name: 'panel_detail',
-    component: () => import('@/views/rpa/panel_detail')
+    path: '/rpa/panel',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'myPanelDetail',
+        name: 'panel_detail',
+        component: () => import('@/views/rpa/panel_detail'),
+        meta: { title: '面板详情', activeMenu: '/simplerpa/rpaindex'}
+      }
+    ]
   }
 ]
 

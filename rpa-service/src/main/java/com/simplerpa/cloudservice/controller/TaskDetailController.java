@@ -1,8 +1,14 @@
 package com.simplerpa.cloudservice.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.common.core.utils.StringUtils;
+import com.ruoyi.common.security.utils.SecurityUtils;
+import com.ruoyi.system.api.model.LoginUser;
+import com.simplerpa.cloudservice.entity.util.DictionaryUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,19 +44,27 @@ public class TaskDetailController extends BaseController
     /**
      * 查询rpa面板任务详情列表
      */
-    @RequiresPermissions("rpa:TaskDetail:list")
+    //@RequiresPermissions("rpa:TaskDetail:list")
     @GetMapping("/list")
     public TableDataInfo list(TaskDetail taskDetail)
     {
-        startPage();
-        List<TaskDetail> list = taskDetailService.selectTaskDetailList(taskDetail);
-        return getDataTable(list);
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        if (StringUtils.isNotNull(loginUser)){
+            Long userid = loginUser.getUserid();
+            if(userid != null){
+                startPage();
+                taskDetail.setUserId(userid);
+                List<TaskDetail> list = taskDetailService.selectTaskDetailList(taskDetail);
+                return getDataTable(list);
+            }
+        }
+        return getDataTable(new ArrayList<TaskDetail>());
     }
 
     /**
      * 导出rpa面板任务详情列表
      */
-    @RequiresPermissions("rpa:TaskDetail:export")
+//    @RequiresPermissions("rpa:TaskDetail:export")
     @Log(title = "rpa面板任务详情", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, TaskDetail taskDetail)
@@ -63,7 +77,7 @@ public class TaskDetailController extends BaseController
     /**
      * 获取rpa面板任务详情详细信息
      */
-    @RequiresPermissions("rpa:TaskDetail:query")
+//    @RequiresPermissions("rpa:TaskDetail:query")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
     {
@@ -73,18 +87,29 @@ public class TaskDetailController extends BaseController
     /**
      * 新增rpa面板任务详情
      */
-    @RequiresPermissions("rpa:TaskDetail:add")
+//    @RequiresPermissions("rpa:TaskDetail:add")
     @Log(title = "rpa面板任务详情", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody TaskDetail taskDetail)
     {
-        return toAjax(taskDetailService.insertTaskDetail(taskDetail));
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        if (StringUtils.isNotNull(loginUser)){
+            Long userid = loginUser.getUserid();
+            if(userid != null){
+                taskDetail.setTaskId((userid<<32) + (System.currentTimeMillis()/1000));
+                taskDetail.setTaskVersion(System.currentTimeMillis());
+                taskDetail.setUserId(userid);
+                taskDetail.setTaskStatus(DictionaryUtil.TASK_STATUS_CREATED);
+                return toAjax(taskDetailService.insertTaskDetail(taskDetail));
+            }
+        }
+        return toAjax(false);
     }
 
     /**
      * 修改rpa面板任务详情
      */
-    @RequiresPermissions("rpa:TaskDetail:edit")
+//    @RequiresPermissions("rpa:TaskDetail:edit")
     @Log(title = "rpa面板任务详情", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody TaskDetail taskDetail)
@@ -95,7 +120,7 @@ public class TaskDetailController extends BaseController
     /**
      * 删除rpa面板任务详情
      */
-    @RequiresPermissions("rpa:TaskDetail:remove")
+//    @RequiresPermissions("rpa:TaskDetail:remove")
     @Log(title = "rpa面板任务详情", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)

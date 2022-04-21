@@ -10,6 +10,15 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="任务名称" prop="taskName">
+        <el-input
+          v-model="queryParams.taskName"
+          placeholder="请输入任务名称"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -24,7 +33,6 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['rpa:TaskDetail:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -35,7 +43,6 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['rpa:TaskDetail:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -46,7 +53,6 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['rpa:TaskDetail:remove']"
         >删除</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
@@ -55,6 +61,7 @@
     <el-table v-loading="loading" :data="TaskDetailList" @selection-change="handleSelectionChange" :row-class-name="tableRowClassName">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="任务ID" align="center" prop="taskId" />
+      <el-table-column label="任务名称" align="center" prop="taskName" />
       <el-table-column label="任务执行状态" align="center" prop="taskStatus" />
       <el-table-column label="任务执行进度" align="center" prop="taskProgress" />
       <el-table-column label="任务版本号" align="center" prop="taskVersion" />
@@ -64,16 +71,8 @@
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            v-hasPermi="['rpa:TaskDetail:edit']"
-          >修改</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['rpa:TaskDetail:remove']"
-          >删除</el-button>
+            @click="openPanelDetail(scope.row)"
+          >打开流程面板</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -89,14 +88,8 @@
     <!-- 添加或修改rpa面板任务详情对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="任务ID" prop="taskId">
-          <el-input v-model="form.taskId" placeholder="请输入任务ID" />
-        </el-form-item>
-        <el-form-item label="任务执行进度" prop="taskProgress">
-          <el-input v-model="form.taskProgress" placeholder="请输入任务执行进度" />
-        </el-form-item>
-        <el-form-item label="任务版本号" prop="taskVersion">
-          <el-input v-model="form.taskVersion" placeholder="请输入任务版本号" />
+        <el-form-item label="任务名称" prop="taskName">
+          <el-input v-model="form.taskName" placeholder="请输入任务名称" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -138,6 +131,7 @@ export default {
         pageSize: 10,
         taskId: null,
         taskStatus: null,
+        taskName: null,
         taskProgress: null,
         taskVersion: null
       },
@@ -148,8 +142,8 @@ export default {
         taskId: [
           { required: true, message: "任务ID不能为空", trigger: "blur" }
         ],
-        taskVersion: [
-          { required: true, message: "任务版本号不能为空", trigger: "blur" }
+        taskName: [
+          { required: true, message: "任务名称不能为空", trigger: "blur" }
         ]
       }
     };
@@ -176,9 +170,9 @@ export default {
     reset() {
       this.form = {
         taskId: null,
-        taskStatus: "0",
         taskProgress: null,
-        taskVersion: null
+        taskVersion: null,
+        taskName: null
       };
       this.resetForm("form");
     },
@@ -245,12 +239,20 @@ export default {
       }).catch(() => {});
     },
     tableRowClassName({row, rowIndex}) {
-      if (rowIndex === 1) {
+      if (row.taskStatus === 'warning') {
         return 'warning-row';
-      } else if (rowIndex === 3) {
+      } else if (row.taskStatus === 'completed') {
         return 'success-row';
       }
       return '';
+    },
+    openPanelDetail(row){
+      this.$router.push({
+        name:'panel_detail',
+        params:{
+          panelDetailData: row
+        }
+      });
     }
   }
 };

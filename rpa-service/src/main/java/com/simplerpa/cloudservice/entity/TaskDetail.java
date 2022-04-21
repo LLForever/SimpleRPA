@@ -34,6 +34,10 @@ public class TaskDetail extends BaseEntity
     @Excel(name = "任务版本号")
     private Long taskVersion;
 
+    /** 任务名称 */
+    @Excel(name = "任务名称")
+    private String taskName;
+
     /** easy-flow的线段信息 */
     @Excel(name = "easy-flow的线段信息")
     private String lineListJson;
@@ -91,6 +95,15 @@ public class TaskDetail extends BaseEntity
     {
         return taskVersion;
     }
+    public void setTaskName(String taskName)
+    {
+        this.taskName = taskName;
+    }
+
+    public String getTaskName()
+    {
+        return taskName;
+    }
     public void setLineListJson(String lineListJson)
     {
         this.lineListJson = lineListJson;
@@ -127,6 +140,7 @@ public class TaskDetail extends BaseEntity
                 .append("taskStatus", getTaskStatus())
                 .append("taskProgress", getTaskProgress())
                 .append("taskVersion", getTaskVersion())
+                .append("taskName", getTaskName())
                 .append("lineListJson", getLineListJson())
                 .append("nodeListJson", getNodeListJson())
                 .append("userId", getUserId())

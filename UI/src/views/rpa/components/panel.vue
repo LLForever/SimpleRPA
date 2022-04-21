@@ -165,6 +165,16 @@ export default {
     })
   },
   methods: {
+    setRowDetail(detail){
+      this.data.name = detail.taskName;
+      this.data.taskId = detail.taskId;
+      if(detail.lineList){
+        this.data.lineList = detail.lineList;
+      }
+      if(detail.nodeList){
+        this.data.nodeList = detail.nodeList;
+      }
+    },
     // 初始化画板数据
     initPanelData(){
       this.dataReload(this.data)

@@ -1,5 +1,5 @@
 <template>
-  <my-panel></my-panel>
+  <my-panel ref="myPanel"></my-panel>
 </template>
 
 <script>
@@ -12,8 +12,12 @@ export default {
   name: "panel_detail",
   data() {
     return {
-      codeUrl: ""
+      panelDetailData: ""
     };
+  },
+  mounted() {
+    this.initPanelData();
+    this.initWebsocket();
   },
   components:{
     MyPanel
@@ -23,7 +27,13 @@ export default {
   created() {
   },
   methods: {
+    initPanelData(){
+      this.panelDetailData = this.$route.params.panelDetailData;
+      this.$refs.myPanel.setRowDetail(this.panelDetailData);
+    },
+    initWebsocket(){
 
+    }
   }
 };
 </script>

@@ -21,6 +21,7 @@ public class TaskDetailVO extends TaskDetail {
 
     public TaskDetailVO(TaskDetail taskDetail){
         BeanUtils.copyBeanProp(this, taskDetail);
+        oldTaskVersion = this.getTaskVersion();
     }
 
     public TaskDetailVO(){ super(); }
