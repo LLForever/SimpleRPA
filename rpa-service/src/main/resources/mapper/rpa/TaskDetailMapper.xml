@@ -88,4 +88,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <select id="findTaskDetailByTaskId" parameterType="Long" resultType="com.simplerpa.cloudservice.entity.TaskDetail">
+        SELECT *
+        FROM rpa_panel_task_detail
+        WHERE task_id = #{id}
+    </select>
 </mapper>

@@ -58,4 +58,6 @@ public interface TaskDetailMapper
      * @return 结果
      */
     public int deleteTaskDetailByIds(Long[] ids);
+
+    public TaskDetail findTaskDetailByTaskId(Long id);
 }

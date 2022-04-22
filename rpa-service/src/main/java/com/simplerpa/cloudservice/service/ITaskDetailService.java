@@ -58,4 +58,6 @@ public interface ITaskDetailService
      * @return 结果
      */
     public int deleteTaskDetailById(Long id);
+
+    public TaskDetail findTaskDetailByTaskId(Long id);
 }

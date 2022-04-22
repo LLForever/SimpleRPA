@@ -15,4 +15,7 @@ public class DictionaryUtil {
     public static Integer TASK_MESSAGE_DELETE = 0;
     public static Integer TASK_MESSAGE_CHANGE = 1;
     public static Integer TASK_MESSAGE_ADD = 2;
+    public static Integer TASK_MESSAGE_OK = 200;
+    public static Integer TASK_MESSAGE_QUIT = -999;
+    public static Integer TASK_MESSAGE_ERROR = 999;
 }

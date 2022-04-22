@@ -24,7 +24,7 @@ public class TaskDetailVO extends TaskDetail {
         oldTaskVersion = this.getTaskVersion();
     }
 
-    public TaskDetailVO(){ super(); }
+    //public TaskDetailVO(){ super(); }
 
     @Override
     public String toString() {

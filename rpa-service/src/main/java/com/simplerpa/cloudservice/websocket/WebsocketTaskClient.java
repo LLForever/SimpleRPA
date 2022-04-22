@@ -1,5 +1,6 @@
 package com.simplerpa.cloudservice.websocket;
 
+import com.alibaba.fastjson.JSONObject;
 import com.simplerpa.cloudservice.entity.PanelTaskMessage;
 
 import javax.websocket.EncodeException;
@@ -41,10 +42,11 @@ public class WebsocketTaskClient implements IWebsocketTaskObserver {
     public void sendMessage(PanelTaskMessage message) {
         try{
             if(session != null){
-                session.getBasicRemote().sendObject(message);
+                session.getBasicRemote().sendText(JSONObject.toJSONString(message));
             }
-        } catch (IOException | EncodeException e){
+        } catch (IOException e){
             e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 

@@ -91,4 +91,9 @@ public class TaskDetailServiceImpl implements ITaskDetailService
     {
         return taskDetailMapper.deleteTaskDetailById(id);
     }
+
+    @Override
+    public TaskDetail findTaskDetailByTaskId(Long id) {
+        return taskDetailMapper.findTaskDetailByTaskId(id);
+    }
 }
