@@ -16,7 +16,6 @@ export default {
       panelDetailData: null,
       websocketLink: null,
       isWebsocketConnected: false,
-      websocketTimer: null,
       websocketConnectNumber: 0
     };
   },
@@ -42,15 +41,16 @@ export default {
         }
       }
       this.panelDetailData = this.$route.params.panelDetailData;
-      this.$refs.myPanel.setRowDetail(this.panelDetailData);
+      setTimeout(()=>{
+        this.$refs.myPanel.setRowDetail(this.panelDetailData);
+      }, 50);
       this.initWebsocket();
     },
     initWebsocket(){
-      if(this.isWebsocketConnected){
+      if(this.isWebsocketConnected === true){
         return;
       }
       this.wsDestroy();
-      clearInterval(this.websocketTimer);
       const taskJsonInfo = {
         taskId: this.panelDetailData.taskId,
         userId: this.panelDetailData.userId
@@ -60,18 +60,17 @@ export default {
       this.websocketLink.addEventListener('message', this.wsMessageHandler)
       this.websocketLink.addEventListener('error', this.wsErrorHandler)
       this.websocketLink.addEventListener('close', this.wsCloseHandler)
-      this.websocketTimer = setInterval(() => {
-        if (this.websocketLink.readyState === 0) {
+      setTimeout(() => {
+        if (this.websocketLink.readyState === 1) {
+          this.isWebsocketConnected = true;
+        } else {
+          console.log('this.websocketConnectNumber ', this.websocketConnectNumber);
           if(this.websocketConnectNumber < 5){
             this.initWebsocket();
           }else{
             this.$message.error('创建协作任务失败！');
-            clearInterval(this.websocketTimer);
           }
           this.websocketConnectNumber++;
-        } else {
-          clearInterval(this.websocketTimer)
-          this.isWebsocketConnected = true;
         }
       }, 1000)
     },
@@ -89,19 +88,27 @@ export default {
      * */
     wsErrorHandler(event) {
       // console.log(event, '通信发生错误')
-      this.$message.warning('通讯异常！');
+      if(this.isWebsocketConnected === true){
+        this.$message.warning('通讯异常！');
+      }
     },
     /**
      * ws关闭
      * */
     wsCloseHandler(event) {
-      this.$message.error('与服务器断开连接！');
+      if(this.isWebsocketConnected === true){
+        this.$message.error('与服务器断开连接！');
+        this.isWebsocketConnected = false;
+      }
     },
     /**
      * 销毁ws
      * */
     wsDestroy() {
       if (this.websocketLink) {
+        if(this.isWebsocketConnected === true){
+          this.websocketConnectNumber = 0
+        }
         this.websocketLink.removeEventListener('open', this.wsOpenHandler)
         this.websocketLink.removeEventListener('message', this.wsMessageHandler)
         this.websocketLink.removeEventListener('error', this.wsErrorHandler)
@@ -109,8 +116,6 @@ export default {
         this.websocketLink.close()
         this.websocketLink = null
         this.isWebsocketConnected = false
-        this.websocketConnectNumber = 0
-        clearInterval(this.websocketLink)
       }
     },
     sendDataToServer(data){

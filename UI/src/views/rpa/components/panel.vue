@@ -488,8 +488,12 @@ export default {
     // 加载流程图
     dataReload(data) {
       this.easyFlowVisible = false
-      this.data.nodeList = []
-      this.data.lineList = []
+      if(!this.data.nodeList){
+        this.data.nodeList = []
+      }
+      if(!this.data.lineList){
+        this.data.lineList = []
+      }
       this.$nextTick(() => {
         data = lodash.cloneDeep(data)
         this.easyFlowVisible = true
@@ -517,24 +521,6 @@ export default {
       this.zoom = this.zoom - 0.1
       this.$refs.efContainer.style.transform = `scale(${this.zoom})`
       this.jsPlumb.setZoom(this.zoom)
-    },
-    // 下载数据
-    downloadData() {
-      this.$confirm('确定要下载该流程数据吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-        closeOnClickModal: false
-      }).then(() => {
-        var datastr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.data, null, '\t'));
-        var downloadAnchorNode = document.createElement('a')
-        downloadAnchorNode.setAttribute("href", datastr);
-        downloadAnchorNode.setAttribute("download", 'data.json')
-        downloadAnchorNode.click();
-        downloadAnchorNode.remove();
-        this.$message.success("正在下载中,请稍后...")
-      }).catch(() => {
-      })
     },
     openHelp() {
       this.flowHelpVisible = true
