@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @Description: TODO
@@ -27,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class WebsocketTask implements IWebsocketTaskSubject {
     private static ITaskDetailService taskDetailService;
 
-    private static Integer onlineUserNumber = 0;
+    private static AtomicInteger onlineUserNumber = new AtomicInteger(0);
     private static ConcurrentHashMap<Long, TaskDetailVO> taskDetailMap = new ConcurrentHashMap<>();
     private static ConcurrentHashMap<Long, List<IWebsocketTaskObserver> > observerListMap = new ConcurrentHashMap<>();
 
@@ -46,13 +47,9 @@ public class WebsocketTask implements IWebsocketTaskSubject {
         if(userId != null){
             clientTaskId = taskId;
             clientUserId = userId;
-            if(!observerListMap.containsKey(userId)){
-                addOnlineUserNumber();
-            }
             WebsocketTaskClient client = new WebsocketTaskClient(session, userId);
             registerObserver(taskId, client);
             try{
-                System.out.println("Client Connect Successfully!");
                 client.sendMessage(new PanelTaskMessage());
             }catch (Exception e){
                 e.printStackTrace();
@@ -65,9 +62,6 @@ public class WebsocketTask implements IWebsocketTaskSubject {
         if(clientUserId != null && clientTaskId != null){
             removeObserver(clientTaskId, clientUserId);
             subOnlineUserNumber();
-            System.out.println("******************************************************");
-            System.out.println("Client Leave Successfully!");
-            System.out.println("******************************************************");
         }
     }
 
@@ -97,21 +91,22 @@ public class WebsocketTask implements IWebsocketTaskSubject {
         observerListMap.put(taskId, list);
     }
 
-    private static synchronized void addOnlineUserNumber(){
-        onlineUserNumber++;
+    private static void addOnlineUserNumber(){
+        onlineUserNumber.getAndIncrement();
     }
 
-    private static synchronized void subOnlineUserNumber(){
-        onlineUserNumber--;
+    private static void subOnlineUserNumber(){
+        onlineUserNumber.getAndDecrement();
     }
 
-    private static synchronized Integer getOnlineUserNumber(){
-        return onlineUserNumber;
+    private static int getOnlineUserNumber(){
+        return onlineUserNumber.get();
     }
 
     /**
     * 不建议使用！
     * */
+    /*
     public static void removeUserFromMap(Long userId) throws Exception {
         for (Map.Entry<Long, List<IWebsocketTaskObserver>> next : observerListMap.entrySet()) {
             Long taskId = null;
@@ -125,7 +120,7 @@ public class WebsocketTask implements IWebsocketTaskSubject {
             }
         }
         throw new Exception("this function is not completed!");
-    }
+    }*/
 
     public static void notifyObserver(Long taskId, Long userId, PanelTaskMessage message){
         if(observerListMap.containsKey(taskId)){
@@ -152,27 +147,43 @@ public class WebsocketTask implements IWebsocketTaskSubject {
 
     @Override
     public void registerObserver(Long taskId, IWebsocketTaskObserver observer) {
-        if(observerListMap.containsKey(taskId)){
-            observerListMap.get(taskId).add(observer);
-        }else{
-            putTaskInfoIntoMap(taskId, observer);
+        final String taskIdStr = clientTaskId.toString().intern();
+        synchronized (taskIdStr){
+            if(observerListMap.containsKey(taskId)){
+                List<IWebsocketTaskObserver> arrList = observerListMap.get(taskId);
+                boolean isChanged = false;
+                for(int i = 0; i<arrList.size(); i++){
+                    if(arrList.get(i).isSameUser(observer)){
+                        arrList.set(i, observer);
+                        isChanged = true;
+                        break;
+                    }
+                }
+                if(!isChanged){
+                    arrList.add(observer);
+                }
+//                observerListMap.put(taskId, arrList);
+            }else{
+                putTaskInfoIntoMap(taskId, observer);
+            }
         }
     }
 
     @Override
     public void removeObserver(Long taskId, Long userId) {
-        if(observerListMap.containsKey(taskId)){
-            List<IWebsocketTaskObserver> iWebsocketTaskObserverList = observerListMap.get(taskId);
-            for (IWebsocketTaskObserver item : iWebsocketTaskObserverList){
-                if(item.isUser(userId)){
-                    iWebsocketTaskObserverList.remove(item);
-                    break;
+        final String taskIdStr = clientTaskId.toString().intern();
+        synchronized (taskIdStr){
+            if(observerListMap.containsKey(taskId)){
+                List<IWebsocketTaskObserver> iWebsocketTaskObserverList = observerListMap.get(taskId);
+                for (IWebsocketTaskObserver item : iWebsocketTaskObserverList){
+                    if(item.isUser(userId)){
+                        iWebsocketTaskObserverList.remove(item);
+                        break;
+                    }
                 }
-            }
-            if(iWebsocketTaskObserverList.isEmpty()){
-                removeTaskFromMap(taskId);
-            }else{
-                observerListMap.put(taskId, iWebsocketTaskObserverList);
+                if(iWebsocketTaskObserverList.isEmpty()){
+                    removeTaskFromMap(taskId);
+                }
             }
         }
     }

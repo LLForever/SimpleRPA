@@ -56,6 +56,11 @@ public class WebsocketTaskClient implements IWebsocketTaskObserver {
     }
 
     @Override
+    public Boolean isSameUser(IWebsocketTaskObserver observer) {
+        return observer.isUser(userId);
+    }
+
+    @Override
     public void changeSession(Session session) {
         setSession(session);
     }

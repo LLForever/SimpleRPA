@@ -13,7 +13,7 @@ export default {
   name: "panel_detail",
   data() {
     return {
-      panelDetailData: "",
+      panelDetailData: null,
       websocketLink: null,
       isWebsocketConnected: false,
       websocketTimer: null,
@@ -22,7 +22,7 @@ export default {
   },
   mounted() {
     this.initPanelData();
-    this.initWebsocket();
+    //this.initWebsocket();
   },
   components:{
     MyPanel
@@ -31,10 +31,19 @@ export default {
   },
   created() {
   },
+  beforeDestroy(){
+    this.wsDestroy();
+  },
   methods: {
     initPanelData(){
+      if(this.panelDetailData){
+        if(this.panelDetailData.taskId !== this.$route.params.panelDetailData.taskId){
+          this.isWebsocketConnected = false
+        }
+      }
       this.panelDetailData = this.$route.params.panelDetailData;
       this.$refs.myPanel.setRowDetail(this.panelDetailData);
+      this.initWebsocket();
     },
     initWebsocket(){
       if(this.isWebsocketConnected){
@@ -60,7 +69,6 @@ export default {
             clearInterval(this.websocketTimer);
           }
           this.websocketConnectNumber++;
-          console.log('connect failed!');
         } else {
           clearInterval(this.websocketTimer)
           this.isWebsocketConnected = true;
@@ -68,7 +76,7 @@ export default {
       }, 1000)
     },
     wsOpenHandler(event) {
-      console.log('ws建立连接成功')
+      this.$message.success('成功连接至服务器！');
     },
     /**
      * ws收到信息
@@ -80,13 +88,14 @@ export default {
      * ws通信发生错误
      * */
     wsErrorHandler(event) {
-      console.log(event, '通信发生错误')
+      // console.log(event, '通信发生错误')
+      this.$message.warning('通讯异常！');
     },
     /**
      * ws关闭
      * */
     wsCloseHandler(event) {
-      console.log(event, 'ws关闭')
+      this.$message.error('与服务器断开连接！');
     },
     /**
      * 销毁ws

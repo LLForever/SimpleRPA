@@ -7,5 +7,6 @@ import javax.websocket.Session;
 public interface IWebsocketTaskObserver {
     public void sendMessage(PanelTaskMessage message);
     public Boolean isUser(Long id);
+    public Boolean isSameUser(IWebsocketTaskObserver observer);
     public void changeSession(Session session);
 }
