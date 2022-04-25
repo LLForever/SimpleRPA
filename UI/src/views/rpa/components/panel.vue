@@ -17,7 +17,7 @@
       </el-col>
     </el-row>
     <div style="display: flex;height: calc(100% - 47px);">
-      <div style="width: 230px;border-right: 1px solid #dce3e8;">
+      <div style="width: 230px;border-right: 1px solid #dce3e8; overflow: auto">
         <node-menu @addNode="addNode" ref="nodeMenu"></node-menu>
       </div>
       <div id="efContainer" ref="efContainer" class="container" v-flowDrag>
