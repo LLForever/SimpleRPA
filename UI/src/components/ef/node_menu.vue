@@ -128,6 +128,38 @@ export default {
                             ico: 'el-icon-files',
                             // 自定义覆盖样式
                             style: {}
+                        },
+                        {
+                            id: '35',
+                            type: 'replace_text',
+                            name: '文本替换',
+                            ico: 'el-icon-document',
+                            // 自定义覆盖样式
+                            style: {}
+                        },
+                        {
+                            id: '36',
+                            type: 'encode_decode',
+                            name: '编码解码',
+                            ico: 'el-icon-lock',
+                            // 自定义覆盖样式
+                            style: {}
+                        },
+                        {
+                            id: '37',
+                            type: 'calculate',
+                            name: '值计算',
+                            ico: 'el-icon-cpu',
+                            // 自定义覆盖样式
+                            style: {}
+                        },
+                        {
+                            id: '38',
+                            type: 'get_obj_row',
+                            name: '获得数组数据的一行',
+                            ico: 'el-icon-document-remove',
+                            // 自定义覆盖样式
+                            style: {}
                         }
                     ]
                 },
