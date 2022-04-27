@@ -161,10 +161,12 @@ public class WebsocketTask implements IWebsocketTaskSubject {
                 }
                 if(!isChanged){
                     arrList.add(observer);
+                    addOnlineUserNumber();
                 }
 //                observerListMap.put(taskId, arrList);
             }else{
                 putTaskInfoIntoMap(taskId, observer);
+                addOnlineUserNumber();
             }
         }
     }

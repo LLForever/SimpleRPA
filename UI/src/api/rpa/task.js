@@ -1,9 +1,9 @@
 import request from '@/utils/request'
 import { parseStrEmpty } from "@/utils/ruoyi";
 
-export function rpa_fun_test(data) {
+export function uploadTaskDetail(data) {
   return request({
-    url: '/system/user/register',
+    url: '/panel-task/upload/detail',
     method: 'post',
     data: data
   })

@@ -3,10 +3,15 @@ package com.simplerpa.cloudservice.entity.VO;
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.core.utils.bean.BeanUtils;
 import com.simplerpa.cloudservice.entity.TaskDetail;
+import com.simplerpa.cloudservice.entity.TaskLineDetail;
+import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
+import java.util.List;
+
 
 /**
  * @Description: TODO
@@ -17,12 +22,18 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class TaskDetailVO extends TaskDetail {
-    Long oldTaskVersion;
+    private Long oldTaskVersion;
+    private List<TaskLineDetail> lineList;
+    private List<TaskNodeDetail> nodeList;
 
     public TaskDetailVO(TaskDetail taskDetail){
         BeanUtils.copyBeanProp(this, taskDetail);
         oldTaskVersion = this.getTaskVersion();
+        setLineList(JSONObject.parseArray(this.getLineListJson(), TaskLineDetail.class));
+        setNodeList(JSONObject.parseArray(this.getNodeListJson(), TaskNodeDetail.class));
     }
+
+    public TaskDetailVO(){}
 
     //public TaskDetailVO(){ super(); }
 

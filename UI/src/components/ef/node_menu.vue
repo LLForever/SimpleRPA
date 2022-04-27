@@ -164,22 +164,177 @@ export default {
                     ]
                 },
                 {
+                    id: '4',
+                    type: 'group',
+                    name: '条件判断',
+                    ico: '',
+                    open: true,
+                    children: [
+                        {
+                            id: '41',
+                            type: 'single_condition',
+                            name: 'IF单条件',
+                            ico: 'el-icon-set-up',
+                            // 自定义覆盖样式
+                            style: {}
+                        },
+                        {
+                            id: '42',
+                            type: 'multi_condition',
+                            name: 'IF多条件',
+                            ico: 'el-icon-set-up',
+                            // 自定义覆盖样式
+                            style: {}
+                        }
+                    ]
+                },
+                {
+                    id: '5',
+                    type: 'group',
+                    name: '循环组件',
+                    ico: '',
+                    open: true,
+                    children: [
+                        {
+                            id: '51',
+                            type: 'for_loop',
+                            name: 'For循环',
+                            ico: 'el-icon-refresh-right',
+                            // 自定义覆盖样式
+                            style: {}
+                        },
+                        {
+                            id: '52',
+                            type: 'while_loop',
+                            name: 'While循环',
+                            ico: 'el-icon-refresh-right',
+                            // 自定义覆盖样式
+                            style: {}
+                        },
+                        {
+                            id: '53',
+                            type: 'foreach_loop',
+                            name: 'ForEach循环',
+                            ico: 'el-icon-refresh-right',
+                            // 自定义覆盖样式
+                            style: {}
+                        },
+                        {
+                            id: '54',
+                            type: 'loop_end',
+                            name: '循环结束',
+                            ico: 'el-icon-video-pause',
+                            // 自定义覆盖样式
+                            style: {}
+                        }
+                    ]
+                },
+                {
                     id: '6',
+                    type: 'group',
+                    name: '网页自动化组件',
+                    ico: '',
+                    open: true,
+                    children: [
+                        {
+                            id: '61',
+                            type: 'open_page',
+                            name: '打开网页',
+                            ico: 'el-icon-s-platform',
+                            // 自定义覆盖样式
+                            style: {}
+                        },
+                        {
+                            id: '62',
+                            type: 'single_click',
+                            name: '单击网页元素',
+                            ico: 'el-icon-mouse',
+                            // 自定义覆盖样式
+                            style: {}
+                        },
+                        {
+                            id: '63',
+                            type: 'double_click',
+                            name: '双击网页元素',
+                            ico: 'el-icon-mouse',
+                            // 自定义覆盖样式
+                            style: {}
+                        },
+                        {
+                            id: '64',
+                            type: 'mouse_hover',
+                            name: '鼠标悬停',
+                            ico: 'el-icon-mouse',
+                            // 自定义覆盖样式
+                            style: {}
+                        },
+                        {
+                            id: '65',
+                            type: 'write_input',
+                            name: '填写输入框',
+                            ico: 'el-icon-mouse',
+                            // 自定义覆盖样式
+                            style: {}
+                        },
+                        {
+                            id: '66',
+                            type: 'drag_element',
+                            name: '拖拽元素',
+                            ico: 'el-icon-mouse',
+                            // 自定义覆盖样式
+                            style: {}
+                        },
+                        {
+                            id: '67',
+                            type: 'get_element',
+                            name: '获得元素对象',
+                            ico: 'el-icon-s-platform',
+                            // 自定义覆盖样式
+                            style: {}
+                        },
+                        {
+                            id: '68',
+                            type: 'jump_web',
+                            name: '跳转至新网址',
+                            ico: 'el-icon-s-platform',
+                            // 自定义覆盖样式
+                            style: {}
+                        },
+                        {
+                            id: '69',
+                            type: 'get_screenshot',
+                            name: '获得网页截图',
+                            ico: 'el-icon-s-platform',
+                            // 自定义覆盖样式
+                            style: {}
+                        },
+                        {
+                            id: '610',
+                            type: 'get_cookie',
+                            name: '获得Cookie',
+                            ico: 'el-icon-s-platform',
+                            // 自定义覆盖样式
+                            style: {}
+                        }
+                    ]
+                },
+                {
+                    id: '7',
                     type: 'group',
                     name: '其他类型',
                     ico: '',
                     open: true,
                     children: [
                         {
-                            id: '61',
+                            id: '71',
                             type: 'end',
                             name: '结束',
-                            ico: 'el-icon-video-pause',
+                            ico: 'el-icon-circle-close',
                             // 自定义覆盖样式
                             style: {}
                         },
                         {
-                            id: '62',
+                            id: '72',
                             type: 'sleep',
                             name: '休眠等待',
                             ico: 'el-icon-timer',
@@ -187,7 +342,7 @@ export default {
                             style: {}
                         },
                         {
-                            id: '63',
+                            id: '73',
                             type: 'email_send',
                             name: '邮件发送',
                             ico: 'el-icon-s-promotion',
@@ -195,7 +350,7 @@ export default {
                             style: {}
                         },
                         {
-                            id: '64',
+                            id: '74',
                             type: 'system_time',
                             name: '获得当前时间',
                             ico: 'el-icon-time',
@@ -203,7 +358,7 @@ export default {
                             style: {}
                         },
                         {
-                            id: '65',
+                            id: '75',
                             type: 'move_time',
                             name: '增加/减少时间',
                             ico: 'el-icon-time',
@@ -211,7 +366,7 @@ export default {
                             style: {}
                         },
                         {
-                            id: '66',
+                            id: '76',
                             type: 'date_to_timestamp',
                             name: '日期转为时间戳',
                             ico: 'el-icon-time',
@@ -219,7 +374,7 @@ export default {
                             style: {}
                         },
                         {
-                            id: '67',
+                            id: '77',
                             type: 'timestamp_to_date',
                             name: '时间戳转为日期',
                             ico: 'el-icon-time',

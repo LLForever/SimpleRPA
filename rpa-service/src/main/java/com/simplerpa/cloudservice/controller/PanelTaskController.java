@@ -4,6 +4,7 @@ import com.ruoyi.common.core.utils.bean.BeanUtils;
 import com.simplerpa.cloudservice.entity.TaskDetail;
 import com.simplerpa.cloudservice.entity.VO.TaskDetailVO;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/panel-task")
 public class PanelTaskController {
 
-    @GetMapping("/test")
+    @PostMapping("/upload/detail")
     public String test(){
         return "test success";
     }
