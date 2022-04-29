@@ -39,6 +39,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
 
+    <select id="getTaskDetailByTaskIdAndUserId" parameterType="TaskDetail" resultMap="TaskDetailResult">
+        <include refid="selectTaskDetailVo"/>
+        <where>
+            <if test="taskId != null "> and task_id = #{taskId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+        </where>
+    </select>
+
     <insert id="insertTaskDetail" parameterType="TaskDetail" useGeneratedKeys="true" keyProperty="id">
         insert into rpa_panel_task_detail
         <trim prefix="(" suffix=")" suffixOverrides=",">

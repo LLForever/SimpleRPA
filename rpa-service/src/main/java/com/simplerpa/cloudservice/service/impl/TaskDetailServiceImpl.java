@@ -73,6 +73,11 @@ public class TaskDetailServiceImpl implements ITaskDetailService
         return taskDetailMapper.uploadTaskDetail(taskDetail) > 0;
     }
 
+    @Override
+    public TaskDetail getTaskDetailByTaskIdAndUserId(TaskDetail taskDetail){
+        return taskDetailMapper.getTaskDetailByTaskIdAndUserId(taskDetail);
+    }
+
     /**
      * 批量删除rpa面板任务详情
      * 

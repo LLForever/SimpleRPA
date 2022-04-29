@@ -6,6 +6,8 @@
                 <div class="ef-tooltar">
                     <el-link type="primary" :underline="false">{{ data.taskName }}</el-link>
                     <el-divider direction="vertical"></el-divider>
+                    <el-button type="text" icon="el-icon-caret-right" size="large" @click="startRunTask">运行任务</el-button>
+                    <el-divider direction="vertical"></el-divider>
                     <el-button type="text" icon="el-icon-delete" size="large" @click="clearElement">清空画布</el-button>
                     <el-divider direction="vertical"></el-divider>
                     <el-button type="text" icon="el-icon-upload" size="large" @click="uploadData">保存</el-button>
@@ -67,7 +69,7 @@ import FlowInfo from '@/components/ef/info'
 import FlowHelp from '@/components/ef/help'
 import FlowNodeForm from '@/components/ef/node_form'
 import lodash from 'lodash'
-import { uploadTaskDetail } from '../../../api/rpa/task'
+import { sendRunTaskSig, uploadTaskDetail } from '../../../api/rpa/task'
 // import { getDataA } from '@/components/ef/data_A'
 // import { getDataB } from '@/components/ef/data_B'
 // import { getDataC } from '@/components/ef/data_C'
@@ -521,6 +523,11 @@ export default {
         },
         repaintEverything() {
             this.jsPlumb.repaint()
+        },
+        startRunTask(){
+            sendRunTaskSig(this.data).then(res => {
+                console.log(res);
+            });
         },
         clearElement(){
             this.$confirm('确定要清空整个画布?', '提示', {

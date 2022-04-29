@@ -9,8 +9,11 @@ import com.ruoyi.common.security.utils.SecurityUtils;
 import com.ruoyi.system.api.model.LoginUser;
 import com.simplerpa.cloudservice.entity.TaskDetail;
 import com.simplerpa.cloudservice.entity.VO.TaskDetailVO;
+import com.simplerpa.cloudservice.entity.util.RpaTaskStructure;
 import com.simplerpa.cloudservice.service.ITaskDetailService;
+import com.simplerpa.cloudservice.utils.RpaTaskExplainer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -41,6 +44,24 @@ public class PanelTaskController extends BaseController {
                 detail.setNodeListJson(JSONObject.toJSONString(taskDetailVO.getNodeList()));
                 Boolean aBoolean = taskDetailService.uploadTaskDetail(detail);
                 return aBoolean? AjaxResult.success("保存成功") : AjaxResult.error("保存失败！");
+            }
+        }
+        return AjaxResult.error("保存出错！请检查登陆状态与您的任务信息是否正常！");
+    }
+
+    @PostMapping("/run")
+    @Transactional
+    public AjaxResult runTask(@RequestBody TaskDetailVO taskDetailVO){
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        if (StringUtils.isNotNull(loginUser)) {
+            Long userid = loginUser.getUserid();
+            if (userid != null) {
+                taskDetailVO.setUserId(userid);
+                TaskDetail taskDetail = taskDetailService.getTaskDetailByTaskIdAndUserId(taskDetailVO);
+                if(taskDetail.getTaskVersion() < taskDetailVO.getTaskVersion()){
+                    uploadTaskDetailAndStore(taskDetailVO);
+                }
+                RpaTaskStructure res = RpaTaskExplainer.explain(taskDetailVO);
             }
         }
         return AjaxResult.error("保存出错！请检查登陆状态与您的任务信息是否正常！");

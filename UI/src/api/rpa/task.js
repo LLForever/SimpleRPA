@@ -8,3 +8,11 @@ export function uploadTaskDetail(data) {
     data: data
   })
 }
+
+export function sendRunTaskSig(data) {
+    return request({
+        url: '/rpa/panel-task/run',
+        method: 'post',
+        data: data
+    })
+}

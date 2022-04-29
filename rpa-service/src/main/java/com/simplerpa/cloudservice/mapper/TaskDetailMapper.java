@@ -45,6 +45,8 @@ public interface TaskDetailMapper
 
     public int uploadTaskDetail(TaskDetail taskDetail);
 
+    public TaskDetail getTaskDetailByTaskIdAndUserId(TaskDetail taskDetail);
+
     /**
      * 删除rpa面板任务详情
      * 

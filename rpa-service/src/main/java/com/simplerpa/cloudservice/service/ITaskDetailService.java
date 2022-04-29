@@ -45,6 +45,8 @@ public interface ITaskDetailService
 
     public Boolean uploadTaskDetail(TaskDetail taskDetail);
 
+    public TaskDetail getTaskDetailByTaskIdAndUserId(TaskDetail taskDetail);
+
     /**
      * 批量删除rpa面板任务详情
      * 

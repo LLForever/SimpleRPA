@@ -11,6 +11,7 @@ public class DictionaryUtil {
     public static String TASK_STATUS_COMPLETED = "completed";
     public static String TASK_STATUS_WARNING = "warning";
     public static String TASK_STATUS_STOP = "stop";
+    public static String TASK_STATUS_ERROR = "error";
 
     public static Integer TASK_MESSAGE_DELETE = 0;
     public static Integer TASK_MESSAGE_CHANGE = 1;
