@@ -43,6 +43,8 @@ public interface ITaskDetailService
      */
     public int updateTaskDetail(TaskDetail taskDetail);
 
+    public Boolean uploadTaskDetail(TaskDetail taskDetail);
+
     /**
      * 批量删除rpa面板任务详情
      * 

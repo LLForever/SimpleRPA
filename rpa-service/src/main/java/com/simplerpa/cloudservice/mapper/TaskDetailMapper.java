@@ -43,6 +43,8 @@ public interface TaskDetailMapper
      */
     public int updateTaskDetail(TaskDetail taskDetail);
 
+    public int uploadTaskDetail(TaskDetail taskDetail);
+
     /**
      * 删除rpa面板任务详情
      * 

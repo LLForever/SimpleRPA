@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.security.utils.SecurityUtils;
 import com.ruoyi.system.api.model.LoginUser;
+import com.simplerpa.cloudservice.entity.VO.TaskDetailVO;
 import com.simplerpa.cloudservice.entity.util.DictionaryUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,7 +55,11 @@ public class TaskDetailController extends BaseController
             if(userid != null){
                 startPage();
                 taskDetail.setUserId(userid);
-                List<TaskDetail> list = taskDetailService.selectTaskDetailList(taskDetail);
+                List<TaskDetail> originList = taskDetailService.selectTaskDetailList(taskDetail);
+                List<TaskDetailVO> list = new ArrayList<>();
+                for(TaskDetail detail : originList){
+                    list.add(new TaskDetailVO(detail));
+                }
                 return getDataTable(list);
             }
         }

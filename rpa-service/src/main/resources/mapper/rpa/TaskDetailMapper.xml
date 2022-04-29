@@ -78,6 +78,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
+    <update id="uploadTaskDetail" parameterType="TaskDetail">
+        update rpa_panel_task_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskName != null and taskName != ''">task_name = #{taskName},</if>
+            <if test="lineListJson != null">line_list_json = #{lineListJson},</if>
+            <if test="nodeListJson != null">node_list_json = #{nodeListJson},</if>
+            <if test="taskVersion != null">task_version = #{taskVersion},</if>
+        </trim>
+        where task_id = #{taskId} AND user_id = #{userId}
+    </update>
+
     <delete id="deleteTaskDetailById" parameterType="Long">
         delete from rpa_panel_task_detail where id = #{id}
     </delete>

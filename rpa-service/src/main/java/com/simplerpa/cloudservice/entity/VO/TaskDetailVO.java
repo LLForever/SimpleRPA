@@ -1,6 +1,7 @@
 package com.simplerpa.cloudservice.entity.VO;
 
 import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.core.utils.bean.BeanUtils;
 import com.simplerpa.cloudservice.entity.TaskDetail;
 import com.simplerpa.cloudservice.entity.TaskLineDetail;
@@ -29,13 +30,15 @@ public class TaskDetailVO extends TaskDetail {
     public TaskDetailVO(TaskDetail taskDetail){
         BeanUtils.copyBeanProp(this, taskDetail);
         oldTaskVersion = this.getTaskVersion();
-        setLineList(JSONObject.parseArray(this.getLineListJson(), TaskLineDetail.class));
-        setNodeList(JSONObject.parseArray(this.getNodeListJson(), TaskNodeDetail.class));
+        if(StringUtils.isNotEmpty(this.getLineListJson())){
+            setLineList(JSONObject.parseArray(this.getLineListJson(), TaskLineDetail.class));
+        }
+        if(StringUtils.isNotEmpty(this.getNodeListJson())) {
+            setNodeList(JSONObject.parseArray(this.getNodeListJson(), TaskNodeDetail.class));
+        }
     }
 
-    public TaskDetailVO(){}
-
-    //public TaskDetailVO(){ super(); }
+    public TaskDetailVO(){ super(); }
 
     @Override
     public String toString() {

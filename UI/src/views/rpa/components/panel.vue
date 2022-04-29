@@ -171,15 +171,52 @@ export default {
     },
     methods: {
         setRowDetail(detail) {
-            this.data.taskName = detail.taskName
-            this.data.taskId = detail.taskId
-            if (detail.lineList) {
-                this.data.lineList = detail.lineList
+            setTimeout(()=>{
+                // this.initPanelData();
+                this.data.taskName = detail.taskName
+                this.data.taskId = detail.taskId
+                if (detail.nodeList) {
+                    this.data.nodeList = detail.nodeList
+                    for (var i = 0; i < detail.nodeList.length; i++) {
+                        let node = detail.nodeList[i];
+                        this.addNodeIntoGraph(node);
+                    }
+                    // this.data.nodeList = detail.nodeList
+                }
+                if (detail.lineList) {
+                    for (var i = 0; i < detail.lineList.length; i++) {
+                        let line = detail.lineList[i];
+                        this.addLineIntoGraph(line);
+                    }
+                }
+                this.userId = detail.userId;
+            }, 100);
+        },
+        addLineIntoGraph(line){
+            var connParam = {
+                source: line.from,
+                target: line.to,
+                label: line.label ? line.label : '',
+                connector: line.connector ? line.connector : '',
+                anchors: line.anchors ? line.anchors : undefined,
+                paintStyle: line.paintStyle ? line.paintStyle : undefined
             }
-            if (detail.nodeList) {
-                this.data.nodeList = detail.nodeList
-            }
-            this.userId = detail.userId;
+            this.$nextTick(function() {
+                this.jsPlumb.connect(connParam, this.jsplumbConnectOptions);
+            });
+        },
+        addNodeIntoGraph(node){
+            this.$nextTick(function() {
+                this.jsPlumb.makeSource(node.id, this.jsplumbSourceOptions)
+                this.jsPlumb.makeTarget(node.id, this.jsplumbTargetOptions)
+                this.jsPlumb.draggable(node.id, {
+                    containment: 'parent',
+                    stop: function(el) {
+                        // 拖拽节点结束后的对调
+                        console.log('拖拽结束: ', el)
+                    }
+                })
+            })
         },
         // 初始化画板数据
         initPanelData() {
@@ -237,7 +274,7 @@ export default {
                 this.jsPlumb.bind('beforeDrop', (evt) => {
                     let from = evt.sourceId
                     let to = evt.targetId
-                    console.log(this.data)
+                    console.log('beforeDrop', evt)
                     if (from === to) {
                         this.$message.error('节点不支持连接自己')
                         return false
@@ -499,7 +536,11 @@ export default {
         },
         uploadData(){
             uploadTaskDetail(this.data).then(res =>{
-
+                if(res.code === 200){
+                    this.$message.success(res.msg);
+                }else{
+                    // this.$message.error(res.msg);
+                }
             })
         },
         // 流程数据信息
