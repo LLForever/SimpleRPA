@@ -30,6 +30,9 @@ public class RpaTaskStructure {
         startNodeId = null;
     }
 
+    /**
+     * 添加一个节点对象，如果已经存在，返回false
+     * */
     public Boolean addNode(String name, IRpaTaskNode node){
         if(nodeList.containsKey(name)){
             return false;
@@ -45,6 +48,9 @@ public class RpaTaskStructure {
         adjacencyList.get(origin).add(target);
     }
 
+    /**
+     * 生成拓扑执行序列，如果拓扑排序失败，则返回false
+     * */
     public Boolean generateExecuteList(){
         if(startNodeId == null){
             return false;

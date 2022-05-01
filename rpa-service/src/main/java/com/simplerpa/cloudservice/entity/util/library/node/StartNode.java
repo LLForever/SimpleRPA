@@ -14,4 +14,9 @@ public class StartNode implements IRpaTaskNode {
     public RpaTaskOutput run() {
         return null;
     }
+
+    @Override
+    public RpaTaskOutput getRpaTaskOutput() {
+        return null;
+    }
 }

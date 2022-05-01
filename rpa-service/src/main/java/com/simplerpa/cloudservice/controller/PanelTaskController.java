@@ -61,9 +61,11 @@ public class PanelTaskController extends BaseController {
                 if(taskDetail.getTaskVersion() < taskDetailVO.getTaskVersion()){
                     uploadTaskDetailAndStore(taskDetailVO);
                 }
-                RpaTaskStructure res = RpaTaskExplainer.explain(taskDetailVO);
+                // 启动线程，需要获得到对应的websocket实例
+//                RpaTaskStructure res = RpaTaskExplainer.explain(taskDetailVO);
+                return AjaxResult.success("任务启动成功！正在运行...");
             }
         }
-        return AjaxResult.error("保存出错！请检查登陆状态与您的任务信息是否正常！");
+        return AjaxResult.error("运行出错！请检查登陆状态是否正常！");
     }
 }

@@ -1,5 +1,7 @@
 package com.simplerpa.cloudservice.entity;
 
+import com.alibaba.fastjson.JSONObject;
+
 /**
  * @Description: TODO
  * @author: ChenRui98
@@ -15,6 +17,7 @@ public class TaskNodeDetail {
     private String ico;
     private String state;
     private Long nodeVersion;
+    private JSONObject params;
 
     public String getId() {
         return id;
@@ -78,5 +81,13 @@ public class TaskNodeDetail {
 
     public void setNodeVersion(Long nodeVersion) {
         this.nodeVersion = nodeVersion;
+    }
+
+    public JSONObject getParams() {
+        return params;
+    }
+
+    public void setParams(JSONObject params) {
+        this.params = params;
     }
 }
