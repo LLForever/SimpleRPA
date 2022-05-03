@@ -538,6 +538,16 @@ export default {
             }).then(() => {
                 this.jsPlumb.deleteEveryConnection();
                 this.data.nodeList = [];
+                this.activeElement = {
+                    // 可选值 node 、line
+                    type: undefined,
+                    // 节点ID
+                    nodeId: undefined,
+                    // 连线ID
+                    sourceId: undefined,
+                    targetId: undefined
+                };
+                this.$refs.nodeForm.clearData();
             }).catch(() => {
             })
         },

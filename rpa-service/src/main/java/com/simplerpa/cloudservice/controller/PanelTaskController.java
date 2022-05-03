@@ -52,15 +52,14 @@ public class PanelTaskController extends BaseController {
     @PostMapping("/run")
     @Transactional
     public AjaxResult runTask(@RequestBody TaskDetailVO taskDetailVO){
+        if(taskDetailVO.getTaskId() == null){
+            return AjaxResult.error("该任务的ID为空，无法运行！");
+        }
         LoginUser loginUser = SecurityUtils.getLoginUser();
         if (StringUtils.isNotNull(loginUser)) {
             Long userid = loginUser.getUserid();
             if (userid != null) {
-                taskDetailVO.setUserId(userid);
-                TaskDetail taskDetail = taskDetailService.getTaskDetailByTaskIdAndUserId(taskDetailVO);
-                if(taskDetail.getTaskVersion() < taskDetailVO.getTaskVersion()){
-                    uploadTaskDetailAndStore(taskDetailVO);
-                }
+                uploadTaskDetailAndStore(taskDetailVO);
                 // 启动线程，需要获得到对应的websocket实例
 //                RpaTaskStructure res = RpaTaskExplainer.explain(taskDetailVO);
                 return AjaxResult.success("任务启动成功！正在运行...");

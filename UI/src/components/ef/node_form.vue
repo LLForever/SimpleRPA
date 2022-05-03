@@ -6,37 +6,31 @@
             </div>
             <div class="ef-node-form-body">
                 <el-form :model="node" ref="dataForm" label-width="80px" v-show="type === 'node'">
-                    <el-form-item label="类型">
-                        <el-input v-model="node.type" :disabled="true"></el-input>
+                    <el-form-item label="节点id">
+                        <el-input v-model="node.id" :disabled="true"></el-input>
                     </el-form-item>
                     <el-form-item label="名称">
                         <el-input v-model="node.name"></el-input>
                     </el-form-item>
-                    <el-form-item label="left坐标">
-                        <el-input v-model="node.left" :disabled="true"></el-input>
+                    <el-form-item label="上传文件" v-if="node.id && node.type === 'read_txt'">
+                        <el-upload
+                            action="#"
+                            :limit="1"
+                            :on-exceed="handleExceed"
+                            :http-request="uploadFile"
+                            :file-list="node.fileList"
+                            accept=".txt">
+                            <el-button size="small" type="primary">点击上传</el-button>
+                        </el-upload>
                     </el-form-item>
-                    <el-form-item label="top坐标">
-                        <el-input v-model="node.top" :disabled="true"></el-input>
-                    </el-form-item>
-                    <el-form-item label="ico图标">
-                        <el-input v-model="node.ico"></el-input>
-                    </el-form-item>
+                    <el-divider></el-divider>
                     <el-form-item label="状态">
-                        <el-select v-model="node.state" placeholder="请选择">
-                            <el-option
-                                    v-for="item in stateList"
-                                    :key="item.state"
-                                    :label="item.label"
-                                    :value="item.state">
-                            </el-option>
-                        </el-select>
+                        <span>{{ getStatus(node.state) }}</span>
                     </el-form-item>
                     <el-form-item>
-                        <el-button icon="el-icon-refresh">重置</el-button>
-                        <el-button type="primary" icon="el-icon-check" @click="save">保存</el-button>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button type="danger" icon="el-icon-close" @click="deleteElement">删除</el-button>
+<!--                        <el-button icon="el-icon-refresh">重置</el-button>-->
+                        <el-button type="primary" icon="el-icon-check" :disabled="!node.id" @click="save">保存</el-button>
+                        <el-button type="danger" icon="el-icon-close" :disabled="!node.id" @click="deleteElement">删除</el-button>
                     </el-form-item>
                 </el-form>
 
@@ -126,6 +120,25 @@
                         this.$emit('repaintEverything')
                     }
                 })
+            },
+            clearData(){
+              this.node = {}
+              this.line = {}
+            },
+            handleExceed(files, fileList) {
+                this.$message.warning('当前限制选择 1 个文件。');
+            },
+            uploadFile(file){
+                console.log('uploadFile', file);
+            },
+            getStatus(st){
+                const list = this.stateList;
+                for (const item of list){
+                    if(item.state === st){
+                        return item.label;
+                    }
+                }
+                return '';
             }
         }
     }

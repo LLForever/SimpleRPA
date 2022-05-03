@@ -38,7 +38,7 @@ export default {
                 // fallbackClass: 'flow-node-draggable'
             },
             // 默认打开的左侧菜单的id
-            defaultOpeneds: ['1', '2'],
+            defaultOpeneds: ['1'],
             menuList: [
                 {
                     id: '1',

@@ -103,26 +103,16 @@ public class WebsocketTask implements IWebsocketTaskSubject {
         return onlineUserNumber.get();
     }
 
-    /**
-    * 不建议使用！
-    * */
-    /*
-    public static void removeUserFromMap(Long userId) throws Exception {
-        for (Map.Entry<Long, List<IWebsocketTaskObserver>> next : observerListMap.entrySet()) {
-            Long taskId = null;
-            for (IWebsocketTaskObserver item : next.getValue()) {
-                if (item.isUser(userId)) {
-                    taskId = next.getKey();
-                }
-            }
-            if (taskId != null) {
-                break;
+    public static void notifyObserver(Long taskId, PanelTaskMessage message){
+        if(observerListMap.containsKey(taskId)){
+            List<IWebsocketTaskObserver> list = observerListMap.get(taskId);
+            for(IWebsocketTaskObserver item : list){
+                item.sendMessage(message);
             }
         }
-        throw new Exception("this function is not completed!");
-    }*/
+    }
 
-    public static void notifyObserver(Long taskId, Long userId, PanelTaskMessage message){
+    public static void sendMessageToOtherUser(Long taskId, Long userId, PanelTaskMessage message){
         if(observerListMap.containsKey(taskId)){
             List<IWebsocketTaskObserver> list = observerListMap.get(taskId);
             for(IWebsocketTaskObserver item : list){
