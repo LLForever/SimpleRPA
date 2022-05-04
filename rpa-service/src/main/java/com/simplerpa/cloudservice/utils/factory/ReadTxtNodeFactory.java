@@ -33,6 +33,6 @@ public class ReadTxtNodeFactory implements RpaNodeFactory{
         }else{
             readTxtNode.setOutputParamName(params.getString("outputParamName"));
         }
-        return null;
+        return readTxtNode;
     }
 }

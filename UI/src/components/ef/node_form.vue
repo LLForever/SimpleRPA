@@ -23,6 +23,20 @@
                             <el-button size="small" type="primary">点击上传</el-button>
                         </el-upload>
                     </el-form-item>
+                    <el-form-item label="上传文件" v-if="node.id && node.type === 'read_excel'">
+                        <el-upload
+                            action="#"
+                            :limit="1"
+                            :on-exceed="handleExceed"
+                            :http-request="uploadFile"
+                            :file-list="node.fileList"
+                            accept=".xlsx,.xls">
+                            <el-button size="small" type="primary">点击上传</el-button>
+                        </el-upload>
+                    </el-form-item>
+                    <el-form-item label="保存处理结果至：" v-if="node.id && node.params.outputParamName">
+                        <el-input v-model="node.params.outputParamName"></el-input>
+                    </el-form-item>
                     <el-divider></el-divider>
                     <el-form-item label="状态">
                         <span>{{ getStatus(node.state) }}</span>
@@ -55,6 +69,7 @@
 
 <script>
     import { cloneDeep } from 'lodash'
+    import { initNodeParams } from '../../views/rpa/utils/NodeParamsHandler'
 
     export default {
         data() {
@@ -94,7 +109,8 @@
                 this.data = data
                 data.nodeList.filter((node) => {
                     if (node.id === id) {
-                        this.node = cloneDeep(node)
+                        const tmp = cloneDeep(node);
+                        this.node = initNodeParams(tmp);
                     }
                 })
             },
@@ -117,6 +133,7 @@
                         node.top = this.node.top
                         node.ico = this.node.ico
                         node.state = this.node.state
+                        node.params = this.node.params
                         this.$emit('repaintEverything')
                     }
                 })
