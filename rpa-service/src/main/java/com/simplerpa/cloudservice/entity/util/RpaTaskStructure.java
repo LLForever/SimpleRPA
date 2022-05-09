@@ -24,10 +24,14 @@ public class RpaTaskStructure {
     // 开始节点的id
     private String startNodeId;
 
+    // 节点执行序列
+    private ArrayList<String> executeList;
+
     public RpaTaskStructure(){
         nodeList = new HashMap<>();
         adjacencyList = new HashMap<>();
         startNodeId = null;
+        executeList = null;
     }
 
     /**
@@ -46,6 +50,12 @@ public class RpaTaskStructure {
             adjacencyList.put(origin, new ArrayList<>());
         }
         adjacencyList.get(origin).add(target);
+
+        if(!inDegreeList.containsKey(target)){
+            inDegreeList.put(target, 0);
+        }
+        Integer integer = inDegreeList.get(target);
+        inDegreeList.put(target, integer+1);
     }
 
     /**
@@ -55,8 +65,18 @@ public class RpaTaskStructure {
         if(startNodeId == null){
             return false;
         }
+        if(executeList != null){
+            return true;
+        }
 
         return true;
+    }
+
+    public IRpaTaskNode findRpaTaskNode(String key){
+        if(nodeList.containsKey(key)){
+            return nodeList.get(key);
+        }
+        return null;
     }
 
     public HashMap<String, ArrayList<String>> getAdjacencyList() {
@@ -81,5 +101,13 @@ public class RpaTaskStructure {
 
     public void setStartNodeId(String startNodeId) {
         this.startNodeId = startNodeId;
+    }
+
+    public ArrayList<String> getExecuteList() {
+        return executeList;
+    }
+
+    public void setExecuteList(ArrayList<String> executeList) {
+        this.executeList = executeList;
     }
 }
