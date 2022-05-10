@@ -68,7 +68,42 @@ public class RpaTaskStructure {
         if(executeList != null){
             return true;
         }
+        // 备份入度表
+        HashMap<String, Integer> inDegreeListBackup = new HashMap<>();
+        inDegreeListBackup.putAll(inDegreeList);
 
+        // 根据startNodeId、inDegreeList和adjacencyList进行拓扑排序
+        // 拓扑结果存储在executeList中
+        executeList = new ArrayList<>();
+        ArrayList<String> queue = new ArrayList<>();
+        queue.add(startNodeId);
+        while(!queue.isEmpty()){
+            String nodeId = queue.remove(0);
+            executeList.add(nodeId);
+            if(adjacencyList.containsKey(nodeId)){
+                for(String nextNodeId : adjacencyList.get(nodeId)){
+                    // 将邻接节点的入度减1
+                    inDegreeList.put(nextNodeId, inDegreeList.get(nextNodeId)-1);
+                    // 如果邻接节点的入度为0，则将其添加到队列中
+                    if(inDegreeList.get(nextNodeId) == 0){
+                        // 将邻接节点添加到队列中
+                        queue.add(nextNodeId);
+                        // 将邻接节点从入度表中删除
+                        inDegreeList.remove(nextNodeId);
+                    }
+                }
+            }
+        }
+
+        // 如果拓扑排序失败，则返回false
+        if(executeList.size() != nodeList.size()){
+            // 恢复入度表
+            inDegreeList.clear();
+            inDegreeList.putAll(inDegreeListBackup);
+
+            executeList = null;
+            return false;
+        }
         return true;
     }
 
