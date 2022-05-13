@@ -1,5 +1,6 @@
 package com.simplerpa.cloudservice.entity;
 
+import com.alibaba.fastjson.JSONObject;
 import com.simplerpa.cloudservice.entity.util.DictionaryUtil;
 
 import java.io.Serializable;
@@ -15,21 +16,29 @@ public class PanelTaskMessage implements Serializable {
     private Integer actionType;
     private Boolean nodeChanged;
     private String message;
+    private JSONObject jsonObject;
 
-    public PanelTaskMessage(){
-        actionType = DictionaryUtil.TASK_MESSAGE_OK;
-        setMessage("Connection is created successfully!");
+    public PanelTaskMessage(Integer actionType, String message) {
+        setActionType(actionType);
+        setMessage(message);
     }
 
-    public PanelTaskMessage(Integer actionType){
+    public PanelTaskMessage(Integer actionType, JSONObject jsonObject){
         setActionType(actionType);
+        setJsonObject(jsonObject);
+    }
+
+    public PanelTaskMessage(Integer actionType, JSONObject jsonObject, Boolean nodeChanged) {
+        setActionType(actionType);
+        setJsonObject(jsonObject);
+        setNodeChanged(nodeChanged);
     }
 
     public Integer getActionType() {
         return actionType;
     }
 
-    public void setActionType(Integer actionType) {
+    private void setActionType(Integer actionType) {
         this.actionType = actionType;
     }
 
@@ -37,7 +46,7 @@ public class PanelTaskMessage implements Serializable {
         return nodeChanged;
     }
 
-    public void setNodeChanged(Boolean nodeChanged) {
+    private void setNodeChanged(Boolean nodeChanged) {
         this.nodeChanged = nodeChanged;
     }
 
@@ -45,7 +54,15 @@ public class PanelTaskMessage implements Serializable {
         return message;
     }
 
-    public void setMessage(String message) {
+    private void setMessage(String message) {
         this.message = message;
+    }
+
+    public JSONObject getJsonObject() {
+        return jsonObject;
+    }
+
+    private void setJsonObject(JSONObject jsonObject) {
+        this.jsonObject = jsonObject;
     }
 }

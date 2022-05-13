@@ -23,7 +23,7 @@ public class RpaTaskExplainer {
             if(factory == null){
                 throw new Exception("RpaTaskExplainer : 节点[" + nodeDetail.getName() + "],类型[" + nodeDetail.getType() + "]暂时无法解析");
             }
-            if(!rpaTaskStructure.addNode(nodeDetail.getId(), factory.getInstance())){
+            if(!rpaTaskStructure.addNode(nodeDetail, factory.getInstance())){
                 throw new Exception("RpaTaskExplainer : 存在相同的节点ID，无法成功解析！");
             }
         }

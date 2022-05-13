@@ -11,7 +11,7 @@ import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 
 public class StartNode implements IRpaTaskNode {
     @Override
-    public RpaTaskOutput run() {
+    public RpaTaskOutput run(RpaTaskOutput input) {
         return null;
     }
 

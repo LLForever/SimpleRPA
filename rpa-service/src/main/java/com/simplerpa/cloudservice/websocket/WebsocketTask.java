@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.core.utils.StringUtils;
 import com.simplerpa.cloudservice.entity.PanelTaskMessage;
 import com.simplerpa.cloudservice.entity.VO.TaskDetailVO;
+import com.simplerpa.cloudservice.entity.util.DictionaryUtil;
 import com.simplerpa.cloudservice.service.ITaskDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -50,7 +51,7 @@ public class WebsocketTask implements IWebsocketTaskSubject {
             WebsocketTaskClient client = new WebsocketTaskClient(session, userId);
             registerObserver(taskId, client);
             try{
-                client.sendMessage(new PanelTaskMessage());
+                client.sendMessage(new PanelTaskMessage(DictionaryUtil.TASK_MESSAGE_OK, "Connection is created successfully!"));
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -76,6 +77,51 @@ public class WebsocketTask implements IWebsocketTaskSubject {
     @OnError
     public void onError(Session session, Throwable error) {
         error.printStackTrace();
+    }
+
+    @Override
+    public void registerObserver(Long taskId, IWebsocketTaskObserver observer) {
+        final String taskIdStr = clientTaskId.toString().intern();
+        synchronized (taskIdStr){
+            if(observerListMap.containsKey(taskId)){
+                List<IWebsocketTaskObserver> arrList = observerListMap.get(taskId);
+                boolean isChanged = false;
+                for(int i = 0; i<arrList.size(); i++){
+                    if(arrList.get(i).isSameUser(observer)){
+                        arrList.set(i, observer);
+                        isChanged = true;
+                        break;
+                    }
+                }
+                if(!isChanged){
+                    arrList.add(observer);
+                    addOnlineUserNumber();
+                }
+//                observerListMap.put(taskId, arrList);
+            }else{
+                putTaskInfoIntoMap(taskId, observer);
+                addOnlineUserNumber();
+            }
+        }
+    }
+
+    @Override
+    public void removeObserver(Long taskId, Long userId) {
+        final String taskIdStr = clientTaskId.toString().intern();
+        synchronized (taskIdStr){
+            if(observerListMap.containsKey(taskId)){
+                List<IWebsocketTaskObserver> iWebsocketTaskObserverList = observerListMap.get(taskId);
+                for (IWebsocketTaskObserver item : iWebsocketTaskObserverList){
+                    if(item.isUser(userId)){
+                        iWebsocketTaskObserverList.remove(item);
+                        break;
+                    }
+                }
+                if(iWebsocketTaskObserverList.isEmpty()){
+                    removeTaskFromMap(taskId);
+                }
+            }
+        }
     }
 
     private void removeTaskFromMap(Long taskId){
@@ -134,49 +180,19 @@ public class WebsocketTask implements IWebsocketTaskSubject {
             }
         }
     }
-
-    @Override
-    public void registerObserver(Long taskId, IWebsocketTaskObserver observer) {
-        final String taskIdStr = clientTaskId.toString().intern();
-        synchronized (taskIdStr){
-            if(observerListMap.containsKey(taskId)){
-                List<IWebsocketTaskObserver> arrList = observerListMap.get(taskId);
-                boolean isChanged = false;
-                for(int i = 0; i<arrList.size(); i++){
-                    if(arrList.get(i).isSameUser(observer)){
-                        arrList.set(i, observer);
-                        isChanged = true;
-                        break;
-                    }
-                }
-                if(!isChanged){
-                    arrList.add(observer);
-                    addOnlineUserNumber();
-                }
-//                observerListMap.put(taskId, arrList);
-            }else{
-                putTaskInfoIntoMap(taskId, observer);
-                addOnlineUserNumber();
-            }
+    /*
+    public static IWebsocketTaskObserver findTaskObserver(Long taskId, Long userId){
+        if(taskId == null || userId == null){
+            return null;
         }
-    }
-
-    @Override
-    public void removeObserver(Long taskId, Long userId) {
-        final String taskIdStr = clientTaskId.toString().intern();
-        synchronized (taskIdStr){
-            if(observerListMap.containsKey(taskId)){
-                List<IWebsocketTaskObserver> iWebsocketTaskObserverList = observerListMap.get(taskId);
-                for (IWebsocketTaskObserver item : iWebsocketTaskObserverList){
-                    if(item.isUser(userId)){
-                        iWebsocketTaskObserverList.remove(item);
-                        break;
-                    }
-                }
-                if(iWebsocketTaskObserverList.isEmpty()){
-                    removeTaskFromMap(taskId);
+        if(observerListMap.containsKey(taskId)){
+            List<IWebsocketTaskObserver> observerList = observerListMap.get(taskId);
+            for(IWebsocketTaskObserver item : observerList){
+                if(item.isUser(userId)){
+                    return item;
                 }
             }
         }
-    }
+        return null;
+    }*/
 }

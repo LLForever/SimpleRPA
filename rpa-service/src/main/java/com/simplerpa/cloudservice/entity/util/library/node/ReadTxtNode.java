@@ -21,12 +21,12 @@ public class ReadTxtNode implements IRpaTaskNode {
     private String outputParamName; // 数据参数名称(用户自定义的output名称)
     private static final String TXT_JSON_FLAG = "_@TXT_JSON_FLAG@";
 
-    public ReadTxtNode(){
+    public ReadTxtNode(String id){
         output = null;
     }
 
     @Override
-    public RpaTaskOutput run() throws Exception {
+    public RpaTaskOutput run(RpaTaskOutput input) throws Exception {
         if(file == null || outputParamName == null){
             throw new Exception(this.getClass().getName() + " : 缺少必要参数，执行失败！");
         }

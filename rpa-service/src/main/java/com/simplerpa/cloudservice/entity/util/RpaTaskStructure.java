@@ -1,5 +1,6 @@
 package com.simplerpa.cloudservice.entity.util;
 
+import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 
 import java.util.ArrayList;
@@ -37,11 +38,15 @@ public class RpaTaskStructure {
     /**
      * 添加一个节点对象，如果已经存在，返回false
      * */
-    public Boolean addNode(String name, IRpaTaskNode node){
-        if(nodeList.containsKey(name)){
+    public Boolean addNode(TaskNodeDetail detail, IRpaTaskNode node){
+        String id = detail.getId();
+        if(nodeList.containsKey(id)){
             return false;
         }
-        nodeList.put(name, node);
+        nodeList.put(id, node);
+        if("start".equals(detail.getType())){
+            setStartNodeId(id);
+        }
         return true;
     }
 
@@ -69,8 +74,7 @@ public class RpaTaskStructure {
             return true;
         }
         // 备份入度表
-        HashMap<String, Integer> inDegreeListBackup = new HashMap<>();
-        inDegreeListBackup.putAll(inDegreeList);
+        HashMap<String, Integer> inDegreeListBackup = new HashMap<>(inDegreeList);
 
         // 根据startNodeId、inDegreeList和adjacencyList进行拓扑排序
         // 拓扑结果存储在executeList中

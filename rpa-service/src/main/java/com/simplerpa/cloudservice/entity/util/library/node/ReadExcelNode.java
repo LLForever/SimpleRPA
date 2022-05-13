@@ -29,7 +29,7 @@ public class ReadExcelNode implements IRpaTaskNode {
     private RpaTaskOutput output; // 解析后的数据
     private ArrayList<String> colNameList; // 表头信息
 
-    public ReadExcelNode(){
+    public ReadExcelNode(String nodeId){
         output = null;
         colNameList = new ArrayList<>();
         sheetName = null;
@@ -37,7 +37,7 @@ public class ReadExcelNode implements IRpaTaskNode {
     }
 
     @Override
-    public RpaTaskOutput run() throws Exception {
+    public RpaTaskOutput run(RpaTaskOutput input) throws Exception {
         if(file == null || outputParamName == null){
             throw new Exception(this.getClass().getName() + " : 缺少必要参数，执行失败！");
         }

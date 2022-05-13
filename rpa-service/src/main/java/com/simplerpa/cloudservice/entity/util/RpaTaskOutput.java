@@ -22,6 +22,9 @@ public class RpaTaskOutput {
     }
 
     public void mergeOutput(RpaTaskOutput rpaTaskOutput){
+        if(rpaTaskOutput == null){
+            return;
+        }
         for (Map.Entry<String, ArrayList<JSONObject>> entry: rpaTaskOutput.getOutput().entrySet()) {
             if(output.containsKey(entry.getKey())){
                 output.get(entry.getKey()).addAll(entry.getValue()); // 追加记录
@@ -44,25 +47,31 @@ public class RpaTaskOutput {
     /**
      * 添加一个json数组，若已经存在某个key，则返回false
      * */
-    public Boolean addElement(String name, ArrayList<JSONObject> objects){
-        if(output.containsKey(name)){
+    public Boolean canAddList(String key, ArrayList<JSONObject> objects){
+        if(objects == null){
             return false;
         }
-        output.put(name, objects);
+        if(output.containsKey(key)){
+            return false;
+        }
+        output.put(key, objects);
         return true;
     }
 
     /**
      * 添加一个json对象，若新增某个json数组时失败，则返回false
      * */
-    public Boolean addObject(String name, JSONObject jsonObject){
-        if(!output.containsKey(name)){
-            if(addElement(name, new ArrayList<>())){
-                output.get(name).add(jsonObject);
+    public Boolean addObject(String key, JSONObject jsonObject){
+        if(jsonObject == null){
+            return false;
+        }
+        if(!output.containsKey(key)){
+            if(canAddList(key, new ArrayList<>())){
+                output.get(key).add(jsonObject);
                 return true;
             }
         }else{
-            output.get(name).add(jsonObject);
+            output.get(key).add(jsonObject);
             return true;
         }
         return false;

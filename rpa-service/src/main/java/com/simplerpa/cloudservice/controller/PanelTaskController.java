@@ -11,10 +11,14 @@ import com.simplerpa.cloudservice.entity.TaskDetail;
 import com.simplerpa.cloudservice.entity.VO.TaskDetailVO;
 import com.simplerpa.cloudservice.entity.util.RpaTaskStructure;
 import com.simplerpa.cloudservice.service.ITaskDetailService;
+import com.simplerpa.cloudservice.utils.RpaTaskExecutor;
 import com.simplerpa.cloudservice.utils.RpaTaskExplainer;
+import com.simplerpa.cloudservice.utils.ThreadPoolSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
 
 /**
  * @Description: TODO
@@ -58,11 +62,12 @@ public class PanelTaskController extends BaseController {
         LoginUser loginUser = SecurityUtils.getLoginUser();
         if (StringUtils.isNotNull(loginUser)) {
             Long userid = loginUser.getUserid();
-            if (userid != null) {
+            if (userid != null && Objects.equals(taskDetailVO.getUserId(), userid)) {
                 uploadTaskDetailAndStore(taskDetailVO);
-                // 启动线程，需要获得到对应的websocket实例
-//                RpaTaskStructure res = RpaTaskExplainer.explain(taskDetailVO);
+                ThreadPoolSingleton.getInstance().submit(new RpaTaskExecutor(taskDetailVO));
                 return AjaxResult.success("任务启动成功！正在运行...");
+            }else{
+                return AjaxResult.error("任务启动失败！您不是该任务的创建者！");
             }
         }
         return AjaxResult.error("运行出错！请检查登陆状态是否正常！");

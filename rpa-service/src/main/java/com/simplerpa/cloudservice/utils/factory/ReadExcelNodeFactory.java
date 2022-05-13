@@ -21,7 +21,7 @@ public class ReadExcelNodeFactory implements RpaNodeFactory{
 
     @Override
     public IRpaTaskNode getInstance() throws Exception {
-        ReadExcelNode readExcelNode = new ReadExcelNode();
+        ReadExcelNode readExcelNode = new ReadExcelNode(taskNodeDetail.getId());
         JSONObject params = taskNodeDetail.getParams();
         if(!params.containsKey("file")){
             throw new Exception(this.getClass().getName() + " : 没有文件信息！解析失败！");

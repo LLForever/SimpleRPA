@@ -21,7 +21,7 @@ public class ReadTxtNodeFactory implements RpaNodeFactory{
 
     @Override
     public IRpaTaskNode getInstance() throws Exception {
-        ReadTxtNode readTxtNode = new ReadTxtNode();
+        ReadTxtNode readTxtNode = new ReadTxtNode(taskNodeDetail.getId());
         JSONObject params = taskNodeDetail.getParams();
         if(!params.containsKey("file")){
             throw new Exception(this.getClass().getName() + " : 没有文件信息！解析失败！");
