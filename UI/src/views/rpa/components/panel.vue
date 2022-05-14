@@ -167,7 +167,6 @@ export default {
     mounted() {
         this.jsPlumb = jsPlumb.getInstance()
         this.$nextTick(() => {
-            // 默认加载流程A的数据、在这里可以根据具体的业务返回符合流程数据格式的数据即可
             this.initPanelData()
         })
     },
@@ -192,6 +191,7 @@ export default {
                     }
                 }
                 this.userId = detail.userId;
+                this.data.userId = detail.userId;
             }, 100);
         },
         addLineIntoGraph(line){
@@ -449,7 +449,8 @@ export default {
                 top: top + 'px',
                 ico: nodeMenu.ico,
                 state: 'ready',
-                nodeVersion: Date.now()
+                nodeVersion: Date.now(),
+                params: nodeMenu.params
             }
             /**
              * 这里可以进行业务判断、是否能够添加该节点
@@ -525,8 +526,20 @@ export default {
             this.jsPlumb.repaint()
         },
         startRunTask(){
+            // this.data.userId = this.userId
+            this.data.nodeList.filter((node) => {
+                if(node.type === 'start'){
+                    this.setStatusForTwoNode(node.id, 'running');
+                }else{
+                    this.setStatusForTwoNode(node.id, 'ready');
+                }
+            })
             sendRunTaskSig(this.data).then(res => {
-                console.log(res);
+                if(res.code === 200){
+                    this.$message.success(res.msg);
+                }else{
+                    // this.$message.error(res.msg);
+                }
             });
         },
         clearElement(){
@@ -552,6 +565,7 @@ export default {
             })
         },
         uploadData(){
+            console.log('uploadData', this.data)
             uploadTaskDetail(this.data).then(res =>{
                 if(res.code === 200){
                     this.$message.success(res.msg);
@@ -609,6 +623,15 @@ export default {
             this.$nextTick(function() {
                 this.$refs.flowHelp.init()
             })
+        },
+        setStatusForTwoNode(nowNode, nowStatus){
+            if(nowNode){
+                this.data.nodeList.filter((node) => {
+                    if(node.id === nowNode){
+                        node.state = nowStatus
+                    }
+                })
+            }
         }
     }
 }

@@ -53,7 +53,8 @@ export default {
                             name: '开始',
                             ico: 'el-icon-video-play',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         }
                     ]
                 },
@@ -70,7 +71,14 @@ export default {
                             name: '读取Excel',
                             ico: 'el-icon-document',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {
+                                file: null,
+                                fileName: null,
+                                outputParamName: '',
+                                sheetName: null,
+                                colNamePos: 0
+                            }
                         },
                         {
                             id: '22',
@@ -78,7 +86,8 @@ export default {
                             name: '读取csv',
                             ico: 'el-icon-document',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '23',
@@ -86,7 +95,12 @@ export default {
                             name: '读取txt',
                             ico: 'el-icon-document',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {
+                                file: null,
+                                fileName: null,
+                                outputParamName: ''
+                            }
                         }
                     ]
                 },
@@ -103,7 +117,8 @@ export default {
                             name: '产生随机数',
                             ico: 'el-icon-magic-stick',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '32',
@@ -111,7 +126,8 @@ export default {
                             name: '追加文本',
                             ico: 'el-icon-document-add',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '33',
@@ -119,7 +135,8 @@ export default {
                             name: '获得文本长度',
                             ico: 'el-icon-c-scale-to-original',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '34',
@@ -127,7 +144,8 @@ export default {
                             name: '转换对象为文本',
                             ico: 'el-icon-files',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '35',
@@ -135,7 +153,8 @@ export default {
                             name: '文本替换',
                             ico: 'el-icon-document',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '36',
@@ -143,7 +162,8 @@ export default {
                             name: '编码解码',
                             ico: 'el-icon-lock',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '37',
@@ -151,7 +171,8 @@ export default {
                             name: '值计算',
                             ico: 'el-icon-cpu',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '38',
@@ -159,7 +180,8 @@ export default {
                             name: '获得数组数据的一行',
                             ico: 'el-icon-document-remove',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         }
                     ]
                 },
@@ -176,7 +198,8 @@ export default {
                             name: 'IF单条件',
                             ico: 'el-icon-set-up',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '42',
@@ -184,7 +207,8 @@ export default {
                             name: 'IF多条件',
                             ico: 'el-icon-set-up',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         }
                     ]
                 },
@@ -201,7 +225,8 @@ export default {
                             name: 'For循环',
                             ico: 'el-icon-refresh-right',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '52',
@@ -209,7 +234,8 @@ export default {
                             name: 'While循环',
                             ico: 'el-icon-refresh-right',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '53',
@@ -217,7 +243,8 @@ export default {
                             name: 'ForEach循环',
                             ico: 'el-icon-refresh-right',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '54',
@@ -225,7 +252,8 @@ export default {
                             name: '循环结束',
                             ico: 'el-icon-video-pause',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         }
                     ]
                 },
@@ -242,7 +270,8 @@ export default {
                             name: '打开网页',
                             ico: 'el-icon-s-platform',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '62',
@@ -250,7 +279,8 @@ export default {
                             name: '单击网页元素',
                             ico: 'el-icon-mouse',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '63',
@@ -258,7 +288,8 @@ export default {
                             name: '双击网页元素',
                             ico: 'el-icon-mouse',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '64',
@@ -266,7 +297,8 @@ export default {
                             name: '鼠标悬停',
                             ico: 'el-icon-mouse',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '65',
@@ -274,7 +306,8 @@ export default {
                             name: '填写输入框',
                             ico: 'el-icon-mouse',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '66',
@@ -282,7 +315,8 @@ export default {
                             name: '拖拽元素',
                             ico: 'el-icon-mouse',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '67',
@@ -290,7 +324,8 @@ export default {
                             name: '获得元素对象',
                             ico: 'el-icon-s-platform',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '68',
@@ -298,7 +333,8 @@ export default {
                             name: '跳转至新网址',
                             ico: 'el-icon-s-platform',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '69',
@@ -306,7 +342,8 @@ export default {
                             name: '获得网页截图',
                             ico: 'el-icon-s-platform',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '610',
@@ -314,7 +351,8 @@ export default {
                             name: '获得Cookie',
                             ico: 'el-icon-s-platform',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         }
                     ]
                 },
@@ -331,7 +369,8 @@ export default {
                             name: '结束',
                             ico: 'el-icon-circle-close',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '72',
@@ -339,7 +378,8 @@ export default {
                             name: '休眠等待',
                             ico: 'el-icon-timer',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '73',
@@ -347,7 +387,8 @@ export default {
                             name: '邮件发送',
                             ico: 'el-icon-s-promotion',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '74',
@@ -355,7 +396,8 @@ export default {
                             name: '获得当前时间',
                             ico: 'el-icon-time',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '75',
@@ -363,7 +405,8 @@ export default {
                             name: '增加/减少时间',
                             ico: 'el-icon-time',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '76',
@@ -371,7 +414,8 @@ export default {
                             name: '日期转为时间戳',
                             ico: 'el-icon-time',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         },
                         {
                             id: '77',
@@ -379,7 +423,8 @@ export default {
                             name: '时间戳转为日期',
                             ico: 'el-icon-time',
                             // 自定义覆盖样式
-                            style: {}
+                            style: {},
+                            params: {}
                         }
                     ]
                 }

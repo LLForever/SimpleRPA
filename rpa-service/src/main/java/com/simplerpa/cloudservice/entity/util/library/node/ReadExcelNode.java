@@ -13,6 +13,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 
@@ -23,13 +24,14 @@ import java.util.ArrayList;
  */
 
 public class ReadExcelNode implements IRpaTaskNode {
-    private MultipartFile file; // 文件
+    private byte[] file; // 文件
+    private String fileName;
     private String sheetName, outputParamName; // 指定的表名(默认为第一张表)、数据参数名称(用户自定义的output名称)
     private Integer colNamePos; // 表头所在行
     private RpaTaskOutput output; // 解析后的数据
     private ArrayList<String> colNameList; // 表头信息
 
-    public ReadExcelNode(String nodeId){
+    public ReadExcelNode(){
         output = null;
         colNameList = new ArrayList<>();
         sheetName = null;
@@ -41,8 +43,8 @@ public class ReadExcelNode implements IRpaTaskNode {
         if(file == null || outputParamName == null){
             throw new Exception(this.getClass().getName() + " : 缺少必要参数，执行失败！");
         }
-        String originalFilename = getFile().getOriginalFilename();
-        InputStream in = file.getInputStream();
+        String originalFilename = getFileName();
+        InputStream in = new ByteArrayInputStream(file);
         Workbook workbook = null;
         if(StringUtils.isNotEmpty(originalFilename)){
             if(judgeExcelEdition(originalFilename)){
@@ -118,14 +120,6 @@ public class ReadExcelNode implements IRpaTaskNode {
         return !fileName.matches("^.+\\.(?i)(xls)$");
     }
 
-    public MultipartFile getFile() {
-        return file;
-    }
-
-    public void setFile(MultipartFile file) {
-        this.file = file;
-    }
-
     public String getSheetName() {
         return sheetName;
     }
@@ -160,5 +154,21 @@ public class ReadExcelNode implements IRpaTaskNode {
 
     public void setColNameList(ArrayList<String> colNameList) {
         this.colNameList = colNameList;
+    }
+
+    public byte[] getFile() {
+        return file;
+    }
+
+    public void setFile(byte[] file) {
+        this.file = file;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 }

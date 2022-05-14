@@ -34,7 +34,7 @@
                             <el-button size="small" type="primary">点击上传</el-button>
                         </el-upload>
                     </el-form-item>
-                    <el-form-item label="保存处理结果至：" v-if="node.id && node.params.outputParamName">
+                    <el-form-item label="输出参数" v-if="node.id && node.params.outputParamName !== undefined">
                         <el-input v-model="node.params.outputParamName"></el-input>
                     </el-form-item>
                     <el-divider></el-divider>
@@ -69,7 +69,7 @@
 
 <script>
     import { cloneDeep } from 'lodash'
-    import { initNodeParams } from '../../views/rpa/utils/NodeParamsHandler'
+    import { blobToBase64, initNodeParams } from '../../views/rpa/utils/NodeParamsHandler'
 
     export default {
         data() {
@@ -134,6 +134,7 @@
                         node.ico = this.node.ico
                         node.state = this.node.state
                         node.params = this.node.params
+                        console.log(this.data)
                         this.$emit('repaintEverything')
                     }
                 })
@@ -146,7 +147,14 @@
                 this.$message.warning('当前限制选择 1 个文件。');
             },
             uploadFile(file){
-                console.log('uploadFile', file);
+                const File = new Blob([file.file]);
+                blobToBase64(File).then(res => {
+                    this.node.params.file = res;
+                    this.node.params.fileName = file.file.name
+                    this.node.params.outputParamName = Date.now()
+                    console.log(res);
+                    console.log('uploadFile', this.node, file);
+                })
             },
             getStatus(st){
                 const list = this.stateList;

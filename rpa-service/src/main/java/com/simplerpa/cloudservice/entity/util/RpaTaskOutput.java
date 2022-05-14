@@ -21,15 +21,28 @@ public class RpaTaskOutput {
         output = new HashMap<>();
     }
 
+    /**
+     * 合并两个output，若相同则覆盖
+     * */
     public void mergeOutput(RpaTaskOutput rpaTaskOutput){
+        if(rpaTaskOutput == null){
+            return;
+        }
+        for (Map.Entry<String, ArrayList<JSONObject>> entry: rpaTaskOutput.getOutput().entrySet()) {
+            output.put(entry.getKey(), entry.getValue());
+        }
+    }
+
+    /**
+     * 合并两个output且只做追加，不做新增和覆盖
+    * */
+    public void mergeOutputOnlyAdd(RpaTaskOutput rpaTaskOutput){
         if(rpaTaskOutput == null){
             return;
         }
         for (Map.Entry<String, ArrayList<JSONObject>> entry: rpaTaskOutput.getOutput().entrySet()) {
             if(output.containsKey(entry.getKey())){
                 output.get(entry.getKey()).addAll(entry.getValue()); // 追加记录
-            }else{
-                output.put(entry.getKey(), entry.getValue());
             }
         }
     }

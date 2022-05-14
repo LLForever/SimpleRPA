@@ -6,6 +6,8 @@ import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 import com.simplerpa.cloudservice.entity.util.library.node.ReadTxtNode;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Base64;
+
 /**
  * @Description: TODO
  * @author: ChenRui98
@@ -21,12 +23,18 @@ public class ReadTxtNodeFactory implements RpaNodeFactory{
 
     @Override
     public IRpaTaskNode getInstance() throws Exception {
-        ReadTxtNode readTxtNode = new ReadTxtNode(taskNodeDetail.getId());
+        ReadTxtNode readTxtNode = new ReadTxtNode();
         JSONObject params = taskNodeDetail.getParams();
         if(!params.containsKey("file")){
             throw new Exception(this.getClass().getName() + " : 没有文件信息！解析失败！");
         }else{
-            readTxtNode.setFile((MultipartFile) params.get("file"));
+            String[] files = params.getString("file").split(",");
+            readTxtNode.setFile(Base64.getDecoder().decode(files[1]));
+        }
+        if(!params.containsKey("fileName")){
+            throw new Exception(this.getClass().getName() + " : 没有文件名！解析失败！");
+        }else{
+            readTxtNode.setFileName(params.getString("fileName"));
         }
         if(!params.containsKey("outputParamName")){
             throw new Exception(this.getClass().getName() + " : 没有数据输出参数名称！解析失败！");

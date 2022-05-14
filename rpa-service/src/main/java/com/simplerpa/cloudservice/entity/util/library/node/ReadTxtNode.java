@@ -7,6 +7,7 @@ import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 
 /**
@@ -17,11 +18,12 @@ import java.io.InputStreamReader;
 
 public class ReadTxtNode implements IRpaTaskNode {
     private RpaTaskOutput output; // 解析后的数据
-    private MultipartFile file; // 文件
+    private byte[] file; // 文件
+    private String fileName;
     private String outputParamName; // 数据参数名称(用户自定义的output名称)
     private static final String TXT_JSON_FLAG = "_@TXT_JSON_FLAG@";
 
-    public ReadTxtNode(String id){
+    public ReadTxtNode(){
         output = null;
     }
 
@@ -30,10 +32,10 @@ public class ReadTxtNode implements IRpaTaskNode {
         if(file == null || outputParamName == null){
             throw new Exception(this.getClass().getName() + " : 缺少必要参数，执行失败！");
         }
-        String originalFilename = getFile().getOriginalFilename();
+        String originalFilename = getFileName();
         if(StringUtils.isNotEmpty(originalFilename)){
             if(originalFilename.endsWith(".txt")){
-                InputStreamReader inputStreamReader = new InputStreamReader(file.getInputStream());
+                InputStreamReader inputStreamReader = new InputStreamReader(new ByteArrayInputStream(file));
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 String s = bufferedReader.readLine();
                 JSONObject jsonObject = new JSONObject();
@@ -64,14 +66,6 @@ public class ReadTxtNode implements IRpaTaskNode {
         return output;
     }
 
-    public MultipartFile getFile() {
-        return file;
-    }
-
-    public void setFile(MultipartFile file) {
-        this.file = file;
-    }
-
     public String getOutputParamName() {
         return outputParamName;
     }
@@ -82,5 +76,21 @@ public class ReadTxtNode implements IRpaTaskNode {
 
     public static String getTxtJsonFlag() {
         return TXT_JSON_FLAG;
+    }
+
+    public byte[] getFile() {
+        return file;
+    }
+
+    public void setFile(byte[] file) {
+        this.file = file;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 }

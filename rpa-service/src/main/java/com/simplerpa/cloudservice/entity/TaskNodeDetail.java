@@ -1,6 +1,9 @@
 package com.simplerpa.cloudservice.entity;
 
 import com.alibaba.fastjson.JSONObject;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.sql.Blob;
 
 /**
  * @Description: TODO

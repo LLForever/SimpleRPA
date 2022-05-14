@@ -31,6 +31,7 @@ public class RpaTaskStructure {
     public RpaTaskStructure(){
         nodeList = new HashMap<>();
         adjacencyList = new HashMap<>();
+        inDegreeList = new HashMap<>();
         startNodeId = null;
         executeList = null;
     }
@@ -148,5 +149,13 @@ public class RpaTaskStructure {
 
     public void setExecuteList(ArrayList<String> executeList) {
         this.executeList = executeList;
+    }
+
+    public HashMap<String, Integer> getInDegreeList() {
+        return inDegreeList;
+    }
+
+    public void setInDegreeList(HashMap<String, Integer> inDegreeList) {
+        this.inDegreeList = inDegreeList;
     }
 }
