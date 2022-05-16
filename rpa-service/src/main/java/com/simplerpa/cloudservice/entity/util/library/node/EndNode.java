@@ -8,4 +8,9 @@ public class EndNode implements IRpaTaskNode {
     public RpaTaskOutput run(RpaTaskOutput input) throws Exception {
         return null;
     }
+
+    @Override
+    public RpaTaskOutput getRpaTaskOutput() {
+        return null;
+    }
 }
