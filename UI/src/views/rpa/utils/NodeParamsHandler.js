@@ -2,15 +2,7 @@ export function initNodeParams(node){
     if(!node.params){
         node.params = {}
     }
-    if(node.type === 'read_txt'){
-        if(node.params.file){
-            node.fileList = [{
-                name: node.params.fileName
-            }]
-        }else{
-            node.fileList = []
-        }
-    }else if(node.type === 'read_excel'){
+    if(node.type === 'read_txt' || node.type === 'read_excel' || node.type === 'read_csv'){
         if(node.params.file){
             node.fileList = [{
                 name: node.params.fileName

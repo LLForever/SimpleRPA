@@ -12,7 +12,7 @@
                     <el-form-item label="名称">
                         <el-input v-model="node.name"></el-input>
                     </el-form-item>
-                    <el-form-item label="上传文件" v-if="node.id && node.type === 'read_txt'">
+                    <el-form-item label="上传文件" v-if="node.id && (node.type === 'read_txt')">
                         <el-upload
                             action="#"
                             :limit="1"
@@ -20,6 +20,17 @@
                             :http-request="uploadFile"
                             :file-list="node.fileList"
                             accept=".txt">
+                            <el-button size="small" type="primary">点击上传</el-button>
+                        </el-upload>
+                    </el-form-item>
+                    <el-form-item label="上传文件" v-if="node.id && (node.type === 'read_csv')">
+                        <el-upload
+                            action="#"
+                            :limit="1"
+                            :on-exceed="handleExceed"
+                            :http-request="uploadFile"
+                            :file-list="node.fileList"
+                            accept=".csv">
                             <el-button size="small" type="primary">点击上传</el-button>
                         </el-upload>
                     </el-form-item>
@@ -151,7 +162,7 @@
                 blobToBase64(File).then(res => {
                     this.node.params.file = res;
                     this.node.params.fileName = file.file.name
-                    this.node.params.outputParamName = Date.now()
+                    this.node.params.outputParamName = (Date.now()).toString()
                     console.log(res);
                     console.log('uploadFile', this.node, file);
                 })

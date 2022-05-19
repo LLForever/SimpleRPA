@@ -47,10 +47,12 @@ public class ReadExcelNode implements IRpaTaskNode {
         InputStream in = new ByteArrayInputStream(file);
         Workbook workbook = null;
         if(StringUtils.isNotEmpty(originalFilename)){
-            if(judgeExcelEdition(originalFilename)){
+            if(originalFilename.endsWith(".xlsx")){
                 workbook = new XSSFWorkbook(in);
-            }else{
+            }else if(originalFilename.endsWith(".xls")){
                 workbook = new HSSFWorkbook(in);
+            }else{
+                throw new Exception(this.getClass().getName() + " : 不是excel文件，执行失败！");
             }
         }else{
             throw new Exception(this.getClass().getName() + " : 缺少文件名，执行失败！");

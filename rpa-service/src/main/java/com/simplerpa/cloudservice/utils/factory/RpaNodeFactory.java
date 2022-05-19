@@ -10,9 +10,10 @@ public interface RpaNodeFactory {
     public static RpaNodeFactory getFactory(TaskNodeDetail taskNodeDetail){
         switch(taskNodeDetail.getType()){
             case "start" : return new StartNodeFactory();
-            case "end" : return null;
+            case "end" : return new EndNodeFactory();
             case "read_excel" : return new ReadExcelNodeFactory(taskNodeDetail);
             case "read_txt" : return new ReadTxtNodeFactory(taskNodeDetail);
+            case "read_csv" : return new ReadCSVNodeFactory(taskNodeDetail);
         }
         return null;
     }

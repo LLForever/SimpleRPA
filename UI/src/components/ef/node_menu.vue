@@ -87,7 +87,11 @@ export default {
                             ico: 'el-icon-document',
                             // 自定义覆盖样式
                             style: {},
-                            params: {}
+                            params: {
+                                file: null,
+                                fileName: null,
+                                outputParamName: ''
+                            }
                         },
                         {
                             id: '23',

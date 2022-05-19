@@ -51,7 +51,7 @@ public class WebsocketTask implements IWebsocketTaskSubject {
             WebsocketTaskClient client = new WebsocketTaskClient(session, userId);
             registerObserver(taskId, client);
             try{
-                client.sendMessage(new PanelTaskMessage(DictionaryUtil.TASK_MESSAGE_OK, "Connection is created successfully!"));
+                client.sendMessage(new PanelTaskMessage(DictionaryUtil.CLIENT_CONNECTED, "Connection is created successfully!"));
             }catch (Exception e){
                 e.printStackTrace();
             }

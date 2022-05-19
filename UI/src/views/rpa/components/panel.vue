@@ -528,13 +528,15 @@ export default {
         startRunTask(){
             // this.data.userId = this.userId
             this.data.nodeList.filter((node) => {
+                this.setStatusForTwoNode(node.id, 'ready');
+            })
+            const tempData = lodash.cloneDeep(this.data)
+            this.data.nodeList.filter((node) => {
                 if(node.type === 'start'){
                     this.setStatusForTwoNode(node.id, 'running');
-                }else{
-                    this.setStatusForTwoNode(node.id, 'ready');
                 }
             })
-            sendRunTaskSig(this.data).then(res => {
+            sendRunTaskSig(tempData).then(res => {
                 if(res.code === 200){
                     this.$message.success(res.msg);
                 }else{
