@@ -47,16 +47,6 @@ public class RpaTaskOutput {
         }
     }
 
-    public String getTxtValue(String key){
-        if(output.containsKey(key)){
-            JSONObject jsonObject = output.get(key).get(0);
-            if(jsonObject.containsKey(ReadTxtNode.getTxtJsonFlag())){
-                return jsonObject.getString(ReadTxtNode.getTxtJsonFlag());
-            }
-        }
-        return null;
-    }
-
     /**
      * 添加一个json数组，若已经存在某个key，则返回false
      * */

@@ -4,15 +4,15 @@ import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import com.simplerpa.cloudservice.entity.util.RpaTaskOutput;
 import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 
-/**
- * @Description: TODO
- * @author: ChenRui98
- * @date: 2022年04月29日 22:27
- */
+public class TimestampToDateNode implements IRpaTaskNode {
+    private final TaskNodeDetail nodeDetail;
 
-public class StartNode implements IRpaTaskNode {
+    public TimestampToDateNode(TaskNodeDetail nodeDetail){
+        this.nodeDetail = nodeDetail;
+    }
+
     @Override
-    public RpaTaskOutput run(RpaTaskOutput input) {
+    public RpaTaskOutput run(RpaTaskOutput input) throws Exception {
         return null;
     }
 

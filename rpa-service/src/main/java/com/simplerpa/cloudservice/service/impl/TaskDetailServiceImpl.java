@@ -2,6 +2,7 @@ package com.simplerpa.cloudservice.service.impl;
 
 import java.util.List;
 
+import com.simplerpa.cloudservice.entity.util.DictionaryUtil;
 import com.simplerpa.cloudservice.mapper.TaskDetailMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -106,4 +107,15 @@ public class TaskDetailServiceImpl implements ITaskDetailService
     public TaskDetail findTaskDetailByTaskId(Long id) {
         return taskDetailMapper.findTaskDetailByTaskId(id);
     }
+
+    @Override
+    public Boolean changeRpaTaskStatus(String status, Long taskId, Long userId) {
+        if(DictionaryUtil.taskStatusAvailable(status)){
+            int i = taskDetailMapper.changeRpaTaskStatus(status, taskId, userId);
+            return i > 0;
+        }
+        return false;
+    }
+
+
 }

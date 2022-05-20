@@ -13,6 +13,26 @@ public class DictionaryUtil {
     public static final String TASK_STATUS_WARNING = "warning";
     public static final String TASK_STATUS_STOP = "stop";
     public static final String TASK_STATUS_ERROR = "error";
+    public static final String TASK_STATUS_RUNNING = "running";
+
+    public static Boolean taskStatusAvailable(String status){
+        if(TASK_STATUS_CREATED.equals(status)){
+            return true;
+        }
+        if(TASK_STATUS_COMPLETED.equals(status)){
+            return true;
+        }
+        if(TASK_STATUS_WARNING.equals(status)){
+            return true;
+        }
+        if(TASK_STATUS_STOP.equals(status)){
+            return true;
+        }
+        if(TASK_STATUS_RUNNING.equals(status)){
+            return true;
+        }
+        return TASK_STATUS_ERROR.equals(status);
+    }
 
     // 连接建立成功时的信息
     public static final Integer CLIENT_CONNECTED = 102;
@@ -27,4 +47,7 @@ public class DictionaryUtil {
     public static final Integer NODE_MESSAGE_DELETE = 0;
     public static final Integer NODE_MESSAGE_CHANGE = 1;
     public static final Integer NODE_MESSAGE_ADD = 2;
+
+    // 独立参数信息
+    public static final String SINGLE_PARAM_FLAG = "_@SINGLE_PARAM_FLAG@";
 }

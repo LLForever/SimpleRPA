@@ -2,6 +2,8 @@ package com.simplerpa.cloudservice.entity.util.library.node;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.core.utils.StringUtils;
+import com.simplerpa.cloudservice.entity.TaskNodeDetail;
+import com.simplerpa.cloudservice.entity.util.DictionaryUtil;
 import com.simplerpa.cloudservice.entity.util.RpaTaskOutput;
 import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,14 +19,15 @@ import java.io.InputStreamReader;
  */
 
 public class ReadTxtNode implements IRpaTaskNode {
+    private final TaskNodeDetail nodeDetail;
     private RpaTaskOutput output; // 解析后的数据
     private byte[] file; // 文件
     private String fileName;
     private String outputParamName; // 数据参数名称(用户自定义的output名称)
-    private static final String TXT_JSON_FLAG = "_@TXT_JSON_FLAG@";
 
-    public ReadTxtNode(){
+    public ReadTxtNode(TaskNodeDetail nodeDetail){
         output = null;
+        this.nodeDetail = nodeDetail;
     }
 
     @Override
@@ -39,7 +42,7 @@ public class ReadTxtNode implements IRpaTaskNode {
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 String s = bufferedReader.readLine();
                 JSONObject jsonObject = new JSONObject();
-                jsonObject.put(getTxtJsonFlag(), s);
+                jsonObject.put(DictionaryUtil.SINGLE_PARAM_FLAG, s);
                 addOutput(jsonObject);
             }else{
                 throw new Exception(this.getClass().getName() + " : 不是txt文件，执行失败！");
@@ -51,8 +54,8 @@ public class ReadTxtNode implements IRpaTaskNode {
     }
 
     @Override
-    public RpaTaskOutput getRpaTaskOutput() {
-        return getOutput();
+    public TaskNodeDetail getRpaTaskDetail() {
+        return nodeDetail;
     }
 
     private void addOutput(JSONObject jsonObject){
@@ -72,10 +75,6 @@ public class ReadTxtNode implements IRpaTaskNode {
 
     public void setOutputParamName(String outputParamName) {
         this.outputParamName = outputParamName;
-    }
-
-    public static String getTxtJsonFlag() {
-        return TXT_JSON_FLAG;
     }
 
     public byte[] getFile() {

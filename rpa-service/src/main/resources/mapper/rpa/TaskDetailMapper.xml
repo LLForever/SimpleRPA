@@ -113,4 +113,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM rpa_panel_task_detail
         WHERE task_id = #{id}
     </select>
+
+    <update id="changeRpaTaskStatus">
+        update rpa_panel_task_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null and status != ''">task_status = #{status},</if>
+        </trim>
+        where task_id = #{taskId} AND user_id = #{userId}
+    </update>
 </mapper>

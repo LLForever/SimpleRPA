@@ -243,6 +243,8 @@ export default {
         return 'warning-row';
       } else if (row.taskStatus === 'completed') {
         return 'success-row';
+      }else if (row.taskStatus === 'error'){
+          return 'error-row';
       }
       return '';
     },
@@ -261,6 +263,10 @@ export default {
 <style>
 .el-table .warning-row {
   background: oldlace;
+}
+
+.el-table .error-row {
+    background: #ffe0e0;
 }
 
 .el-table .success-row {

@@ -63,5 +63,14 @@ public interface ITaskDetailService
      */
     public int deleteTaskDetailById(Long id);
 
+    /**
+     * 通过taskId找详细信息
+     * */
     public TaskDetail findTaskDetailByTaskId(Long id);
+
+    /**
+     * 修改RPA任务状态
+     * @param status RPA状态字段
+     * */
+    public Boolean changeRpaTaskStatus(String status, Long taskId, Long userId);
 }

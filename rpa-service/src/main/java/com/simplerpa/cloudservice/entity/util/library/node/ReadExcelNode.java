@@ -24,6 +24,7 @@ import java.util.ArrayList;
  */
 
 public class ReadExcelNode implements IRpaTaskNode {
+    private final TaskNodeDetail nodeDetail;
     private byte[] file; // 文件
     private String fileName;
     private String sheetName, outputParamName; // 指定的表名(默认为第一张表)、数据参数名称(用户自定义的output名称)
@@ -31,11 +32,12 @@ public class ReadExcelNode implements IRpaTaskNode {
     private RpaTaskOutput output; // 解析后的数据
     private ArrayList<String> colNameList; // 表头信息
 
-    public ReadExcelNode(){
+    public ReadExcelNode(TaskNodeDetail nodeDetail){
         output = null;
         colNameList = new ArrayList<>();
         sheetName = null;
         colNamePos = null;
+        this.nodeDetail = nodeDetail;
     }
 
     @Override
@@ -107,8 +109,8 @@ public class ReadExcelNode implements IRpaTaskNode {
     }
 
     @Override
-    public RpaTaskOutput getRpaTaskOutput() {
-        return getOutput();
+    public TaskNodeDetail getRpaTaskDetail() {
+        return nodeDetail;
     }
 
     private void addOutput(JSONObject jsonObject){

@@ -80,7 +80,7 @@ export default {
          * ws收到信息
          * */
         wsMessageHandler(e) {
-            console.log('wsMessageHandler', e, JSON.parse(e.data))
+            // console.log('wsMessageHandler', e, JSON.parse(e.data))
             const res = JSON.parse(e.data);
             if(res.actionType === 200){
                 this.$refs.myPanel.setStatusForTwoNode(res.jsonObject.now, 'success');

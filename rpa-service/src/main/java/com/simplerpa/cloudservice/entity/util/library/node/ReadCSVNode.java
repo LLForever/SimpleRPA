@@ -3,6 +3,7 @@ package com.simplerpa.cloudservice.entity.util.library.node;
 import com.alibaba.fastjson.JSONObject;
 import com.csvreader.CsvReader;
 import com.ruoyi.common.core.utils.StringUtils;
+import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import com.simplerpa.cloudservice.entity.util.RpaTaskOutput;
 import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 
@@ -13,16 +14,18 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
 public class ReadCSVNode implements IRpaTaskNode {
+    private final TaskNodeDetail nodeDetail;
     private byte[] file; // 文件
     private String fileName;
     private RpaTaskOutput output; // 解析后的数据
     private String outputParamName; // 数据参数名称(用户自定义的output名称)
     private char DELIMITER = ' ';
 
-    public ReadCSVNode(){
+    public ReadCSVNode(TaskNodeDetail taskNodeDetail){
         file = null;
         fileName = null;
         outputParamName = null;
+        this.nodeDetail = taskNodeDetail;
     }
 
     private void setDELIMITER() throws Exception{
@@ -70,7 +73,7 @@ public class ReadCSVNode implements IRpaTaskNode {
                         }
                         addOutput(jsonObject);
                     }
-                    return getRpaTaskOutput();
+                    return output;
                 }catch (Exception e){
                     throw new Exception(this.getClass().getName() + " : csv文件读取失败！");
                 }finally {
@@ -87,8 +90,8 @@ public class ReadCSVNode implements IRpaTaskNode {
     }
 
     @Override
-    public RpaTaskOutput getRpaTaskOutput() {
-        return output;
+    public TaskNodeDetail getRpaTaskDetail() {
+        return nodeDetail;
     }
 
     private void addOutput(JSONObject jsonObject){

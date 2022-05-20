@@ -16,7 +16,7 @@ public class ReadCSVNodeFactory implements RpaNodeFactory{
 
     @Override
     public IRpaTaskNode getInstance() throws Exception {
-        ReadCSVNode readCSVNode = new ReadCSVNode();
+        ReadCSVNode readCSVNode = new ReadCSVNode(taskNodeDetail);
         JSONObject params = taskNodeDetail.getParams();
         Object file = params.get("file");
         Object fileName = params.get("fileName");

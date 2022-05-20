@@ -2,6 +2,7 @@ package com.simplerpa.cloudservice.mapper;
 
 import java.util.List;
 import com.simplerpa.cloudservice.entity.TaskDetail;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * rpa面板任务详情Mapper接口
@@ -64,4 +65,10 @@ public interface TaskDetailMapper
     public int deleteTaskDetailByIds(Long[] ids);
 
     public TaskDetail findTaskDetailByTaskId(Long id);
+
+    /**
+     * 修改RPA任务状态
+     * @param status RPA状态字段
+     * */
+    public int changeRpaTaskStatus(@Param("status") String status, @Param("taskId") Long taskId, @Param("userId") Long userId);
 }

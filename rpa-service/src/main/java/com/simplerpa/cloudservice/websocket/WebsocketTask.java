@@ -180,6 +180,11 @@ public class WebsocketTask implements IWebsocketTaskSubject {
             }
         }
     }
+
+    public static ITaskDetailService getTaskDetailService() {
+        return taskDetailService;
+    }
+
     /*
     public static IWebsocketTaskObserver findTaskObserver(Long taskId, Long userId){
         if(taskId == null || userId == null){
