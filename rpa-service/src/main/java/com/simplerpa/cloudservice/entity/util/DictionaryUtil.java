@@ -50,4 +50,5 @@ public class DictionaryUtil {
 
     // 独立参数信息
     public static final String SINGLE_PARAM_FLAG = "_@SINGLE_PARAM_FLAG@";
+    public static final String HTML_FLAG = "_@HTML_FLAG@";
 }

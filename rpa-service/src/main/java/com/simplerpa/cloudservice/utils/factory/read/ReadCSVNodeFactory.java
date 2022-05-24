@@ -1,13 +1,14 @@
-package com.simplerpa.cloudservice.utils.factory;
+package com.simplerpa.cloudservice.utils.factory.read;
 
 import com.alibaba.fastjson.JSONObject;
 import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
-import com.simplerpa.cloudservice.entity.util.library.node.ReadCSVNode;
+import com.simplerpa.cloudservice.entity.util.library.node.read.ReadCSVNode;
+import com.simplerpa.cloudservice.utils.factory.RpaNodeFactory;
 
 import java.util.Base64;
 
-public class ReadCSVNodeFactory implements RpaNodeFactory{
+public class ReadCSVNodeFactory implements RpaNodeFactory {
     private final TaskNodeDetail taskNodeDetail;
 
     public ReadCSVNodeFactory(TaskNodeDetail taskNodeDetail){

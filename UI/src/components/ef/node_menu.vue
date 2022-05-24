@@ -275,7 +275,10 @@ export default {
                             ico: 'el-icon-s-platform',
                             // 自定义覆盖样式
                             style: {},
-                            params: {}
+                            params: {
+                                URL: '',
+                                outputParamName: ''
+                            }
                         },
                         {
                             id: '62',

@@ -1,16 +1,10 @@
-package com.simplerpa.cloudservice.entity.util.library.node;
+package com.simplerpa.cloudservice.entity.util.library.node.other;
 
 import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import com.simplerpa.cloudservice.entity.util.RpaTaskOutput;
 import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 
-public class EmailSendNode implements IRpaTaskNode {
-    private final TaskNodeDetail nodeDetail;
-
-    public EmailSendNode(TaskNodeDetail nodeDetail){
-        this.nodeDetail = nodeDetail;
-    }
-
+public class EndNode implements IRpaTaskNode {
     @Override
     public RpaTaskOutput run(RpaTaskOutput input) throws Exception {
         return null;
@@ -20,4 +14,5 @@ public class EmailSendNode implements IRpaTaskNode {
     public TaskNodeDetail getRpaTaskDetail() {
         return null;
     }
+
 }

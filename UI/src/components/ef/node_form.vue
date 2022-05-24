@@ -12,6 +12,7 @@
                     <el-form-item label="名称">
                         <el-input v-model="node.name"></el-input>
                     </el-form-item>
+
                     <el-form-item label="上传文件" v-if="node.id && (node.type === 'read_txt')">
                         <el-upload
                             action="#"
@@ -45,6 +46,11 @@
                             <el-button size="small" type="primary">点击上传</el-button>
                         </el-upload>
                     </el-form-item>
+
+                    <el-form-item label="网络链接" v-if="node.id && node.type === 'open_page'">
+                        <el-input v-model="node.params.URL"></el-input>
+                    </el-form-item>
+
                     <el-form-item label="输出参数" v-if="node.id && node.params.outputParamName !== undefined">
                         <el-input v-model="node.params.outputParamName"></el-input>
                     </el-form-item>

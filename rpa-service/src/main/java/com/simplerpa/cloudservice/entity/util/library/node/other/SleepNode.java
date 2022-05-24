@@ -1,4 +1,4 @@
-package com.simplerpa.cloudservice.entity.util.library.node;
+package com.simplerpa.cloudservice.entity.util.library.node.other;
 
 import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import com.simplerpa.cloudservice.entity.util.RpaTaskOutput;

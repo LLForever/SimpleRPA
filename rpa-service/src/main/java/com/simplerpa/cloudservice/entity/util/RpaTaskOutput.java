@@ -1,7 +1,6 @@
 package com.simplerpa.cloudservice.entity.util;
 
 import com.alibaba.fastjson.JSONObject;
-import com.simplerpa.cloudservice.entity.util.library.node.ReadTxtNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,9 +27,7 @@ public class RpaTaskOutput {
         if(rpaTaskOutput == null){
             return;
         }
-        for (Map.Entry<String, ArrayList<JSONObject>> entry: rpaTaskOutput.getOutput().entrySet()) {
-            output.put(entry.getKey(), entry.getValue());
-        }
+        output.putAll(rpaTaskOutput.getOutput());
     }
 
     /**
@@ -47,10 +44,14 @@ public class RpaTaskOutput {
         }
     }
 
+    public ArrayList<JSONObject> getResultByParamName(String str){
+        return output.get(str);
+    }
+
     /**
      * 添加一个json数组，若已经存在某个key，则返回false
      * */
-    public Boolean canAddList(String key, ArrayList<JSONObject> objects){
+    private Boolean canAddList(String key, ArrayList<JSONObject> objects){
         if(objects == null){
             return false;
         }

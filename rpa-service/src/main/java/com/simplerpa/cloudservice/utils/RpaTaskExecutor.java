@@ -7,12 +7,15 @@ import com.simplerpa.cloudservice.entity.util.DictionaryUtil;
 import com.simplerpa.cloudservice.entity.util.RpaTaskOutput;
 import com.simplerpa.cloudservice.entity.util.RpaTaskStructure;
 import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
-import com.simplerpa.cloudservice.service.ITaskDetailService;
 import com.simplerpa.cloudservice.websocket.WebsocketTask;
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class RpaTaskExecutor implements Runnable{
 
@@ -43,16 +46,34 @@ public class RpaTaskExecutor implements Runnable{
                     WebsocketTask.notifyObserver(taskDetailVO.getTaskId(), panelTaskMessage);
                     Thread.sleep(100);
                 }catch (Exception e){
+                    e.printStackTrace();
                     WebsocketTask.getTaskDetailService().changeRpaTaskStatus(DictionaryUtil.TASK_STATUS_ERROR, taskDetailVO.getTaskId(), taskDetailVO.getUserId());
                     PanelTaskMessage panelTaskMessage =
                             new PanelTaskMessage(DictionaryUtil.TASK_MESSAGE_RUN_ERROR, e.getMessage());
                     WebsocketTask.sendMessageToUser(taskDetailVO.getTaskId(), taskDetailVO.getUserId(), panelTaskMessage);
+                    clearSelenium(allOutput);
                     return;
                 }
             }
+            clearSelenium(allOutput);
             WebsocketTask.getTaskDetailService().changeRpaTaskStatus(DictionaryUtil.TASK_STATUS_COMPLETED, taskDetailVO.getTaskId(), taskDetailVO.getUserId());
         }
 
+    }
+
+    private void clearSelenium(RpaTaskOutput rpaTaskOutput){
+        if(rpaTaskOutput == null){
+            return;
+        }
+        for (Map.Entry<String, ArrayList<JSONObject>> entry: rpaTaskOutput.getOutput().entrySet()) {
+            ArrayList<JSONObject> value = entry.getValue();
+            for(JSONObject item : value){
+                if(item.containsKey(DictionaryUtil.HTML_FLAG)){
+                    WebDriver webDriver = (WebDriver) item.get(DictionaryUtil.HTML_FLAG);
+                    webDriver.quit();
+                }
+            }
+        }
     }
 
     private RpaTaskStructure explainTask(){

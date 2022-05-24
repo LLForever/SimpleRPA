@@ -1,37 +1,41 @@
-package com.simplerpa.cloudservice.entity.util.library.node;
+package com.simplerpa.cloudservice.entity.util.library.node.webpage;
 
 import com.alibaba.fastjson.JSONObject;
 import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import com.simplerpa.cloudservice.entity.util.DictionaryUtil;
 import com.simplerpa.cloudservice.entity.util.RpaTaskOutput;
 import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 
-import java.util.Date;
-
-public class SystemTimeNode implements IRpaTaskNode {
-    private final TaskNodeDetail nodeDetail;
+public class OpenWebPageNode implements IRpaTaskNode {
+    private final TaskNodeDetail taskNodeDetail;
+    private String URL;
     private String outputParamName;
     private RpaTaskOutput output;
 
-    public SystemTimeNode(TaskNodeDetail nodeDetail){
-        this.nodeDetail = nodeDetail;
+    public OpenWebPageNode(TaskNodeDetail nodeDetail){
+        this.taskNodeDetail = nodeDetail;
     }
 
     @Override
     public RpaTaskOutput run(RpaTaskOutput input) throws Exception {
-        if (outputParamName == null){
+        if(URL == null || outputParamName == null){
             throw new Exception(this.getClass().getName() + " : 缺少必要参数，执行失败！");
         }
-        Date date = new Date(System.currentTimeMillis());
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(DictionaryUtil.SINGLE_PARAM_FLAG, date);
+        WebDriverManager.chromedriver().setup();
+        WebDriver webDriver = new ChromeDriver();
+        webDriver.get(getURL());
+        jsonObject.put(DictionaryUtil.HTML_FLAG, webDriver);
         addOutput(jsonObject);
         return output;
     }
 
     @Override
     public TaskNodeDetail getRpaTaskDetail() {
-        return nodeDetail;
+        return taskNodeDetail;
     }
 
     private void addOutput(JSONObject jsonObject){
@@ -39,6 +43,14 @@ public class SystemTimeNode implements IRpaTaskNode {
             output = new RpaTaskOutput();
         }
         output.addObject(outputParamName, jsonObject);
+    }
+
+    public String getURL() {
+        return URL;
+    }
+
+    public void setURL(String URL) {
+        this.URL = URL;
     }
 
     public String getOutputParamName() {
