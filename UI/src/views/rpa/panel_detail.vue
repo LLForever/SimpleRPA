@@ -87,7 +87,7 @@ export default {
                 this.$refs.myPanel.setStatusForTwoNode(res.jsonObject.next, 'running');
             }else if(res.actionType === 102){
             }else{
-                this.$message.info(res.message)
+                this.$message.info(res.actionType + ' ' + res.message)
             }
         },
         /**

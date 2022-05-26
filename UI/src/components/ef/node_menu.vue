@@ -287,7 +287,13 @@ export default {
                             ico: 'el-icon-mouse',
                             // 自定义覆盖样式
                             style: {},
-                            params: {}
+                            params: {
+                                inputSource: {
+                                    parentSource: '',
+                                    childSource: ''
+                                },
+                                xPath: ''
+                            }
                         },
                         {
                             id: '63',
@@ -386,7 +392,10 @@ export default {
                             ico: 'el-icon-timer',
                             // 自定义覆盖样式
                             style: {},
-                            params: {}
+                            params: {
+                                sleepTime: 0,
+                                unit: 0
+                            }
                         },
                         {
                             id: '73',

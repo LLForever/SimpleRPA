@@ -7,6 +7,8 @@ import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 import com.simplerpa.cloudservice.entity.util.library.node.other.DateToTimestampNode;
 import com.simplerpa.cloudservice.utils.factory.RpaNodeFactory;
 
+import java.util.LinkedHashMap;
+
 public class DateToTimestampNodeFactory implements RpaNodeFactory {
     private final TaskNodeDetail taskNodeDetail;
 
@@ -22,7 +24,7 @@ public class DateToTimestampNodeFactory implements RpaNodeFactory {
         if(inputSource == null){
             throw new Exception(this.getClass().getName() + "缺少输入参数信息！");
         }
-        node.setInputSource((InputSourceParams) inputSource);
+        node.setInputSource(new InputSourceParams((LinkedHashMap<String, String>) inputSource));
         return node;
     }
 }

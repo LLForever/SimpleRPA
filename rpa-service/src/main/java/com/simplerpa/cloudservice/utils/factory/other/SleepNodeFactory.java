@@ -1,6 +1,7 @@
 package com.simplerpa.cloudservice.utils.factory.other;
 
 import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.common.core.utils.StringUtils;
 import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 import com.simplerpa.cloudservice.entity.util.library.node.other.SleepNode;
@@ -17,13 +18,13 @@ public class SleepNodeFactory implements RpaNodeFactory {
     public IRpaTaskNode getInstance() throws Exception {
         SleepNode sleepNode = new SleepNode(taskNodeDetail);
         JSONObject params = taskNodeDetail.getParams();
-        Object sleepTime = params.get("sleepTime");
-        Object unit = params.get("unit");
-        if(sleepTime == null){
+        String sleepTime = params.getString("sleepTime");
+        String unit = params.getString("unit");
+        if(StringUtils.isEmpty(sleepTime)){
             throw new Exception(this.getClass().getName() + " : 休眠时间缺失！解析失败！");
         }
-        sleepNode.setSleepTime((Long) sleepTime);
-        sleepNode.setUnit((Integer) unit);
+        sleepNode.setSleepTime(Long.valueOf(sleepTime));
+        sleepNode.setUnit(Integer.valueOf(unit));
         return sleepNode;
     }
 }

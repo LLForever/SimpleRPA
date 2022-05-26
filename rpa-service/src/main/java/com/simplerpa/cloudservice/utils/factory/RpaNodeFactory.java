@@ -7,6 +7,7 @@ import com.simplerpa.cloudservice.utils.factory.read.ReadCSVNodeFactory;
 import com.simplerpa.cloudservice.utils.factory.read.ReadExcelNodeFactory;
 import com.simplerpa.cloudservice.utils.factory.read.ReadTxtNodeFactory;
 import com.simplerpa.cloudservice.utils.factory.webpage.OpenWebPageNodeFactory;
+import com.simplerpa.cloudservice.utils.factory.webpage.SingleClickNodeFactory;
 
 public interface RpaNodeFactory {
     public IRpaTaskNode getInstance() throws Exception;
@@ -23,6 +24,8 @@ public interface RpaNodeFactory {
 
             // id: 6X
             case "open_page" : return new OpenWebPageNodeFactory(taskNodeDetail);
+            case "single_click" : return new SingleClickNodeFactory(taskNodeDetail);
+
 
             // id: 7X
             case "sleep" : return new SleepNodeFactory(taskNodeDetail);

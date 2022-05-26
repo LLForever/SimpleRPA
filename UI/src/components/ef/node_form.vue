@@ -51,6 +51,18 @@
                         <el-input v-model="node.params.URL"></el-input>
                     </el-form-item>
 
+                    <el-form-item label="网页源" v-if="node.id && node.type === 'single_click'">
+                        <el-input v-model="node.params.inputSource.parentSource"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="xPath" v-if="node.id && node.type === 'single_click'">
+                        <el-input v-model="node.params.xPath"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="休眠时间" v-if="node.id && node.type === 'sleep'">
+                        <el-input v-model="node.params.sleepTime"></el-input>
+                    </el-form-item>
+
                     <el-form-item label="输出参数" v-if="node.id && node.params.outputParamName !== undefined">
                         <el-input v-model="node.params.outputParamName"></el-input>
                     </el-form-item>
@@ -152,6 +164,7 @@
                         node.state = this.node.state
                         node.params = this.node.params
                         console.log(this.data)
+                        console.log(this.node)
                         this.$emit('repaintEverything')
                     }
                 })

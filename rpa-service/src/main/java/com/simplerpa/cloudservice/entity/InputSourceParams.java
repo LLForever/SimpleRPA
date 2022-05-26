@@ -1,5 +1,7 @@
 package com.simplerpa.cloudservice.entity;
 
+import java.util.LinkedHashMap;
+
 public class InputSourceParams {
     private String parentSource;
     private String childSource;
@@ -12,6 +14,11 @@ public class InputSourceParams {
     public InputSourceParams(String parentSource, String childSource){
         this.parentSource = parentSource;
         this.childSource = childSource;
+    }
+
+    public InputSourceParams(LinkedHashMap<String, String> linkedHashMap){
+        setChildSource(linkedHashMap.get("childSource"));
+        setParentSource(linkedHashMap.get("parentSource"));
     }
 
     public String getParentSource() {
