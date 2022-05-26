@@ -3,15 +3,17 @@ package com.simplerpa.cloudservice.entity.util.library.node.webpage;
 import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.interactions.Actions;
 
-public class SingleClickNode extends WebAction {
+public class DoubleClickNode extends WebAction {
 
-    public SingleClickNode(TaskNodeDetail taskNodeDetail){
+    public DoubleClickNode(TaskNodeDetail taskNodeDetail){
         super(taskNodeDetail);
     }
 
     @Override
     public void operateElement(WebDriver driver) {
-        driver.findElement(By.xpath(getxPath())).click();
+        Actions actions = new Actions(driver);
+        actions.doubleClick(driver.findElement(By.xpath(getxPath()))).perform();
     }
 }

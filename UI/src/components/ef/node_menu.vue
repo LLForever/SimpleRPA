@@ -302,7 +302,13 @@ export default {
                             ico: 'el-icon-mouse',
                             // 自定义覆盖样式
                             style: {},
-                            params: {}
+                            params: {
+                                inputSource: {
+                                    parentSource: '',
+                                    childSource: ''
+                                },
+                                xPath: ''
+                            }
                         },
                         {
                             id: '64',
@@ -311,7 +317,13 @@ export default {
                             ico: 'el-icon-mouse',
                             // 自定义覆盖样式
                             style: {},
-                            params: {}
+                            params: {
+                                inputSource: {
+                                    parentSource: '',
+                                    childSource: ''
+                                },
+                                xPath: ''
+                            }
                         },
                         {
                             id: '65',
@@ -320,7 +332,14 @@ export default {
                             ico: 'el-icon-mouse',
                             // 自定义覆盖样式
                             style: {},
-                            params: {}
+                            params: {
+                                inputSource: {
+                                    parentSource: '',
+                                    childSource: ''
+                                },
+                                xPath: '',
+                                inputText: ''
+                            }
                         },
                         {
                             id: '66',
