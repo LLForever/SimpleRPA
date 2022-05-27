@@ -17,6 +17,7 @@ public class WriteInputNodeFactory extends WebActionFactory{
         if(StringUtils.isEmpty(inputText)){
             throw new Exception(this.getClass().getName() + "缺少输入内容！");
         }
+        node.setInputText(inputText);
         return node;
     }
 }

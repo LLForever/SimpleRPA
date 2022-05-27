@@ -10,17 +10,27 @@ import org.openqa.selenium.interactions.Actions;
 
 import java.util.ArrayList;
 
-public class MouseHoverNode extends WebAction{
+public class DragElementNode extends WebAction{
+    private String targetPosition;
 
-    public MouseHoverNode(TaskNodeDetail taskNodeDetail) {
+    public DragElementNode(TaskNodeDetail taskNodeDetail){
         super(taskNodeDetail);
     }
 
     @Override
     public RpaTaskOutput operateElement(WebDriver driver, ArrayList<JSONObject> list) {
-        Actions act = new Actions(driver);
-        WebElement element = getElement(driver, list);
-        act.moveToElement(element).perform();
+        WebElement source = getElement(driver, list);
+        WebElement target = driver.findElement(By.xpath(targetPosition));
+        Actions actions = new Actions(driver);
+        actions.dragAndDrop(source, target).perform();
         return null;
+    }
+
+    public String getTargetPosition() {
+        return targetPosition;
+    }
+
+    public void setTargetPosition(String targetPosition) {
+        this.targetPosition = targetPosition;
     }
 }

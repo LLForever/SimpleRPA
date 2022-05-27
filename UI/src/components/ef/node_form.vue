@@ -13,63 +13,54 @@
                         <el-input v-model="node.name"></el-input>
                     </el-form-item>
 
-                    <el-form-item label="上传文件" v-if="node.id && (node.type === 'read_txt')">
-                        <el-upload
-                            action="#"
-                            :limit="1"
-                            :on-exceed="handleExceed"
-                            :http-request="uploadFile"
-                            :file-list="node.fileList"
-                            accept=".txt">
-                            <el-button size="small" type="primary">点击上传</el-button>
-                        </el-upload>
-                    </el-form-item>
-                    <el-form-item label="上传文件" v-if="node.id && (node.type === 'read_csv')">
-                        <el-upload
-                            action="#"
-                            :limit="1"
-                            :on-exceed="handleExceed"
-                            :http-request="uploadFile"
-                            :file-list="node.fileList"
-                            accept=".csv">
-                            <el-button size="small" type="primary">点击上传</el-button>
-                        </el-upload>
-                    </el-form-item>
-                    <el-form-item label="上传文件" v-if="node.id && node.type === 'read_excel'">
-                        <el-upload
-                            action="#"
-                            :limit="1"
-                            :on-exceed="handleExceed"
-                            :http-request="uploadFile"
-                            :file-list="node.fileList"
-                            accept=".xlsx,.xls">
-                            <el-button size="small" type="primary">点击上传</el-button>
-                        </el-upload>
+                    <el-form-item label="上传文件" v-if="node.id && node.params.file !== undefined">
+                        <el-card shadow="never">
+                            <el-upload
+                                action="#"
+                                :limit="1"
+                                :on-exceed="handleExceed"
+                                :http-request="uploadFile"
+                                :file-list="node.fileList"
+                                :accept="getFileType(node)">
+                                <el-button size="small" type="primary">点击上传</el-button>
+                            </el-upload>
+                        </el-card>
                     </el-form-item>
 
-                    <el-form-item label="网络链接" v-if="node.id && node.type === 'open_page'">
-                        <el-input v-model="node.params.URL"></el-input>
-                    </el-form-item>
-
-                    <el-form-item label="网页源" v-if="node.id && node.type === 'single_click'">
+                    <el-form-item label="网页源" v-if="node.id && node.params.inputSource !== undefined">
                         <el-input v-model="node.params.inputSource.parentSource"></el-input>
                     </el-form-item>
 
-                    <el-form-item label="xPath" v-if="node.id && node.type === 'single_click'">
+                    <el-form-item label="网络链接" v-if="node.id && node.params.URL !== undefined">
+                        <el-input v-model="node.params.URL"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="xPath" v-if="node.id && node.params.xPath !== undefined">
                         <el-input v-model="node.params.xPath"></el-input>
                     </el-form-item>
 
-                    <el-form-item label="休眠时间" v-if="node.id && node.type === 'sleep'">
+                    <el-form-item label="目标位置" v-if="node.id && node.params.targetPosition !== undefined">
+                        <el-input v-model="node.params.targetPosition"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="输入内容" v-if="node.id && node.params.inputText !== undefined">
+                        <el-input v-model="node.params.inputText"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="休眠时间" v-if="node.id && node.params.sleepTime !== undefined">
                         <el-input v-model="node.params.sleepTime"></el-input>
                     </el-form-item>
 
                     <el-form-item label="输出参数" v-if="node.id && node.params.outputParamName !== undefined">
                         <el-input v-model="node.params.outputParamName"></el-input>
                     </el-form-item>
+
                     <el-divider></el-divider>
+
                     <el-form-item label="状态">
                         <span>{{ getStatus(node.state) }}</span>
                     </el-form-item>
+
                     <el-form-item>
 <!--                        <el-button icon="el-icon-refresh">重置</el-button>-->
                         <el-button type="primary" icon="el-icon-check" :disabled="!node.id" @click="save">保存</el-button>
@@ -194,6 +185,15 @@
                     }
                 }
                 return '';
+            },
+            getFileType(node){
+                if(node.type === 'read_txt'){
+                    return '.txt';
+                }else if(node.type === 'read_csv'){
+                    return '.csv'
+                }else if(node.type === 'read_excel'){
+                    return '.xlsx,.xls'
+                }
             }
         }
     }

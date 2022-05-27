@@ -27,6 +27,9 @@ public interface RpaNodeFactory {
             case "double_click" : return new DoubleClickNodeFactory(taskNodeDetail);
             case "mouse_hover" : return new MouseHoverNodeFactory(taskNodeDetail);
             case "write_input" : return new WriteInputNodeFactory(taskNodeDetail);
+            case "drag_element" : return new DragElementNodeFactory(taskNodeDetail);
+            case "get_element" : return new GetElementNodeFactory(taskNodeDetail);
+            case "jump_web" : return new JumpWebNodeFactory(taskNodeDetail);
 
             // id: 7X
             case "sleep" : return new SleepNodeFactory(taskNodeDetail);

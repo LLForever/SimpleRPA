@@ -1,6 +1,7 @@
 package com.simplerpa.cloudservice.utils.factory.webpage;
 
 import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.common.core.utils.StringUtils;
 import com.simplerpa.cloudservice.entity.InputSourceParams;
 import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
@@ -22,14 +23,13 @@ public abstract class WebActionFactory implements RpaNodeFactory {
         WebAction node = getNode(taskNodeDetail);
         JSONObject params = taskNodeDetail.getParams();
         Object inputSource = params.get("inputSource");
-        Object xPath = params.get("xPath");
+        String xPath = params.getString("xPath");
         if(inputSource == null){
             throw new Exception(this.getClass().getName() + "缺少输入参数信息！");
         }
-        if(xPath == null){
-            throw new Exception(this.getClass().getName() + "缺少xPath信息！");
+        if(StringUtils.isNotEmpty(xPath)){
+            node.setxPath(xPath);
         }
-        node.setxPath((String) xPath);
         node.setInputSourceParams(new InputSourceParams((LinkedHashMap<String, String>) inputSource));
         return node;
     }

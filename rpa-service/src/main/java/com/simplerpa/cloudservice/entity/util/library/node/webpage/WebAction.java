@@ -1,6 +1,7 @@
 package com.simplerpa.cloudservice.entity.util.library.node.webpage;
 
 import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.common.core.utils.StringUtils;
 import com.simplerpa.cloudservice.entity.InputSourceParams;
 import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import com.simplerpa.cloudservice.entity.util.DictionaryUtil;
@@ -27,11 +28,12 @@ public abstract class WebAction implements IRpaTaskNode {
         if(inputSourceParams == null){
             throw new Exception(this.getClass().getName() + " : 缺少必要参数，执行失败！");
         }
+        RpaTaskOutput output = null;
         String parentSource = inputSourceParams.getParentSource();
-        if(parentSource != null && xPath != null){
-            doAction(input, parentSource);
+        if(parentSource != null){
+            output = doAction(input, parentSource);
         }
-        return null;
+        return output;
     }
 
     @Override
@@ -39,20 +41,35 @@ public abstract class WebAction implements IRpaTaskNode {
         return taskNodeDetail;
     }
 
-    private void doAction(RpaTaskOutput input, String parentSource){
+    private RpaTaskOutput doAction(RpaTaskOutput input, String parentSource){
         ArrayList<JSONObject> resultByParamName = input.getResultByParamName(parentSource);
+        RpaTaskOutput output = null;
         for(JSONObject jsonObject : resultByParamName){
             if(jsonObject.containsKey(DictionaryUtil.HTML_FLAG)){
                 WebDriver webDriver = (WebDriver) jsonObject.get(DictionaryUtil.HTML_FLAG);
-                operateElement(webDriver);
+                output = operateElement(webDriver, resultByParamName);
                 Object[] objects = webDriver.getWindowHandles().toArray();
                 webDriver.switchTo().window((String) objects[objects.length-1]);
                 break;
             }
         }
+        return output;
     }
 
-    public abstract void operateElement(WebDriver driver);
+    public WebElement getElement(WebDriver webDriver, ArrayList<JSONObject> list){
+        if(StringUtils.isNotEmpty(xPath)){
+            return webDriver.findElement(By.xpath(xPath));
+        }else if(StringUtils.isNotEmpty(inputSourceParams.getChildSource())){
+            for (JSONObject jsonObject : list) {
+                if(jsonObject.containsKey(inputSourceParams.getChildSource())){
+                    return (WebElement) jsonObject.get(inputSourceParams.getChildSource());
+                }
+            }
+        }
+        return null;
+    }
+
+    public abstract RpaTaskOutput operateElement(WebDriver driver, ArrayList<JSONObject> list);
 
     public InputSourceParams getInputSourceParams() {
         return inputSourceParams;
