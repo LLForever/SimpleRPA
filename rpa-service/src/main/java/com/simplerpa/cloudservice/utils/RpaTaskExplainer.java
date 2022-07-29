@@ -27,9 +27,9 @@ public class RpaTaskExplainer {
                 throw new Exception("RpaTaskExplainer : 存在相同的节点ID，无法成功解析！");
             }
         }
-        if(!rpaTaskStructure.generateExecuteList()){
-            throw new Exception("RpaTaskExplainer : 无法完成拓扑排序，请检查是否存在环！");
-        }
+//        if(!rpaTaskStructure.generateExecuteList()){
+//            throw new Exception("RpaTaskExplainer : 无法完成拓扑排序，请检查是否存在环！");
+//        }
         return rpaTaskStructure;
     }
 }

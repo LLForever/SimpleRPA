@@ -1,10 +1,12 @@
 package com.simplerpa.cloudservice.entity.util;
 
+import com.alibaba.fastjson.JSONObject;
 import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * @Description: TODO
@@ -28,12 +30,24 @@ public class RpaTaskStructure {
     // 节点执行序列
     private ArrayList<String> executeList;
 
+    private ArrayList<String> globalQueue;
+    private String nowExecuteNodeType;
+    private HashSet<String> specialNodeType;
+
     public RpaTaskStructure(){
         nodeList = new HashMap<>();
         adjacencyList = new HashMap<>();
         inDegreeList = new HashMap<>();
         startNodeId = null;
         executeList = null;
+        globalQueue = new ArrayList<>();
+        nowExecuteNodeType = null;
+        specialNodeType = new HashSet<>();
+        specialNodeType.add("for_loop");
+        specialNodeType.add("while_loop");
+        specialNodeType.add("foreach_loop");
+        specialNodeType.add("single_condition");
+        specialNodeType.add("multi_condition");
     }
 
     /**
@@ -62,6 +76,67 @@ public class RpaTaskStructure {
         }
         Integer integer = inDegreeList.get(target);
         inDegreeList.put(target, integer+1);
+    }
+
+    public String getNextNodeId(){
+        if(startNodeId == null){
+            return "";
+        }
+        if(nowExecuteNodeType == null){
+            globalQueue.add(startNodeId);
+        }
+        String node = "";
+        if(!globalQueue.isEmpty()){
+            node = globalQueue.remove(0);
+            TaskNodeDetail tempDetail = findRpaTaskNode(node).getRpaTaskDetail();
+            if(nowExecuteNodeType == null && tempDetail == null){
+                nowExecuteNodeType = "start";
+            }else if(nowExecuteNodeType != null && tempDetail == null){
+                nowExecuteNodeType = "end";
+            }else{
+                nowExecuteNodeType = tempDetail.getType();
+            }
+            if(adjacencyList.containsKey(node)){
+                for(String nextNodeId : adjacencyList.get(node)){
+                    // 将邻接节点的入度减1
+                    inDegreeList.put(nextNodeId, inDegreeList.get(nextNodeId)-1);
+                    // 如果邻接节点的入度为0，则将其添加到队列中
+                    if(inDegreeList.get(nextNodeId) == 0) {
+                        if (!specialNodeType.contains(nowExecuteNodeType)) {
+                            globalQueue.add(nextNodeId);
+                        }
+                    }
+                }
+            }
+            if(specialNodeType.contains(nowExecuteNodeType)){
+                RpaTaskOutput temp = new RpaTaskOutput();
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("RpaTaskStructure", this);
+                temp.addObject(DictionaryUtil.GET_NEXT_NODE_FLAG, jsonObject);
+                IRpaTaskNode rpaTaskNode = findRpaTaskNode(node);
+                try {
+                    rpaTaskNode.run(temp);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+        return node;
+    }
+
+    public String globalQueueTop(){
+        if(isGlobalQueueEmpty()){
+            return null;
+        }
+        return globalQueue.get(0);
+    }
+
+    public Boolean isGlobalQueueEmpty(){
+        return globalQueue.isEmpty();
+    }
+
+    public Boolean isEnd(){
+        return "end".equals(nowExecuteNodeType);
     }
 
     /**

@@ -33,9 +33,9 @@ public class ThreadPoolSingleton {
         return instance;
     }
 
-    //   public void execute(Runnable runnable) {
-    //       threadPoolExecutor.execute(runnable);
-    //   }
+    public void execute(Runnable runnable) {
+       threadPoolExecutor.execute(runnable);
+    }
 
     public Future<?> submit(Runnable runnable) {
         return threadPoolExecutor.submit(runnable);

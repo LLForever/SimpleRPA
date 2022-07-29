@@ -30,17 +30,17 @@ public class RpaTaskExecutor implements Runnable{
     public void run() {
         RpaTaskStructure rpaTaskStructure = explainTask();
         if(rpaTaskStructure != null) {
-            ArrayList<String> executeList = rpaTaskStructure.getExecuteList();
             RpaTaskOutput allOutput = new RpaTaskOutput();
             WebsocketTask.getTaskDetailService().changeRpaTaskStatus(DictionaryUtil.TASK_STATUS_RUNNING, taskDetailVO.getTaskId(), taskDetailVO.getUserId());
-            for (int i = 0; i<executeList.size(); i++) {
-                IRpaTaskNode rpaTaskNode = rpaTaskStructure.findRpaTaskNode(executeList.get(i));
+            while(!rpaTaskStructure.isEnd()){
+                String nextNode = rpaTaskStructure.getNextNodeId();
+                IRpaTaskNode rpaTaskNode = rpaTaskStructure.findRpaTaskNode(nextNode);
                 try{
                     RpaTaskOutput res = rpaTaskNode.run(allOutput);
                     allOutput.mergeOutput(res);
                     JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("now", executeList.get(i));
-                    jsonObject.put("next", i == executeList.size()-1? null : executeList.get(i+1));
+                    jsonObject.put("now", nextNode);
+                    jsonObject.put("next", rpaTaskStructure.globalQueueTop());
                     PanelTaskMessage panelTaskMessage =
                             new PanelTaskMessage(DictionaryUtil.TASK_MESSAGE_OK, jsonObject);
                     WebsocketTask.notifyObserver(taskDetailVO.getTaskId(), panelTaskMessage);
@@ -53,6 +53,9 @@ public class RpaTaskExecutor implements Runnable{
                     WebsocketTask.sendMessageToUser(taskDetailVO.getTaskId(), taskDetailVO.getUserId(), panelTaskMessage);
                     clearSelenium(allOutput);
                     return;
+                }
+                if(rpaTaskStructure.isGlobalQueueEmpty()){
+                    break;
                 }
             }
             clearSelenium(allOutput);
