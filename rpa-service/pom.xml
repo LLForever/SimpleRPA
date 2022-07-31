@@ -105,6 +105,24 @@
             <artifactId>webdrivermanager</artifactId>
             <version>4.4.1</version>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>ai.djl</groupId>-->
+<!--            <artifactId>api</artifactId>-->
+<!--            <version>0.17.0</version>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>ai.djl.paddlepaddle</groupId>-->
+<!--            <artifactId>paddlepaddle-model-zoo</artifactId>-->
+<!--            <version>0.17.0</version>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>ai.djl.paddlepaddle</groupId>-->
+<!--            <artifactId>paddlepaddle-native-auto</artifactId>-->
+<!--            <version>2.0.2</version>-->
+<!--        </dependency>-->
     </dependencies>
 
 </project>

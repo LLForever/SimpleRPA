@@ -23,8 +23,7 @@ import java.util.ArrayList;
  * @date: 2022年05月01日 15:08
  */
 
-public class ReadExcelNode implements IRpaTaskNode {
-    private final TaskNodeDetail nodeDetail;
+public class ReadExcelNode extends IRpaTaskNode {
     private byte[] file; // 文件
     private String fileName;
     private String sheetName, outputParamName; // 指定的表名(默认为第一张表)、数据参数名称(用户自定义的output名称)
@@ -45,6 +44,7 @@ public class ReadExcelNode implements IRpaTaskNode {
         if(file == null || outputParamName == null){
             throw new Exception(this.getClass().getName() + " : 缺少必要参数，执行失败！");
         }
+        detectParamsValue();
         String originalFilename = getFileName();
         InputStream in = new ByteArrayInputStream(file);
         Workbook workbook = null;
@@ -76,7 +76,7 @@ public class ReadExcelNode implements IRpaTaskNode {
         }
         Row headerRow = sheet.getRow(i);
         for(int j=0; j<headerRow.getPhysicalNumberOfCells(); j++){
-            String stringCellValue = headerRow.getCell(j).getStringCellValue();
+            String stringCellValue = getCellValue(headerRow.getCell(j));
             if(StringUtils.isNotEmpty(stringCellValue)){
                 colNameList.add(stringCellValue);
             }else{
@@ -94,7 +94,7 @@ public class ReadExcelNode implements IRpaTaskNode {
             JSONObject jsonObject = new JSONObject();
             boolean isAllNull = true;
             for(int j=0; j<colNameList.size(); j++){
-                String stringCellValue = row.getCell(j).getStringCellValue();
+                String stringCellValue = getCellValue(row.getCell(j));
                 if(StringUtils.isNotEmpty(stringCellValue)){
                     isAllNull = false;
                 }
@@ -108,9 +108,25 @@ public class ReadExcelNode implements IRpaTaskNode {
         return output;
     }
 
+    private String getCellValue(Cell cell){
+        try{
+            return cell.getStringCellValue();
+        }catch (Exception e1){
+            try{
+                return cell.getBooleanCellValue()? "true" : "false";
+            }catch (Exception e2){
+                try {
+                    return String.valueOf(cell.getNumericCellValue());
+                }catch (Exception e3){
+                    return cell.getDateCellValue().toString();
+                }
+            }
+        }
+    }
+
     @Override
-    public TaskNodeDetail getRpaTaskDetail() {
-        return nodeDetail;
+    public void detectParamsValue() {
+        sheetName = changeStringParams(sheetName, output);
     }
 
     private void addOutput(JSONObject jsonObject){

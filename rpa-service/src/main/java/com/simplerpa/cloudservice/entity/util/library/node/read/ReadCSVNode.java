@@ -13,8 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
-public class ReadCSVNode implements IRpaTaskNode {
-    private final TaskNodeDetail nodeDetail;
+public class ReadCSVNode extends IRpaTaskNode {
     private byte[] file; // 文件
     private String fileName;
     private RpaTaskOutput output; // 解析后的数据
@@ -87,11 +86,6 @@ public class ReadCSVNode implements IRpaTaskNode {
         }else{
             throw new Exception(this.getClass().getName() + " : 缺少文件名，执行失败！");
         }
-    }
-
-    @Override
-    public TaskNodeDetail getRpaTaskDetail() {
-        return nodeDetail;
     }
 
     private void addOutput(JSONObject jsonObject){

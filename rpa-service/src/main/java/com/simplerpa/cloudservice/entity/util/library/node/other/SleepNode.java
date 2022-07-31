@@ -4,9 +4,7 @@ import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import com.simplerpa.cloudservice.entity.util.RpaTaskOutput;
 import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 
-public class SleepNode implements IRpaTaskNode {
-    private final TaskNodeDetail nodeDetail;
-
+public class SleepNode extends IRpaTaskNode {
     private Long sleepTime;
     private Integer unit;
 //    private static final Integer MILLIS_SECOND = 0;
@@ -37,11 +35,6 @@ public class SleepNode implements IRpaTaskNode {
         time = Math.min(time, MAX_SLEEP_TIME);
         Thread.sleep(time);
         return null;
-    }
-
-    @Override
-    public TaskNodeDetail getRpaTaskDetail() {
-        return nodeDetail;
     }
 
     public Long getSleepTime() {

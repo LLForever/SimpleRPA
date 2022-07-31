@@ -9,14 +9,13 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
-public class OpenWebPageNode implements IRpaTaskNode {
-    private final TaskNodeDetail taskNodeDetail;
+public class OpenWebPageNode extends IRpaTaskNode {
     private String URL;
     private String outputParamName;
     private RpaTaskOutput output;
 
     public OpenWebPageNode(TaskNodeDetail nodeDetail){
-        this.taskNodeDetail = nodeDetail;
+        this.nodeDetail = nodeDetail;
     }
 
     @Override
@@ -31,11 +30,6 @@ public class OpenWebPageNode implements IRpaTaskNode {
         jsonObject.put(DictionaryUtil.HTML_FLAG, webDriver);
         addOutput(jsonObject);
         return output;
-    }
-
-    @Override
-    public TaskNodeDetail getRpaTaskDetail() {
-        return taskNodeDetail;
     }
 
     private void addOutput(JSONObject jsonObject){

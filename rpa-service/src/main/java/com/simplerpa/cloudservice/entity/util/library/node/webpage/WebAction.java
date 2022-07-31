@@ -13,14 +13,12 @@ import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
 
-public abstract class WebAction implements IRpaTaskNode {
-    private final TaskNodeDetail taskNodeDetail;
-
+public abstract class WebAction extends IRpaTaskNode {
     private InputSourceParams inputSourceParams;
     private String xPath;
 
     public WebAction(TaskNodeDetail taskNodeDetail){
-        this.taskNodeDetail = taskNodeDetail;
+        this.nodeDetail = taskNodeDetail;
     }
 
     @Override
@@ -34,11 +32,6 @@ public abstract class WebAction implements IRpaTaskNode {
             output = doAction(input, parentSource);
         }
         return output;
-    }
-
-    @Override
-    public TaskNodeDetail getRpaTaskDetail() {
-        return taskNodeDetail;
     }
 
     private RpaTaskOutput doAction(RpaTaskOutput input, String parentSource){

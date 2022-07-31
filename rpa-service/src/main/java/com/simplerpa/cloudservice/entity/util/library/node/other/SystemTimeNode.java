@@ -8,8 +8,7 @@ import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 
 import java.util.Date;
 
-public class SystemTimeNode implements IRpaTaskNode {
-    private final TaskNodeDetail nodeDetail;
+public class SystemTimeNode extends IRpaTaskNode {
     private String outputParamName;
     private RpaTaskOutput output;
 
@@ -27,11 +26,6 @@ public class SystemTimeNode implements IRpaTaskNode {
         jsonObject.put(DictionaryUtil.SINGLE_PARAM_FLAG, date);
         addOutput(jsonObject);
         return output;
-    }
-
-    @Override
-    public TaskNodeDetail getRpaTaskDetail() {
-        return nodeDetail;
     }
 
     private void addOutput(JSONObject jsonObject){

@@ -10,10 +10,8 @@ import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class TimestampToDateNode implements IRpaTaskNode {
-    private final TaskNodeDetail nodeDetail;
+public class TimestampToDateNode extends IRpaTaskNode {
     private InputSourceParams inputSource;
-
 
     public TimestampToDateNode(TaskNodeDetail nodeDetail){
         this.nodeDetail = nodeDetail;
@@ -36,11 +34,6 @@ public class TimestampToDateNode implements IRpaTaskNode {
             changeResult(resultByParamName, childSource);
         }
         return null;
-    }
-
-    @Override
-    public TaskNodeDetail getRpaTaskDetail() {
-        return nodeDetail;
     }
 
     private void changeSingleResult(ArrayList<JSONObject> result){

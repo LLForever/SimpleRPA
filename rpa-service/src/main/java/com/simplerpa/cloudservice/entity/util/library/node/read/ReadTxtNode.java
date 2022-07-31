@@ -18,8 +18,7 @@ import java.io.InputStreamReader;
  * @date: 2022年05月01日 16:14
  */
 
-public class ReadTxtNode implements IRpaTaskNode {
-    private final TaskNodeDetail nodeDetail;
+public class ReadTxtNode extends IRpaTaskNode {
     private RpaTaskOutput output; // 解析后的数据
     private byte[] file; // 文件
     private String fileName;
@@ -51,11 +50,6 @@ public class ReadTxtNode implements IRpaTaskNode {
             throw new Exception(this.getClass().getName() + " : 缺少文件名，执行失败！");
         }
         return output;
-    }
-
-    @Override
-    public TaskNodeDetail getRpaTaskDetail() {
-        return nodeDetail;
     }
 
     private void addOutput(JSONObject jsonObject){
