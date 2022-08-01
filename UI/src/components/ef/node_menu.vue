@@ -405,6 +405,21 @@ export default {
                             // 自定义覆盖样式
                             style: {},
                             params: {}
+                        },
+                        {
+                            id: '611',
+                            type: 'element_content_getter',
+                            name: '网页元素内容获取',
+                            ico: 'el-icon-s-platform',
+                            // 自定义覆盖样式
+                            style: {},
+                            params: {
+                                inputSource: {
+                                    parentSource: '',
+                                    childSource: ''
+                                },
+                                outputParamName: ''
+                            }
                         }
                     ]
                 },

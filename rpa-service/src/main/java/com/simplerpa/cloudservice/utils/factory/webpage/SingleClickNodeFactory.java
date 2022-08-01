@@ -5,7 +5,6 @@ import com.simplerpa.cloudservice.entity.util.library.node.webpage.SingleClickNo
 import com.simplerpa.cloudservice.entity.util.library.node.webpage.WebAction;
 
 public class SingleClickNodeFactory extends WebActionFactory {
-
     public SingleClickNodeFactory(TaskNodeDetail taskNodeDetail) {
         super(taskNodeDetail);
     }

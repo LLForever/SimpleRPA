@@ -30,6 +30,7 @@ public interface RpaNodeFactory {
             case "drag_element" : return new DragElementNodeFactory(taskNodeDetail);
             case "get_element" : return new GetElementNodeFactory(taskNodeDetail);
             case "jump_web" : return new JumpWebNodeFactory(taskNodeDetail);
+            case "element_content_getter" : return new ElementContentGetterNodeFactory(taskNodeDetail);
 
             // id: 7X
             case "sleep" : return new SleepNodeFactory(taskNodeDetail);

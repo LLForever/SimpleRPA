@@ -11,7 +11,7 @@ public abstract class IRpaTaskNode {
     private static final String VARIABLE_FLAG = "{";
     protected TaskNodeDetail nodeDetail;
     public abstract RpaTaskOutput run(RpaTaskOutput input) throws Exception;
-    public void detectParamsValue(){}
+    public void detectParamsValue(RpaTaskOutput input){}
 
     protected String changeStringParams(String str, RpaTaskOutput output){
         if(str.startsWith(VARIABLE_FLAG)){

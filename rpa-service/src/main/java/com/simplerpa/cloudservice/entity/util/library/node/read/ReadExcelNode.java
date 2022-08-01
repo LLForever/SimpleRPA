@@ -44,7 +44,7 @@ public class ReadExcelNode extends IRpaTaskNode {
         if(file == null || outputParamName == null){
             throw new Exception(this.getClass().getName() + " : 缺少必要参数，执行失败！");
         }
-        detectParamsValue();
+        detectParamsValue(input);
         String originalFilename = getFileName();
         InputStream in = new ByteArrayInputStream(file);
         Workbook workbook = null;
@@ -125,8 +125,8 @@ public class ReadExcelNode extends IRpaTaskNode {
     }
 
     @Override
-    public void detectParamsValue() {
-        sheetName = changeStringParams(sheetName, output);
+    public void detectParamsValue(RpaTaskOutput input) {
+        sheetName = changeStringParams(sheetName, input);
     }
 
     private void addOutput(JSONObject jsonObject){
