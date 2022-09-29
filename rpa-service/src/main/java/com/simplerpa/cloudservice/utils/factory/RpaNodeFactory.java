@@ -2,6 +2,7 @@ package com.simplerpa.cloudservice.utils.factory;
 
 import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
+import com.simplerpa.cloudservice.utils.factory.dataproc.RandomNodeFactory;
 import com.simplerpa.cloudservice.utils.factory.other.*;
 import com.simplerpa.cloudservice.utils.factory.read.ReadCSVNodeFactory;
 import com.simplerpa.cloudservice.utils.factory.read.ReadExcelNodeFactory;
@@ -20,6 +21,9 @@ public interface RpaNodeFactory {
             case "read_excel" : return new ReadExcelNodeFactory(taskNodeDetail);
             case "read_txt" : return new ReadTxtNodeFactory(taskNodeDetail);
             case "read_csv" : return new ReadCSVNodeFactory(taskNodeDetail);
+
+            // id: 3X
+            case "random" : return new RandomNodeFactory(taskNodeDetail);
 
             // id: 6X
             case "open_page" : return new OpenWebPageNodeFactory(taskNodeDetail);

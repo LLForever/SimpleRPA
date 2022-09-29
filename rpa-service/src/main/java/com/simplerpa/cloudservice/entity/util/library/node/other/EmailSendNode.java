@@ -14,6 +14,7 @@ public class EmailSendNode extends IRpaTaskNode {
 
     @Override
     public RpaTaskOutput run(RpaTaskOutput input) throws Exception {
+        detectParamsValue(input);
         EmailUtilSingleton instance = EmailUtilSingleton.getInstance();
         instance.sendMail(to, content);
         return null;
@@ -21,8 +22,8 @@ public class EmailSendNode extends IRpaTaskNode {
 
     @Override
     public void detectParamsValue(RpaTaskOutput input){
-        changeStringParams(to, input);
-        changeStringParams(content, input);
+        to = changeStringParams(to, input);
+        content = changeStringParams(content, input);
     }
 
     public String getTo() {
