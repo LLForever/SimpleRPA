@@ -23,12 +23,13 @@ public class ElementContentGetterNode extends WebAction {
         WebElement element = getElement(driver, list);
         if(element == null){
             return null;
+        }else{
+            RpaTaskOutput output = new RpaTaskOutput();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put(DictionaryUtil.SINGLE_PARAM_FLAG, element.getText());
+            output.addObject(getOutputParamName(), jsonObject);
+            return output;
         }
-        RpaTaskOutput output = new RpaTaskOutput();
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(DictionaryUtil.SINGLE_PARAM_FLAG, element.getText());
-        output.addObject(getOutputParamName(), jsonObject);
-        return output;
     }
 
     public String getOutputParamName() {

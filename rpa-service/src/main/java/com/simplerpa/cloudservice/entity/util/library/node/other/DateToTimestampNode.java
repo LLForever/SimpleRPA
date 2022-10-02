@@ -1,6 +1,7 @@
 package com.simplerpa.cloudservice.entity.util.library.node.other;
 
 import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.common.core.utils.StringUtils;
 import com.simplerpa.cloudservice.entity.InputSourceParams;
 import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import com.simplerpa.cloudservice.entity.util.DictionaryUtil;
@@ -28,12 +29,17 @@ public class DateToTimestampNode extends IRpaTaskNode {
             throw new Exception(this.getClass().getName() + "缺少输入参数");
         }
         ArrayList<JSONObject> resultByParamName = input.getResultByParamName(parentSource);
-        if(childSource == null){
-            changeSingleResult(resultByParamName);
-        }else{
+        if(StringUtils.isNotEmpty(childSource)){
             changeResult(resultByParamName, childSource);
+        }else{
+            changeSingleResult(resultByParamName);
         }
         return null;
+    }
+
+    @Override
+    public void detectParamsValue(RpaTaskOutput input) {
+
     }
 
     private void changeSingleResult(ArrayList<JSONObject> result){

@@ -173,6 +173,7 @@ export default {
     methods: {
         setRowDetail(detail) {
             setTimeout(()=>{
+                let outputParamsList = []
                 // this.initPanelData();
                 this.data.taskName = detail.taskName
                 this.data.taskId = detail.taskId
@@ -181,6 +182,11 @@ export default {
                     for (var i = 0; i < detail.nodeList.length; i++) {
                         let node = detail.nodeList[i];
                         this.addNodeIntoGraph(node);
+                        if(node.params){
+                            if(node.params.outputParamName){
+                                outputParamsList.push(node.params.outputParamName);
+                            }
+                        }
                     }
                     // this.data.nodeList = detail.nodeList
                 }
@@ -192,6 +198,7 @@ export default {
                 }
                 this.userId = detail.userId;
                 this.data.userId = detail.userId;
+                this.$refs.nodeForm.setInputParamList(outputParamsList);
             }, 100);
         },
         addLineIntoGraph(line){

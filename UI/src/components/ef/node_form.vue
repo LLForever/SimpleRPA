@@ -28,15 +28,23 @@
                     </el-form-item>
 
                     <el-form-item label="网页源" v-if="node.id && node.params.inputSource !== undefined">
-                        <el-input v-model="node.params.inputSource.parentSource"></el-input>
+<!--                        <el-input v-model="node.params.inputSource.parentSource"></el-input>-->
+                        <s-input v-model="node.params.inputSource.parentSource"
+                                 :list="inputParamList"
+                                 :node-type="node"
+                                 :is-web="true"
+                                 @flush_child="flushWebInputSource"
+                        ></s-input>
                     </el-form-item>
 
                     <el-form-item label="网络链接" v-if="node.id && node.params.URL !== undefined">
-                        <el-input v-model="node.params.URL"></el-input>
+<!--                        <el-input v-model="node.params.URL"></el-input>-->
+                        <s-input v-model="node.params.URL" :list="inputParamList"></s-input>
                     </el-form-item>
 
                     <el-form-item label="xPath" v-if="node.id && node.params.xPath !== undefined">
-                        <el-input v-model="node.params.xPath"></el-input>
+<!--                        <el-input v-model="node.params.xPath"></el-input>-->
+                        <s-input v-model="node.params.xPath" :list="inputParamList"></s-input>
                     </el-form-item>
 
                     <el-form-item label="目标位置" v-if="node.id && node.params.targetPosition !== undefined">
@@ -44,7 +52,8 @@
                     </el-form-item>
 
                     <el-form-item label="输入内容" v-if="node.id && node.params.inputText !== undefined">
-                        <el-input v-model="node.params.inputText"></el-input>
+<!--                        <el-input v-model="node.params.inputText"></el-input>-->
+                        <s-input v-model="node.params.inputText" :list="inputParamList"></s-input>
                     </el-form-item>
 
                     <el-form-item label="休眠时间" v-if="node.id && node.params.sleepTime !== undefined">
@@ -90,6 +99,7 @@
 <script>
     import { cloneDeep } from 'lodash'
     import { blobToBase64, initNodeParams } from '../../views/rpa/utils/NodeParamsHandler'
+    import sInput from '../../views/rpa/components/SpecialInput.vue'
 
     export default {
         data() {
@@ -115,8 +125,12 @@
                 }, {
                     state: 'running',
                     label: '运行中'
-                }]
+                }],
+                inputParamList: []
             }
+        },
+        components: {
+            sInput
         },
         methods: {
             /**
@@ -154,6 +168,11 @@
                         node.ico = this.node.ico
                         node.state = this.node.state
                         node.params = this.node.params
+                        if(node.params.outputParamName){
+                            if(this.inputParamList.indexOf(node.params.outputParamName)==-1){
+                                this.inputParamList.push(node.params.outputParamName)
+                            }
+                        }
                         console.log(this.data)
                         console.log(this.node)
                         this.$emit('repaintEverything')
@@ -194,6 +213,14 @@
                 }else if(node.type === 'read_excel'){
                     return '.xlsx,.xls'
                 }
+            },
+            setInputParamList(list) {
+                console.log('setinput')
+                this.inputParamList = list;
+            },
+            flushWebInputSource(json){
+                console.log('childSource changed')
+                this.node.params.inputSource.childSource = json.childParam
             }
         }
     }

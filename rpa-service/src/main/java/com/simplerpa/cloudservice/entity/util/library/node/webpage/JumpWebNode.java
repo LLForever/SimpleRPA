@@ -20,6 +20,12 @@ public class JumpWebNode extends WebAction{
         return null;
     }
 
+    @Override
+    public void detectParamsValue(RpaTaskOutput input) {
+        this.setxPath(changeStringParams(this.getxPath(), input));
+        URL = changeStringParams(URL, input);
+    }
+
     public String getURL() {
         return URL;
     }

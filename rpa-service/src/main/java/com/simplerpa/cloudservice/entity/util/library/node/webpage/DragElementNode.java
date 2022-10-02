@@ -26,6 +26,12 @@ public class DragElementNode extends WebAction{
         return null;
     }
 
+    @Override
+    public void detectParamsValue(RpaTaskOutput input) {
+        this.setxPath(changeStringParams(this.getxPath(), input));
+        targetPosition = changeStringParams(targetPosition, input);
+    }
+
     public String getTargetPosition() {
         return targetPosition;
     }

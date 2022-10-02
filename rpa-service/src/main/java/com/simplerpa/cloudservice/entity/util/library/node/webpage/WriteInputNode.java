@@ -23,6 +23,12 @@ public class WriteInputNode extends WebAction{
         return null;
     }
 
+    @Override
+    public void detectParamsValue(RpaTaskOutput input) {
+        this.setxPath(changeStringParams(this.getxPath(), input));
+        inputText = changeStringParams(inputText, input);
+    }
+
     public String getInputText() {
         return inputText == null ? "" : inputText;
     }

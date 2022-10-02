@@ -26,12 +26,18 @@ public abstract class WebAction extends IRpaTaskNode {
         if(inputSourceParams == null){
             throw new Exception(this.getClass().getName() + " : 缺少必要参数，执行失败！");
         }
+        detectParamsValue(input);
         RpaTaskOutput output = null;
         String parentSource = inputSourceParams.getParentSource();
         if(parentSource != null){
             output = doAction(input, parentSource);
         }
         return output;
+    }
+
+    @Override
+    public void detectParamsValue(RpaTaskOutput input) {
+        this.setxPath(changeStringParams(this.getxPath(), input));
     }
 
     private RpaTaskOutput doAction(RpaTaskOutput input, String parentSource){

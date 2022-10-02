@@ -52,6 +52,11 @@ public class ReadTxtNode extends IRpaTaskNode {
         return output;
     }
 
+    @Override
+    public void detectParamsValue(RpaTaskOutput input) {
+
+    }
+
     private void addOutput(JSONObject jsonObject){
         if(output == null){
             output = new RpaTaskOutput();

@@ -32,6 +32,11 @@ public class OpenWebPageNode extends IRpaTaskNode {
         return output;
     }
 
+    @Override
+    public void detectParamsValue(RpaTaskOutput input) {
+        URL = changeStringParams(URL, input);
+    }
+
     private void addOutput(JSONObject jsonObject){
         if(output == null){
             output = new RpaTaskOutput();

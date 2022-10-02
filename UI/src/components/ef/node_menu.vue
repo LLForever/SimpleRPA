@@ -122,7 +122,9 @@ export default {
                             ico: 'el-icon-magic-stick',
                             // 自定义覆盖样式
                             style: {},
-                            params: {}
+                            params: {
+                                outputParamName: ''
+                            }
                         },
                         {
                             id: '32',
@@ -409,7 +411,7 @@ export default {
                         {
                             id: '611',
                             type: 'element_content_getter',
-                            name: '网页元素内容获取',
+                            name: '获得网页组件内容',
                             ico: 'el-icon-s-platform',
                             // 自定义覆盖样式
                             style: {},
@@ -467,7 +469,9 @@ export default {
                             ico: 'el-icon-time',
                             // 自定义覆盖样式
                             style: {},
-                            params: {}
+                            params: {
+                              outputParamName: ''
+                            }
                         },
                         {
                             id: '75',
@@ -485,7 +489,9 @@ export default {
                             ico: 'el-icon-time',
                             // 自定义覆盖样式
                             style: {},
-                            params: {}
+                            params: {
+                                inputText: ''
+                            }
                         },
                         {
                             id: '77',
@@ -494,7 +500,9 @@ export default {
                             ico: 'el-icon-time',
                             // 自定义覆盖样式
                             style: {},
-                            params: {}
+                            params: {
+                                inputText: ''
+                            }
                         }
                     ]
                 }

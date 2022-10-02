@@ -1,5 +1,7 @@
 package com.simplerpa.cloudservice.entity;
 
+import com.alibaba.fastjson.JSONObject;
+
 import java.util.LinkedHashMap;
 
 public class InputSourceParams {
@@ -19,6 +21,11 @@ public class InputSourceParams {
     public InputSourceParams(LinkedHashMap<String, String> linkedHashMap){
         setChildSource(linkedHashMap.get("childSource"));
         setParentSource(linkedHashMap.get("parentSource"));
+    }
+
+    public InputSourceParams(JSONObject jsonObject){
+        setChildSource(jsonObject.getString("childSource"));
+        setParentSource(jsonObject.getString("parentSource"));
     }
 
     public String getParentSource() {
