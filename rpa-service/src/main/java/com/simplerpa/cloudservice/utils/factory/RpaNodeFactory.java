@@ -2,7 +2,9 @@ package com.simplerpa.cloudservice.utils.factory;
 
 import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
+import com.simplerpa.cloudservice.utils.factory.dataproc.AddTextNodeFactory;
 import com.simplerpa.cloudservice.utils.factory.dataproc.RandomNodeFactory;
+import com.simplerpa.cloudservice.utils.factory.dataproc.TextLengthNodeFactory;
 import com.simplerpa.cloudservice.utils.factory.other.*;
 import com.simplerpa.cloudservice.utils.factory.read.ReadCSVNodeFactory;
 import com.simplerpa.cloudservice.utils.factory.read.ReadExcelNodeFactory;
@@ -24,6 +26,8 @@ public interface RpaNodeFactory {
 
             // id: 3X
             case "random" : return new RandomNodeFactory(taskNodeDetail);
+            case "add_text": return new AddTextNodeFactory(taskNodeDetail);
+            case "text_length": return new TextLengthNodeFactory(taskNodeDetail);
 
             // id: 6X
             case "open_page" : return new OpenWebPageNodeFactory(taskNodeDetail);
@@ -35,6 +39,7 @@ public interface RpaNodeFactory {
             case "get_element" : return new GetElementNodeFactory(taskNodeDetail);
             case "jump_web" : return new JumpWebNodeFactory(taskNodeDetail);
             case "element_content_getter" : return new ElementContentGetterNodeFactory(taskNodeDetail);
+            case "get_screenshot": return new GetScreenshotNodeFactory(taskNodeDetail);
 
             // id: 7X
             case "sleep" : return new SleepNodeFactory(taskNodeDetail);

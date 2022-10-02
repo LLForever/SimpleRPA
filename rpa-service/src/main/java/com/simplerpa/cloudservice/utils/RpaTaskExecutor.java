@@ -37,7 +37,22 @@ public class RpaTaskExecutor implements Runnable{
                 IRpaTaskNode rpaTaskNode = rpaTaskStructure.findRpaTaskNode(nextNode);
                 try{
                     RpaTaskOutput res = rpaTaskNode.run(allOutput);
-                    allOutput.mergeOutput(res);
+                    if(res == null || !res.hasParam(DictionaryUtil.NO_MERGE_FLAG)){
+                        allOutput.mergeOutput(res);
+                    }else{
+                        ArrayList<JSONObject> resultByParamName = res.getResultByParamName(DictionaryUtil.NO_MERGE_FLAG);
+                        for(JSONObject object : resultByParamName){
+                            if(object.containsKey(DictionaryUtil.SINGLE_PARAM_FLAG)){
+                                JSONObject obj = new JSONObject();
+                                JSONObject info = (JSONObject) object.get(DictionaryUtil.SINGLE_PARAM_FLAG);
+                                obj.put("img64", info.get("img64"));
+                                obj.put("id", info.getString("id"));
+                                PanelTaskMessage pMes = new PanelTaskMessage(DictionaryUtil.TASK_UPDATE_SCREENSHOT, obj);
+                                WebsocketTask.sendMessageToUser(taskDetailVO.getTaskId(), taskDetailVO.getUserId(), pMes);
+                                break;
+                            }
+                        }
+                    }
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("now", nextNode);
                     jsonObject.put("next", rpaTaskStructure.globalQueueTop());

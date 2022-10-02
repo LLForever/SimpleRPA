@@ -86,6 +86,14 @@ export default {
                 this.$refs.myPanel.setStatusForTwoNode(res.jsonObject.now, 'success');
                 this.$refs.myPanel.setStatusForTwoNode(res.jsonObject.next, 'running');
             }else if(res.actionType === 102){
+            }else if(res.actionType === 201){
+                console.log(res.jsonObject)
+                this.$refs.myPanel.data.nodeList.filter((node)=>{
+                    if(node.id === res.jsonObject.id){
+                        node.params.img64 = res.jsonObject.img64
+                        return
+                    }
+                })
             }else{
                 this.$message.info(res.actionType + ' ' + res.message)
             }

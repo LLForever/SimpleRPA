@@ -2,6 +2,7 @@ package com.simplerpa.cloudservice.utils.factory.other;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.common.core.utils.StringUtils;
 import com.simplerpa.cloudservice.entity.InputSourceParams;
 import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
@@ -23,7 +24,7 @@ public class DateToTimestampNodeFactory implements RpaNodeFactory {
         JSONObject params = taskNodeDetail.getParams();
         String inputSource = params.getString("inputText");
         JSONObject input = JSON.parseObject(inputSource);
-        if(inputSource == null){
+        if(StringUtils.isEmpty(inputSource)){
             throw new Exception(this.getClass().getName() + "缺少输入参数信息！");
         }
         node.setInputSource(new InputSourceParams(input));

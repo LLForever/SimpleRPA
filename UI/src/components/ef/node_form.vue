@@ -27,18 +27,24 @@
                         </el-card>
                     </el-form-item>
 
+                    <el-form-item label="输入源" v-if="node.id && node.params.source !== undefined">
+                        <s-input v-model="node.params.source" :list="inputParamList"></s-input>
+                    </el-form-item>
+
                     <el-form-item label="网页源" v-if="node.id && node.params.inputSource !== undefined">
 <!--                        <el-input v-model="node.params.inputSource.parentSource"></el-input>-->
                         <s-input v-model="node.params.inputSource.parentSource"
                                  :list="inputParamList"
-                                 :node-type="node"
                                  :is-web="true"
                                  @flush_child="flushWebInputSource"
                         ></s-input>
                     </el-form-item>
 
+                    <el-form-item label="查看截图" v-if="node.id && node.type === 'get_screenshot'">
+                        <el-button @click="openScreenshotDialog">点击查看</el-button>
+                    </el-form-item>
+
                     <el-form-item label="网络链接" v-if="node.id && node.params.URL !== undefined">
-<!--                        <el-input v-model="node.params.URL"></el-input>-->
                         <s-input v-model="node.params.URL" :list="inputParamList"></s-input>
                     </el-form-item>
 
@@ -91,6 +97,15 @@
                 </el-form>
             </div>
             <!--            <div class="el-node-form-tag"></div>-->
+            <el-dialog
+                title="查看图片"
+                :visible.sync="screenshot_show_dialog"
+            >
+                <img :src="screenshot_img64">
+                <span slot="footer" class="dialog-footer">
+                    <el-button type="primary" @click="screenshot_show_dialog = false">确 定</el-button>
+                </span>
+            </el-dialog>
         </div>
     </div>
 
@@ -126,7 +141,9 @@
                     state: 'running',
                     label: '运行中'
                 }],
-                inputParamList: []
+                inputParamList: [],
+                screenshot_show_dialog: false,
+                screenshot_img64: ''
             }
         },
         components: {
@@ -173,8 +190,8 @@
                                 this.inputParamList.push(node.params.outputParamName)
                             }
                         }
-                        console.log(this.data)
-                        console.log(this.node)
+                        // console.log(this.data)
+                        // console.log(this.node)
                         this.$emit('repaintEverything')
                     }
                 })
@@ -215,12 +232,14 @@
                 }
             },
             setInputParamList(list) {
-                console.log('setinput')
                 this.inputParamList = list;
             },
             flushWebInputSource(json){
-                console.log('childSource changed')
                 this.node.params.inputSource.childSource = json.childParam
+            },
+            openScreenshotDialog(){
+                this.screenshot_show_dialog = true
+                this.screenshot_img64 = 'data:image/png;base64,' + this.node.params.img64
             }
         }
     }

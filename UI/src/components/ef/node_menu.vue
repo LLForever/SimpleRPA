@@ -133,7 +133,10 @@ export default {
                             ico: 'el-icon-document-add',
                             // 自定义覆盖样式
                             style: {},
-                            params: {}
+                            params: {
+                                source: '',
+                                inputText: ''
+                            }
                         },
                         {
                             id: '33',
@@ -142,7 +145,10 @@ export default {
                             ico: 'el-icon-c-scale-to-original',
                             // 自定义覆盖样式
                             style: {},
-                            params: {}
+                            params: {
+                                source: '',
+                                outputParamName: ''
+                            }
                         },
                         {
                             id: '34',
@@ -397,7 +403,13 @@ export default {
                             ico: 'el-icon-s-platform',
                             // 自定义覆盖样式
                             style: {},
-                            params: {}
+                            params: {
+                                inputSource: {
+                                    parentSource: '',
+                                    childSource: ''
+                                },
+                                img64: ''
+                            }
                         },
                         {
                             id: '610',

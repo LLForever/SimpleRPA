@@ -39,6 +39,7 @@ public class DictionaryUtil {
 
     // 任务运行时反馈信息
     public static final Integer TASK_MESSAGE_OK = 200;
+    public static final Integer TASK_UPDATE_SCREENSHOT = 201;
     public static final Integer TASK_MESSAGE_STOP = -999;
     public static final Integer TASK_MESSAGE_RUN_ERROR = 999;
     public static final Integer TASK_MESSAGE_EXPLAIN_ERROR = 998;
@@ -52,4 +53,5 @@ public class DictionaryUtil {
     public static final String SINGLE_PARAM_FLAG = "_@SINGLE_PARAM_FLAG@";
     public static final String HTML_FLAG = "_@HTML_FLAG@";
     public static final String GET_NEXT_NODE_FLAG = "_@GET_NEXT_NODE_FLAG@";
+    public static final String NO_MERGE_FLAG = "_@NO_MERGE_FLAG@";
 }

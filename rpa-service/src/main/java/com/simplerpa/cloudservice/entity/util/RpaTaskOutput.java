@@ -45,7 +45,14 @@ public class RpaTaskOutput {
     }
 
     public ArrayList<JSONObject> getResultByParamName(String str){
+        if(!hasParam(str)){
+            return null;
+        }
         return output.get(str);
+    }
+
+    public boolean hasParam(String str){
+        return output.containsKey(str);
     }
 
     /**
