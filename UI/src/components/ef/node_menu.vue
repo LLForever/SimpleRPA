@@ -157,7 +157,10 @@ export default {
                             ico: 'el-icon-files',
                             // 自定义覆盖样式
                             style: {},
-                            params: {}
+                            params: {
+                                source: '',
+                                outputParamName: ''
+                            }
                         },
                         {
                             id: '35',
@@ -166,7 +169,12 @@ export default {
                             ico: 'el-icon-document',
                             // 自定义覆盖样式
                             style: {},
-                            params: {}
+                            params: {
+                                source: '',
+                                inputText: '',
+                                targetText: '',
+                                allReplace: true
+                            }
                         },
                         {
                             id: '36',
@@ -193,7 +201,11 @@ export default {
                             ico: 'el-icon-document-remove',
                             // 自定义覆盖样式
                             style: {},
-                            params: {}
+                            params: {
+                                source: '',
+                                outputParamName: '',
+                                rowNum: 0
+                            }
                         }
                     ]
                 },
@@ -515,6 +527,24 @@ export default {
                             params: {
                                 inputText: ''
                             }
+                        }
+                    ]
+                },
+                {
+                    id: '8',
+                    type: 'group',
+                    name: 'AI增强',
+                    ico: '',
+                    open: true,
+                    children: [
+                        {
+                            id: '81',
+                            type: 'split_sentence',
+                            name: '分词',
+                            ico: 'el-icon-cpu',
+                            // 自定义覆盖样式
+                            style: {},
+                            params: {}
                         }
                     ]
                 }
