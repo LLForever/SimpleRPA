@@ -54,4 +54,6 @@ public class DictionaryUtil {
     public static final String HTML_FLAG = "_@HTML_FLAG@";
     public static final String GET_NEXT_NODE_FLAG = "_@GET_NEXT_NODE_FLAG@";
     public static final String NO_MERGE_FLAG = "_@NO_MERGE_FLAG@";
+
+    public static final String AI_SERVER_URL = "http://192.168.103.99:10000/aienhance";
 }
