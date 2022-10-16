@@ -10,6 +10,8 @@ import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.ArrayList;
 
@@ -57,6 +59,8 @@ public abstract class WebAction extends IRpaTaskNode {
 
     public WebElement getElement(WebDriver webDriver, ArrayList<JSONObject> list){
         if(StringUtils.isNotEmpty(xPath)){
+            WebDriverWait webDriverWait = new WebDriverWait(webDriver, 3);
+            webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(xPath)));
             return webDriver.findElement(By.xpath(xPath));
         }else if(StringUtils.isNotEmpty(inputSourceParams.getChildSource())){
             for (JSONObject jsonObject : list) {

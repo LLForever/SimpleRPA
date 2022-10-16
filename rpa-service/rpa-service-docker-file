@@ -1,0 +1,5 @@
+FROM openjdk:8
+VOLUME /tmp
+workdir .
+COPY . .
+ENTRYPOINT ["java","-jar","./rpa-service.jar"]

@@ -97,6 +97,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <mainClass>com.ruoyi.gateway.RuoYiGatewayApplication</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>

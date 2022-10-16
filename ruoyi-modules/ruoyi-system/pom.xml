@@ -93,6 +93,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <mainClass>com.ruoyi.system.RuoYiSystemApplication</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>

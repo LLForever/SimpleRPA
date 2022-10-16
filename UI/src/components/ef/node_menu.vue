@@ -539,12 +539,34 @@ export default {
                     children: [
                         {
                             id: '81',
-                            type: 'split_sentence',
-                            name: '分词',
+                            type: 'ai_ocr',
+                            name: 'OCR',
                             ico: 'el-icon-cpu',
                             // 自定义覆盖样式
                             style: {},
-                            params: {}
+                            params: {
+                                inputSource: {
+                                    parentSource: '',
+                                    childSource: ''
+                                },
+                                outputParamName: ''
+                            }
+                        },
+                        {
+                            id: '82',
+                            type: 'ai_table_ocr',
+                            name: '表格识别',
+                            ico: 'el-icon-cpu',
+                            // 自定义覆盖样式
+                            style: {},
+                            params: {
+                                inputSource: {
+                                    parentSource: '',
+                                    childSource: ''
+                                },
+                                outputParamName: '',
+                                outputAttributeList: []
+                            }
                         }
                     ]
                 }

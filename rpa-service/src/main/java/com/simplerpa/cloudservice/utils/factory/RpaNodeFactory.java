@@ -2,6 +2,8 @@ package com.simplerpa.cloudservice.utils.factory;
 
 import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
+import com.simplerpa.cloudservice.utils.factory.aiEnhance.ImageOcrNodeFactory;
+import com.simplerpa.cloudservice.utils.factory.aiEnhance.ImageTableOcrNodeFactory;
 import com.simplerpa.cloudservice.utils.factory.dataproc.*;
 import com.simplerpa.cloudservice.utils.factory.other.*;
 import com.simplerpa.cloudservice.utils.factory.read.ReadCSVNodeFactory;
@@ -49,6 +51,9 @@ public interface RpaNodeFactory {
             case "date_to_timestamp" : return new DateToTimestampNodeFactory(taskNodeDetail);
             case "timestamp_to_date" : return new TimestampToDateNodeFactory(taskNodeDetail);
 
+            // id: 8X
+            case "ai_ocr": return new ImageOcrNodeFactory(taskNodeDetail);
+            case "ai_table_ocr": return new ImageTableOcrNodeFactory(taskNodeDetail);
         }
         return null;
     }

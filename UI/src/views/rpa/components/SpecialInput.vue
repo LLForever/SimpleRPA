@@ -9,8 +9,7 @@
         </el-col>
         <el-dialog
             title="选择参数"
-            :visible.sync="dialogVisible"
-            width="30%">
+            :visible.sync="dialogVisible">
             <el-row :gutter="10">
                 <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="4">父节点名称</el-col>
                 <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="16">
@@ -28,9 +27,18 @@
             <el-row :gutter="10">
                 <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="4">子节点名称</el-col>
                 <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="9">
-                    <el-input v-model="childParam" placeholder="可为空"></el-input>
+                    <el-input v-if="show_child" v-model="childParam" placeholder="可为空"></el-input>
+                    <el-select v-if="!show_child" v-model="childParam" placeholder="请选择" :popper-append-to-body="false">
+                        <el-option
+                            v-for="item in list"
+                            :key="item"
+                            :label="item"
+                            :value="item">
+                        </el-option>
+                    </el-select>
                 </el-col>
             </el-row>
+            <el-checkbox v-model="show_child">自定义</el-checkbox>
             <span slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="closeDialog">确 定</el-button>
             </span>
@@ -56,7 +64,8 @@ export default {
             vis: true,
             dialogVisible: false,
             childParam: null,
-            parentParam: ''
+            parentParam: '',
+            show_child: true
         }
     },
     mounted() {

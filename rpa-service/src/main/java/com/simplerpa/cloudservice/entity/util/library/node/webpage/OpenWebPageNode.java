@@ -8,6 +8,7 @@ import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 public class OpenWebPageNode extends IRpaTaskNode {
     private String URL;
@@ -24,8 +25,18 @@ public class OpenWebPageNode extends IRpaTaskNode {
             throw new Exception(this.getClass().getName() + " : 缺少必要参数，执行失败！");
         }
         JSONObject jsonObject = new JSONObject();
-        WebDriverManager.chromedriver().setup();
-        WebDriver webDriver = new ChromeDriver();
+//        WebDriverManager.globalConfig().setUseMirror(true);
+//        WebDriverManager.chromedriver().setup();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless"); //无浏览器模式
+        options.addArguments("--no-sandbox");// 为了让root用户也能执行
+
+        // 优化参数
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("blink-settings=imagesEnabled=false");
+        options.addArguments("--disable-gpu");
+
+        WebDriver webDriver = new ChromeDriver(options);
         webDriver.get(getURL());
         jsonObject.put(DictionaryUtil.HTML_FLAG, webDriver);
         addOutput(jsonObject);

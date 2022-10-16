@@ -78,6 +78,28 @@
                         <el-input v-model="node.params.outputParamName"></el-input>
                     </el-form-item>
 
+                    <el-form-item label="识别属性" v-if="node.id && node.params.outputAttributeList !== undefined">
+                        <el-tag
+                            v-for="tag in node.params.outputAttributeList"
+                            :key="tag"
+                            closable
+                            :disable-transitions="false"
+                            @close="outputAttributeListTagClose(tag)">
+                            {{tag}}
+                        </el-tag>
+                        <el-input
+                            class="input-new-tag"
+                            v-if="addAttrInputVisible"
+                            v-model="attrInputValue"
+                            ref="addTagInput"
+                            size="small"
+                            @keyup.enter.native="handleNewAttrInputConfirm"
+                            @blur="handleNewAttrInputConfirm"
+                        >
+                        </el-input>
+                        <el-button v-else class="button-new-tag" size="small" @click="showAddNewAttrButton">+ 新属性</el-button>
+                    </el-form-item>
+
                     <el-divider></el-divider>
 
                     <el-form-item label="状态">
@@ -151,7 +173,9 @@
                 }],
                 inputParamList: [],
                 screenshot_show_dialog: false,
-                screenshot_img64: ''
+                screenshot_img64: '',
+                addAttrInputVisible: false,
+                attrInputValue: ''
             }
         },
         components: {
@@ -248,6 +272,23 @@
             openScreenshotDialog(){
                 this.screenshot_show_dialog = true
                 this.screenshot_img64 = 'data:image/png;base64,' + this.node.params.img64
+            },
+            outputAttributeListTagClose(tag) {
+                this.node.params.outputAttributeList.splice(this.node.params.outputAttributeList.indexOf(tag), 1);
+            },
+            showAddNewAttrButton() {
+                this.addAttrInputVisible = true;
+                this.$nextTick(_ => {
+                    this.$refs.addTagInput.$refs.input.focus();
+                });
+            },
+            handleNewAttrInputConfirm() {
+                let inputValue = this.attrInputValue;
+                if (inputValue) {
+                    this.node.params.outputAttributeList.push(inputValue);
+                }
+                this.addAttrInputVisible = false;
+                this.attrInputValue = '';
             }
         }
     }

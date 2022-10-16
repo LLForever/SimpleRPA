@@ -1,10 +1,14 @@
 package com.simplerpa.cloudservice.utils;
 
+import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.simplerpa.cloudservice.entity.TaskLineDetail;
 import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import com.simplerpa.cloudservice.entity.VO.TaskDetailVO;
 import com.simplerpa.cloudservice.entity.util.RpaTaskStructure;
+import com.simplerpa.cloudservice.entity.util.library.tools.AiEnhanceTool;
 import com.simplerpa.cloudservice.utils.factory.RpaNodeFactory;
+import io.github.bonigarcia.wdm.WebDriverManager;
 
 /**
  * @Description: TODO
@@ -31,5 +35,15 @@ public class RpaTaskExplainer {
 //            throw new Exception("RpaTaskExplainer : 无法完成拓扑排序，请检查是否存在环！");
 //        }
         return rpaTaskStructure;
+    }
+//
+    public static void main(String[] args) {
+        try {
+            String url = "https://img-qn-0.51miz.com/preview/templet/00/00/16/53/T-165302-167D6594Ab.jpg!/quality/90/unsharp/true/compress/true/fw/640/clip/640x500a0a0";
+            JSONObject ocrResult = AiEnhanceTool.getAiResult(url, "TABLE_OCR");
+            System.out.println(JSONObject.toJSONString(ocrResult));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
