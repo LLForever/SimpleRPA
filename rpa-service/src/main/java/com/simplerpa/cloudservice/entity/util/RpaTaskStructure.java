@@ -3,6 +3,7 @@ package com.simplerpa.cloudservice.entity.util;
 import com.alibaba.fastjson.JSONObject;
 import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
+import com.simplerpa.cloudservice.entity.util.library.node.loop.ForLoopNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -102,24 +103,25 @@ public class RpaTaskStructure {
                     inDegreeList.put(nextNodeId, inDegreeList.get(nextNodeId)-1);
                     // 如果邻接节点的入度为0，则将其添加到队列中
                     if(inDegreeList.get(nextNodeId) == 0) {
-                        if (!specialNodeType.contains(nowExecuteNodeType)) {
-                            globalQueue.add(nextNodeId);
-                        }
+//                        if (!specialNodeType.contains(nowExecuteNodeType)) {
+//                            globalQueue.add(nextNodeId);
+//                        }
+                        globalQueue.add(nextNodeId);
                     }
                 }
             }
-            if(specialNodeType.contains(nowExecuteNodeType)){
-                RpaTaskOutput temp = new RpaTaskOutput();
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("RpaTaskStructure", this);
-                temp.addObject(DictionaryUtil.GET_NEXT_NODE_FLAG, jsonObject);
-                IRpaTaskNode rpaTaskNode = findRpaTaskNode(node);
-                try {
-                    rpaTaskNode.run(temp);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
+//            if(specialNodeType.contains(nowExecuteNodeType)){
+//                RpaTaskOutput temp = new RpaTaskOutput();
+//                JSONObject jsonObject = new JSONObject();
+//                jsonObject.put("RpaTaskStructure", this);
+//                temp.addObject(DictionaryUtil.GET_NEXT_NODE_FLAG, jsonObject);
+//                IRpaTaskNode rpaTaskNode = findRpaTaskNode(node);
+//                try {
+//                    rpaTaskNode.run(temp);
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
+//            }
         }
         return node;
     }

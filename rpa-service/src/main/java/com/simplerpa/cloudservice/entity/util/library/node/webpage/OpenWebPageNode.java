@@ -25,7 +25,7 @@ public class OpenWebPageNode extends IRpaTaskNode {
             throw new Exception(this.getClass().getName() + " : 缺少必要参数，执行失败！");
         }
         JSONObject jsonObject = new JSONObject();
-//        WebDriverManager.globalConfig().setUseMirror(true);
+//        WebDriverManager.globalConfig();
 //        WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless"); //无浏览器模式

@@ -43,6 +43,35 @@ public abstract class IRpaTaskNode {
         }
         return str;
     }
+
+    protected Object getObjectByParams(String str, RpaTaskOutput output){
+        if(str == null){
+            return str;
+        }
+        JSONObject jsonObject;
+        try {
+            jsonObject = JSONObject.parseObject(str);
+        } catch (Exception e) {
+            return null;
+        }
+        if (jsonObject.containsKey("parentSource")) {
+            ArrayList<JSONObject> resultByParamName = output.getResultByParamName(jsonObject.getString("parentSource"));
+            String targetName = DictionaryUtil.SINGLE_PARAM_FLAG;
+            if (jsonObject.containsKey("childSource")) {
+                String childSource = jsonObject.getString("childSource");
+                if(StringUtils.isNotEmpty(childSource)){
+                    targetName = childSource;
+                }
+            }
+            for (JSONObject json : resultByParamName) {
+                if (json.containsKey(targetName)) {
+                    return json.get(targetName);
+                }
+            }
+        }
+        return null;
+    }
+
     public TaskNodeDetail getRpaTaskDetail(){
         return nodeDetail;
     }

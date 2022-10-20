@@ -250,7 +250,10 @@ export default {
                             ico: 'el-icon-refresh-right',
                             // 自定义覆盖样式
                             style: {},
-                            params: {}
+                            params: {
+                                startPos: 0,
+                                endPos: 0
+                            }
                         },
                         {
                             id: '52',

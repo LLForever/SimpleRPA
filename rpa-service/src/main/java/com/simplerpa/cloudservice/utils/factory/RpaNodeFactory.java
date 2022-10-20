@@ -5,6 +5,8 @@ import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 import com.simplerpa.cloudservice.utils.factory.aiEnhance.ImageOcrNodeFactory;
 import com.simplerpa.cloudservice.utils.factory.aiEnhance.ImageTableOcrNodeFactory;
 import com.simplerpa.cloudservice.utils.factory.dataproc.*;
+import com.simplerpa.cloudservice.utils.factory.loop.ForLoopNodeFactory;
+import com.simplerpa.cloudservice.utils.factory.loop.LoopEndNodeFactory;
 import com.simplerpa.cloudservice.utils.factory.other.*;
 import com.simplerpa.cloudservice.utils.factory.read.ReadCSVNodeFactory;
 import com.simplerpa.cloudservice.utils.factory.read.ReadExcelNodeFactory;
@@ -30,6 +32,10 @@ public interface RpaNodeFactory {
             case "text_length": return new TextLengthNodeFactory(taskNodeDetail);
             case "replace_text": return new ReplaceTextNodeFactory(taskNodeDetail);
             case "obj_to_text": return new ObjToTextNodeFactory(taskNodeDetail);
+
+            // id: 5X
+            case "loop_end": return new LoopEndNodeFactory(taskNodeDetail);
+            case "for_loop": return new ForLoopNodeFactory(taskNodeDetail);
 
             // id: 6X
             case "open_page" : return new OpenWebPageNodeFactory(taskNodeDetail);

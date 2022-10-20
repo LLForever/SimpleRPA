@@ -7,6 +7,7 @@ import com.simplerpa.cloudservice.entity.util.DictionaryUtil;
 import com.simplerpa.cloudservice.entity.util.RpaTaskOutput;
 import com.simplerpa.cloudservice.entity.util.RpaTaskStructure;
 import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
+import com.simplerpa.cloudservice.entity.util.library.node.loop.ForLoopNode;
 import com.simplerpa.cloudservice.websocket.WebsocketTask;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
@@ -35,6 +36,26 @@ public class RpaTaskExecutor implements Runnable{
             while(!rpaTaskStructure.isEnd()){
                 String nextNode = rpaTaskStructure.getNextNodeId();
                 IRpaTaskNode rpaTaskNode = rpaTaskStructure.findRpaTaskNode(nextNode);
+
+                if("for_loop".equals(rpaTaskNode.getRpaTaskDetail().getType())){
+                    ForLoopNode forLoopNode = (ForLoopNode) rpaTaskNode;
+                    while(true){
+                        String nextNodeId = rpaTaskStructure.getNextNodeId();
+                        IRpaTaskNode n = rpaTaskStructure.findRpaTaskNode(nextNodeId);
+
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("now", nextNodeId);
+                        jsonObject.put("next", rpaTaskStructure.globalQueueTop());
+                        PanelTaskMessage panelTaskMessage =
+                                new PanelTaskMessage(DictionaryUtil.TASK_MESSAGE_OK, jsonObject);
+                        WebsocketTask.notifyObserver(taskDetailVO.getTaskId(), panelTaskMessage);
+
+                        if(!forLoopNode.addNode(n)){
+                            break;
+                        }
+                    }
+                }
+
                 try{
                     RpaTaskOutput res = rpaTaskNode.run(allOutput);
                     if(res == null || !res.hasParam(DictionaryUtil.NO_MERGE_FLAG)){
@@ -59,7 +80,7 @@ public class RpaTaskExecutor implements Runnable{
                     PanelTaskMessage panelTaskMessage =
                             new PanelTaskMessage(DictionaryUtil.TASK_MESSAGE_OK, jsonObject);
                     WebsocketTask.notifyObserver(taskDetailVO.getTaskId(), panelTaskMessage);
-                    Thread.sleep(100);
+//                    Thread.sleep(10);
                 }catch (Exception e){
                     e.printStackTrace();
                     WebsocketTask.getTaskDetailService().changeRpaTaskStatus(DictionaryUtil.TASK_STATUS_ERROR, taskDetailVO.getTaskId(), taskDetailVO.getUserId());

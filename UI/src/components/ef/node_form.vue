@@ -66,6 +66,14 @@
                         <el-input v-model="node.params.sleepTime"></el-input>
                     </el-form-item>
 
+                    <el-form-item label="起始位置" v-if="node.id && node.params.startPos !== undefined">
+                        <s-input v-model="node.params.startPos" :list="inputParamList"></s-input>
+                    </el-form-item>
+
+                    <el-form-item label="终止位置" v-if="node.id && node.params.endPos !== undefined">
+                        <s-input v-model="node.params.endPos" :list="inputParamList"></s-input>
+                    </el-form-item>
+
                     <el-form-item label="目标内容" v-if="node.id && node.params.targetText !== undefined">
                         <s-input v-model="node.params.targetText" :list="inputParamList"></s-input>
                     </el-form-item>
@@ -131,7 +139,7 @@
                 title="查看图片"
                 :visible.sync="screenshot_show_dialog"
             >
-                <img :src="screenshot_img64">
+                <img :src="screenshot_img64"/>
                 <span slot="footer" class="dialog-footer">
                     <el-button type="primary" @click="screenshot_show_dialog = false">确 定</el-button>
                 </span>

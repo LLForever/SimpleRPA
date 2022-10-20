@@ -3,7 +3,9 @@ FROM openjdk:8
 VOLUME /tmp
 # 将jar包添加到容器中并更名
 workdir .
-COPY . .
+COPY rpa-service.jar .
+COPY google-chrome-stable_current_amd64.deb .
+COPY chromedriver /usr/local/bin
 RUN chmod 777 google-chrome-stable_current_amd64.deb
 RUN apt-get update
 RUN apt install ./google-chrome-stable_current_amd64.deb -y
