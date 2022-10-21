@@ -39,7 +39,7 @@ public class RpaTaskExplainer {
 //
     public static void main(String[] args) {
         try {
-            String url = "https://img-qn-0.51miz.com/preview/templet/00/00/16/53/T-165302-167D6594Ab.jpg!/quality/90/unsharp/true/compress/true/fw/640/clip/640x500a0a0";
+            String url = "https://ai.bdstatic.com/file/5DA8385D9D9F42CE866DB9738F68F7DB";
             JSONObject ocrResult = AiEnhanceTool.getAiResult(url, "TABLE_OCR");
             System.out.println(JSONObject.toJSONString(ocrResult));
         } catch (Exception e) {
