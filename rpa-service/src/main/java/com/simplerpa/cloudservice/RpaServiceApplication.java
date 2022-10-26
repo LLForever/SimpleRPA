@@ -16,7 +16,7 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @EnableCustomConfig
 @EnableRyFeignClients
-@MapperScan("com.simplerpa.cloudservice.mapper.**")
+@MapperScan("com.simplerpa.cloudservice.mapper")
 public class RpaServiceApplication {
     public static void main(String[] args){
         SpringApplication.run(RpaServiceApplication.class, args);

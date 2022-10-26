@@ -7,6 +7,7 @@ COPY rpa-service.jar .
 COPY google-chrome-stable_current_amd64.deb .
 COPY chromedriver /usr/local/bin
 RUN chmod 777 google-chrome-stable_current_amd64.deb
+RUN chmod 777 /usr/local/bin/chromedriver
 RUN apt-get update
 RUN apt install ./google-chrome-stable_current_amd64.deb -y
 ENTRYPOINT ["java","-jar","./rpa-service.jar"]

@@ -31,6 +31,8 @@ public class RpaTaskStructure {
     // 节点执行序列
     private ArrayList<String> executeList;
 
+    private Long taskId;
+
     private ArrayList<String> globalQueue;
     private String nowExecuteNodeType;
     private HashSet<String> specialNodeType;
@@ -234,5 +236,13 @@ public class RpaTaskStructure {
 
     public void setInDegreeList(HashMap<String, Integer> inDegreeList) {
         this.inDegreeList = inDegreeList;
+    }
+
+    public Long getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
     }
 }

@@ -21,14 +21,19 @@ public class ForLoopNodeFactory implements RpaNodeFactory {
         JSONObject params = taskNodeDetail.getParams();
         String startPos = params.getString("startPos");
         String endPos = params.getString("endPos");
+        String outputParamName = params.getString("outputParamName");
         if(StringUtils.isEmpty(startPos)){
             throw new Exception(this.getClass().getName() + "缺少循环起始位置信息！");
         }
         if(StringUtils.isEmpty(endPos)){
             throw new Exception(this.getClass().getName() + "缺少循环终止位置信息！");
         }
+        if(StringUtils.isEmpty(outputParamName)){
+            throw new Exception(this.getClass().getName() + " : 没有数据输出参数名称！解析失败！");
+        }
         node.setStartPos(startPos);
         node.setEndPos(endPos);
+        node.setOutputParamName(outputParamName);
         return node;
     }
 }

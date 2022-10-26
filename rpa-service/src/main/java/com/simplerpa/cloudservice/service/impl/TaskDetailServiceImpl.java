@@ -1,13 +1,19 @@
 package com.simplerpa.cloudservice.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.simplerpa.cloudservice.entity.RpaTaskNodeFile;
 import com.simplerpa.cloudservice.entity.util.DictionaryUtil;
+import com.simplerpa.cloudservice.mapper.RpaTaskNodeFileMapper;
 import com.simplerpa.cloudservice.mapper.TaskDetailMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.simplerpa.cloudservice.entity.TaskDetail;
 import com.simplerpa.cloudservice.service.ITaskDetailService;
+
+import javax.annotation.Resource;
 
 /**
  * rpa面板任务详情Service业务层处理
@@ -20,6 +26,9 @@ public class TaskDetailServiceImpl implements ITaskDetailService
 {
     @Autowired
     private TaskDetailMapper taskDetailMapper;
+
+    @Autowired
+    private RpaTaskNodeFileMapper fileMapper;
 
     /**
      * 查询rpa面板任务详情
@@ -117,5 +126,23 @@ public class TaskDetailServiceImpl implements ITaskDetailService
         return false;
     }
 
-
+    @Override
+    public Boolean saveImageInfo(Long taskId, String nodeId, byte[] img) {
+        RpaTaskNodeFile nodeFile = new RpaTaskNodeFile();
+        nodeFile.setNodeId(nodeId);
+        nodeFile.setTaskId(taskId);
+        nodeFile.setImg(img);
+        Map<String, Object> param = new HashMap<>();
+        param.put("node_id", nodeId);
+        param.put("task_id", taskId);
+        List<RpaTaskNodeFile> files = fileMapper.selectByMap(param);
+        int changedNum;
+        if(files.size() == 0){
+            changedNum = fileMapper.insert(nodeFile);
+        }else{
+            nodeFile.setId(files.get(0).getId());
+            changedNum = fileMapper.updateById(nodeFile);
+        }
+        return changedNum > 0;
+    }
 }

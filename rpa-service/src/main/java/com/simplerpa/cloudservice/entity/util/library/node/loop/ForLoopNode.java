@@ -2,6 +2,7 @@ package com.simplerpa.cloudservice.entity.util.library.node.loop;
 
 import com.alibaba.fastjson.JSONObject;
 import com.simplerpa.cloudservice.entity.TaskNodeDetail;
+import com.simplerpa.cloudservice.entity.util.DictionaryUtil;
 import com.simplerpa.cloudservice.entity.util.RpaTaskOutput;
 import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 
@@ -9,7 +10,7 @@ import java.util.AbstractCollection;
 import java.util.ArrayList;
 
 public class ForLoopNode extends IRpaTaskNode {
-    String startPos, endPos;
+    String startPos, endPos, outputParamName;
     ArrayList<IRpaTaskNode> forList;
     private static final String LOOP_END = "loop_end";
 
@@ -24,8 +25,11 @@ public class ForLoopNode extends IRpaTaskNode {
             return null;
         }
         detectParamsValue(input);
+        JSONObject jsonObject = new JSONObject();
         int i = Integer.parseInt(startPos), end = Integer.parseInt(endPos);
         for(; i<end; i++){
+            jsonObject.put(DictionaryUtil.SINGLE_PARAM_FLAG, i);
+            input.addObject(outputParamName, jsonObject);
             for (IRpaTaskNode node : forList) {
                 RpaTaskOutput run = node.run(input);
                 input.mergeOutput(run);
@@ -79,5 +83,13 @@ public class ForLoopNode extends IRpaTaskNode {
 
     public void setEndPos(String endPos) {
         this.endPos = endPos;
+    }
+
+    public String getOutputParamName() {
+        return outputParamName;
+    }
+
+    public void setOutputParamName(String outputParamName) {
+        this.outputParamName = outputParamName;
     }
 }

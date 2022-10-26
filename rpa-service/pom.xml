@@ -118,23 +118,11 @@
             <version>5.8.8</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>ai.djl</groupId>-->
-<!--            <artifactId>api</artifactId>-->
-<!--            <version>0.17.0</version>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>ai.djl.paddlepaddle</groupId>-->
-<!--            <artifactId>paddlepaddle-model-zoo</artifactId>-->
-<!--            <version>0.17.0</version>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>ai.djl.paddlepaddle</groupId>-->
-<!--            <artifactId>paddlepaddle-native-auto</artifactId>-->
-<!--            <version>2.0.2</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>3.5.2</version>
+        </dependency>
     </dependencies>
 
     <build>

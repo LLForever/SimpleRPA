@@ -9,7 +9,6 @@ import com.simplerpa.cloudservice.entity.util.RpaTaskOutput;
 import java.util.ArrayList;
 
 public abstract class IRpaTaskNode {
-    private static final String VARIABLE_FLAG = "{";
     protected TaskNodeDetail nodeDetail;
     public abstract RpaTaskOutput run(RpaTaskOutput input) throws Exception;
     public abstract void detectParamsValue(RpaTaskOutput input);

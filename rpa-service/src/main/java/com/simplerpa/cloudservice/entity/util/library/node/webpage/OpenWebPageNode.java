@@ -35,6 +35,7 @@ public class OpenWebPageNode extends IRpaTaskNode {
         options.addArguments("--disable-dev-shm-usage");
         options.addArguments("blink-settings=imagesEnabled=false");
         options.addArguments("--disable-gpu");
+        options.addArguments("lang=zh_CN.UTF-8");
 
         WebDriver webDriver = new ChromeDriver(options);
         webDriver.get(getURL());

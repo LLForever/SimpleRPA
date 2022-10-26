@@ -253,7 +253,8 @@ export default {
                             params: {
                                 startPos: 0,
                                 endPos: 0
-                            }
+                            },
+                            outputParamName: ''
                         },
                         {
                             id: '52',

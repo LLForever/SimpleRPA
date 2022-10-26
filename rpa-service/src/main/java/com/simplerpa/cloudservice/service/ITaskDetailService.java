@@ -73,4 +73,6 @@ public interface ITaskDetailService
      * @param status RPA状态字段
      * */
     public Boolean changeRpaTaskStatus(String status, Long taskId, Long userId);
+
+    public Boolean saveImageInfo(Long taskId, String nodeId, byte[] img);
 }

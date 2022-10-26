@@ -22,9 +22,9 @@ public class GetObjRowNodeFactory implements RpaNodeFactory {
         JSONObject params = taskNodeDetail.getParams();
         String outputParam = params.getString("outputParamName");
         String sourceText = params.getString("source");
-        Integer rowNum = params.getInteger("rowNum");
+        String rowNum = params.getString("rowNum");
         JSONObject source = JSON.parseObject(sourceText);
-        if(rowNum == null){
+        if(StringUtils.isEmpty(rowNum)){
             throw new Exception(this.getClass().getName() + " : 没有填写数组指定行数！");
         }
         if(StringUtils.isEmpty(outputParam)){
@@ -34,7 +34,7 @@ public class GetObjRowNodeFactory implements RpaNodeFactory {
             throw new Exception(this.getClass().getName() + "缺少输入参数信息！");
         }
         node.setOutputParamName(outputParam);
-        node.setRowNum(rowNum);
+        node.setRowNumStr(rowNum);
         node.setInputSource(new InputSourceParams(source));
         return node;
     }

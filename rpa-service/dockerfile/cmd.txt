@@ -1,8 +1,6 @@
 docker build -f rpa-service-docker-file -t rpa-service:1.0 .
 docker run -d -p 12022:12022 --name rpa-service 09f7dc80ed20
 
-docker cp chromedriver f50055c511f2:/usr/local/bin/chromedriver
-
 docker build -f ruoyi-auth-docker-file -t ruoyi-auth:1.0 .
 docker run -d -p 9200:9200 --name ruoyi-auth 09f7dc80ed20
 

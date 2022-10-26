@@ -74,6 +74,10 @@
                         <s-input v-model="node.params.endPos" :list="inputParamList"></s-input>
                     </el-form-item>
 
+                    <el-form-item label="指定行" v-if="node.id && node.params.rowNum !== undefined">
+                        <s-input v-model="node.params.rowNum" :list="inputParamList"></s-input>
+                    </el-form-item>
+
                     <el-form-item label="目标内容" v-if="node.id && node.params.targetText !== undefined">
                         <s-input v-model="node.params.targetText" :list="inputParamList"></s-input>
                     </el-form-item>

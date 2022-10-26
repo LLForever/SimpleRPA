@@ -64,12 +64,11 @@ public class RpaTaskExecutor implements Runnable{
                         ArrayList<JSONObject> resultByParamName = res.getResultByParamName(DictionaryUtil.NO_MERGE_FLAG);
                         for(JSONObject object : resultByParamName){
                             if(object.containsKey(DictionaryUtil.SINGLE_PARAM_FLAG)){
-                                JSONObject obj = new JSONObject();
                                 JSONObject info = (JSONObject) object.get(DictionaryUtil.SINGLE_PARAM_FLAG);
-                                obj.put("img64", info.get("img64"));
-                                obj.put("id", info.getString("id"));
-                                PanelTaskMessage pMes = new PanelTaskMessage(DictionaryUtil.TASK_UPDATE_SCREENSHOT, obj);
-                                WebsocketTask.sendMessageToUser(taskDetailVO.getTaskId(), taskDetailVO.getUserId(), pMes);
+                                byte[] img64 = info.getBytes("img64");
+                                String nodeId = info.getString("id");
+                                Long taskId = rpaTaskStructure.getTaskId();
+                                WebsocketTask.getTaskDetailService().saveImageInfo(taskId, nodeId, img64);
                                 break;
                             }
                         }

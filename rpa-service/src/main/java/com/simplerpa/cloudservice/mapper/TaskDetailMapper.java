@@ -1,7 +1,9 @@
 package com.simplerpa.cloudservice.mapper;
 
 import java.util.List;
+
 import com.simplerpa.cloudservice.entity.TaskDetail;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -10,7 +12,8 @@ import org.apache.ibatis.annotations.Param;
  * @author simpleRPA
  * @date 2022-04-20
  */
-public interface TaskDetailMapper 
+@Mapper
+public interface TaskDetailMapper
 {
     /**
      * 查询rpa面板任务详情

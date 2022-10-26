@@ -11,7 +11,7 @@ import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 import java.util.*;
 
 public class GetObjRowNode extends IRpaTaskNode {
-    private String outputParamName;
+    private String outputParamName, rowNumStr;
     private RpaTaskOutput output;
     private InputSourceParams inputSource;
     private Integer rowNum;
@@ -24,6 +24,11 @@ public class GetObjRowNode extends IRpaTaskNode {
     public RpaTaskOutput run(RpaTaskOutput input) throws Exception {
         String childSource = inputSource.getChildSource();
         String parentSource = inputSource.getParentSource();
+        Object objectByParams = getObjectByParams(rowNumStr, input);
+        if(objectByParams == null){
+            throw new Exception(this.getClass().getName() + "缺少指定行参数");
+        }
+        rowNum = (Integer) objectByParams;
         if(parentSource == null){
             throw new Exception(this.getClass().getName() + "缺少输入参数");
         }
@@ -113,5 +118,13 @@ public class GetObjRowNode extends IRpaTaskNode {
 
     public void setRowNum(Integer rowNum) {
         this.rowNum = rowNum;
+    }
+
+    public String getRowNumStr() {
+        return rowNumStr;
+    }
+
+    public void setRowNumStr(String rowNumStr) {
+        this.rowNumStr = rowNumStr;
     }
 }

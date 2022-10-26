@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.simplerpa.cloudservice.mapper.TaskDetailMapper">
 
-    <resultMap type="TaskDetail" id="TaskDetailResult">
+    <resultMap type="com.simplerpa.cloudservice.entity.TaskDetail" id="TaskDetailResult">
         <result property="id"    column="id"    />
         <result property="taskId"    column="task_id"    />
         <result property="taskStatus"    column="task_status"    />
@@ -20,7 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select id, task_id, task_status, task_progress, task_version, line_list_json, node_list_json, user_id, task_name from rpa_panel_task_detail
     </sql>
 
-    <select id="selectTaskDetailList" parameterType="TaskDetail" resultMap="TaskDetailResult">
+    <select id="selectTaskDetailList" parameterType="com.simplerpa.cloudservice.entity.TaskDetail" resultMap="TaskDetailResult">
         <include refid="selectTaskDetailVo"/>
         <where>
             <if test="taskId != null "> and task_id = #{taskId}</if>
@@ -39,7 +39,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
 
-    <select id="getTaskDetailByTaskIdAndUserId" parameterType="TaskDetail" resultMap="TaskDetailResult">
+    <select id="getTaskDetailByTaskIdAndUserId" parameterType="com.simplerpa.cloudservice.entity.TaskDetail" resultMap="TaskDetailResult">
         <include refid="selectTaskDetailVo"/>
         <where>
             <if test="taskId != null "> and task_id = #{taskId}</if>
@@ -47,7 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
 
-    <insert id="insertTaskDetail" parameterType="TaskDetail" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertTaskDetail" parameterType="com.simplerpa.cloudservice.entity.TaskDetail" useGeneratedKeys="true" keyProperty="id">
         insert into rpa_panel_task_detail
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="taskId != null">task_id,</if>
@@ -71,7 +71,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </trim>
     </insert>
 
-    <update id="updateTaskDetail" parameterType="TaskDetail">
+    <update id="updateTaskDetail" parameterType="com.simplerpa.cloudservice.entity.TaskDetail">
         update rpa_panel_task_detail
         <trim prefix="SET" suffixOverrides=",">
             <if test="taskId != null">task_id = #{taskId},</if>
@@ -86,7 +86,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <update id="uploadTaskDetail" parameterType="TaskDetail">
+    <update id="uploadTaskDetail" parameterType="com.simplerpa.cloudservice.entity.TaskDetail">
         update rpa_panel_task_detail
         <trim prefix="SET" suffixOverrides=",">
             <if test="taskName != null and taskName != ''">task_name = #{taskName},</if>

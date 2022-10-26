@@ -52,7 +52,7 @@ public class DictionaryUtil {
     // 独立参数信息
     public static final String SINGLE_PARAM_FLAG = "_@SINGLE_PARAM_FLAG@";
     public static final String HTML_FLAG = "_@HTML_FLAG@";
-    public static final String GET_NEXT_NODE_FLAG = "_@GET_NEXT_NODE_FLAG@";
+    public static final String RPA_TASK_ID = "_@RPA_TASK_ID@";
     public static final String NO_MERGE_FLAG = "_@NO_MERGE_FLAG@";
 
     public static final String AI_SERVER_URL = "http://192.168.103.99:10000/aienhance";

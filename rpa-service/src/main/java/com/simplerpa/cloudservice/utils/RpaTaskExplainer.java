@@ -1,6 +1,5 @@
 package com.simplerpa.cloudservice.utils;
 
-import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.simplerpa.cloudservice.entity.TaskLineDetail;
 import com.simplerpa.cloudservice.entity.TaskNodeDetail;
@@ -8,7 +7,6 @@ import com.simplerpa.cloudservice.entity.VO.TaskDetailVO;
 import com.simplerpa.cloudservice.entity.util.RpaTaskStructure;
 import com.simplerpa.cloudservice.entity.util.library.tools.AiEnhanceTool;
 import com.simplerpa.cloudservice.utils.factory.RpaNodeFactory;
-import io.github.bonigarcia.wdm.WebDriverManager;
 
 /**
  * @Description: TODO
@@ -34,6 +32,7 @@ public class RpaTaskExplainer {
 //        if(!rpaTaskStructure.generateExecuteList()){
 //            throw new Exception("RpaTaskExplainer : 无法完成拓扑排序，请检查是否存在环！");
 //        }
+        rpaTaskStructure.setTaskId(detail.getTaskId());
         return rpaTaskStructure;
     }
 //
