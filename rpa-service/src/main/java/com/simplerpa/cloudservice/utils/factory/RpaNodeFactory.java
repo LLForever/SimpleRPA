@@ -32,6 +32,8 @@ public interface RpaNodeFactory {
             case "text_length": return new TextLengthNodeFactory(taskNodeDetail);
             case "replace_text": return new ReplaceTextNodeFactory(taskNodeDetail);
             case "obj_to_text": return new ObjToTextNodeFactory(taskNodeDetail);
+            case "generate_text": return new GenerateTextNodeFactory(taskNodeDetail);
+            case "calculate": return new CalculateNodeFactory(taskNodeDetail);
 
             // id: 5X
             case "loop_end": return new LoopEndNodeFactory(taskNodeDetail);

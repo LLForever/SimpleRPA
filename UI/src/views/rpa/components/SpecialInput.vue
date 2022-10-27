@@ -13,7 +13,7 @@
             <el-row :gutter="10">
                 <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="4">父节点名称</el-col>
                 <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="16">
-                    <el-select v-model="parentParam" placeholder="请选择" :popper-append-to-body="false" @change="changeValue">
+                    <el-select v-model="parentParam" placeholder="请选择" @change="changeValue">
                         <el-option
                             v-for="item in list"
                             :key="item"
@@ -28,7 +28,7 @@
                 <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="4">子节点名称</el-col>
                 <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="9">
                     <el-input v-if="show_child" v-model="childParam" placeholder="可为空"></el-input>
-                    <el-select v-if="!show_child" v-model="childParam" placeholder="请选择" :popper-append-to-body="false">
+                    <el-select v-if="!show_child" v-model="childParam" placeholder="请选择">
                         <el-option
                             v-for="item in list"
                             :key="item"

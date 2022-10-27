@@ -78,7 +78,18 @@
                         <s-input v-model="node.params.rowNum" :list="inputParamList"></s-input>
                     </el-form-item>
 
-                    <el-form-item label="目标内容" v-if="node.id && node.params.targetText !== undefined">
+                    <el-form-item label="计算方式" v-if="node.id && node.params.calculateType !== undefined">
+                        <el-select v-model="node.params.calculateType" placeholder="请选择">
+                            <el-option
+                                v-for="item in calculateType"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+
+                    <el-form-item label="目标对象" v-if="node.id && node.params.targetText !== undefined">
                         <s-input v-model="node.params.targetText" :list="inputParamList"></s-input>
                     </el-form-item>
 
@@ -187,7 +198,25 @@
                 screenshot_show_dialog: false,
                 screenshot_img64: '',
                 addAttrInputVisible: false,
-                attrInputValue: ''
+                attrInputValue: '',
+                calculateType:[
+                    {
+                        label: '加',
+                        value: 0
+                    },
+                    {
+                        label: '减',
+                        value: 1
+                    },
+                    {
+                        label: '乘',
+                        value: 2
+                    },
+                    {
+                        label: '除',
+                        value: 3
+                    }
+                ]
             }
         },
         components: {

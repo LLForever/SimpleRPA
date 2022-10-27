@@ -127,6 +127,18 @@ export default {
                             }
                         },
                         {
+                            id: '39',
+                            type: 'generate_text',
+                            name: '生成一个字符串',
+                            ico: 'el-icon-magic-stick',
+                            // 自定义覆盖样式
+                            style: {},
+                            params: {
+                                inputText: '',
+                                outputParamName: ''
+                            }
+                        },
+                        {
                             id: '32',
                             type: 'add_text',
                             name: '追加文本',
@@ -192,7 +204,12 @@ export default {
                             ico: 'el-icon-cpu',
                             // 自定义覆盖样式
                             style: {},
-                            params: {}
+                            params: {
+                                source: '',
+                                calculateType: '',
+                                targetText: '',
+                                outputParamName: ''
+                            }
                         },
                         {
                             id: '38',
@@ -252,9 +269,9 @@ export default {
                             style: {},
                             params: {
                                 startPos: 0,
-                                endPos: 0
+                                endPos: 0,
+                                outputParamName: ''
                             },
-                            outputParamName: ''
                         },
                         {
                             id: '52',
