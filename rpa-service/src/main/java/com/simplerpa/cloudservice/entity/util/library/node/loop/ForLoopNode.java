@@ -5,6 +5,7 @@ import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import com.simplerpa.cloudservice.entity.util.DictionaryUtil;
 import com.simplerpa.cloudservice.entity.util.RpaTaskOutput;
 import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
+import com.simplerpa.cloudservice.utils.RpaTaskExecutor;
 
 import java.util.AbstractCollection;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 public class ForLoopNode extends IRpaTaskNode {
     String startPos, endPos, outputParamName;
     ArrayList<IRpaTaskNode> forList;
+    Long taskId;
     private static final String LOOP_END = "loop_end";
 
     public ForLoopNode(TaskNodeDetail detail){
@@ -29,10 +31,14 @@ public class ForLoopNode extends IRpaTaskNode {
         int i = Integer.parseInt(startPos), end = Integer.parseInt(endPos);
         for(; i<end; i++){
             jsonObject.put(DictionaryUtil.SINGLE_PARAM_FLAG, i);
-            input.addObject(outputParamName, jsonObject);
+            input.addObjectDistinct(outputParamName, jsonObject);
             for (IRpaTaskNode node : forList) {
                 RpaTaskOutput run = node.run(input);
-                input.mergeOutput(run);
+                if(run == null || !run.hasParam(DictionaryUtil.NO_MERGE_FLAG)){
+                    input.mergeOutput(run);
+                }else{
+                    RpaTaskExecutor.updateScreenShotFile(run, taskId);
+                }
             }
         }
         return null;
@@ -91,5 +97,13 @@ public class ForLoopNode extends IRpaTaskNode {
 
     public void setOutputParamName(String outputParamName) {
         this.outputParamName = outputParamName;
+    }
+
+    public Long getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
     }
 }

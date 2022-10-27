@@ -16,7 +16,7 @@ import com.simplerpa.cloudservice.utils.factory.webpage.*;
 public interface RpaNodeFactory {
     public IRpaTaskNode getInstance() throws Exception;
 
-    public static RpaNodeFactory getFactory(TaskNodeDetail taskNodeDetail){
+    public static RpaNodeFactory getFactory(TaskNodeDetail taskNodeDetail, Long taskId){
         switch(taskNodeDetail.getType()){
             case "start" : return new StartNodeFactory();
             case "end" : return new EndNodeFactory();
@@ -34,10 +34,11 @@ public interface RpaNodeFactory {
             case "obj_to_text": return new ObjToTextNodeFactory(taskNodeDetail);
             case "generate_text": return new GenerateTextNodeFactory(taskNodeDetail);
             case "calculate": return new CalculateNodeFactory(taskNodeDetail);
+            case "get_obj_row": return new GetObjRowNodeFactory(taskNodeDetail);
 
             // id: 5X
             case "loop_end": return new LoopEndNodeFactory(taskNodeDetail);
-            case "for_loop": return new ForLoopNodeFactory(taskNodeDetail);
+            case "for_loop": return new ForLoopNodeFactory(taskNodeDetail, taskId);
 
             // id: 6X
             case "open_page" : return new OpenWebPageNodeFactory(taskNodeDetail);

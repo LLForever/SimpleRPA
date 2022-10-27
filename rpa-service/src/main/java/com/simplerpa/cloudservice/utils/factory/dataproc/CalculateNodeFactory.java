@@ -28,7 +28,7 @@ public class CalculateNodeFactory implements RpaNodeFactory {
         if(StringUtils.isEmpty(source)){
             throw new Exception(this.getClass().getName() + " : 没有输入源！解析失败！");
         }
-        if(calculateType != null){
+        if(calculateType == null){
             throw new Exception(this.getClass().getName() + " : 没有计算类型！解析失败！");
         }
         if(StringUtils.isEmpty(targetText)){

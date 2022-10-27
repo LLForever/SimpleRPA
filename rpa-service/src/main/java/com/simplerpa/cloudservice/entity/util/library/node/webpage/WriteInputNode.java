@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import com.simplerpa.cloudservice.entity.util.RpaTaskOutput;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -19,6 +20,8 @@ public class WriteInputNode extends WebAction{
     @Override
     public RpaTaskOutput operateElement(WebDriver driver, ArrayList<JSONObject> list) {
         WebElement element = getElement(driver, list);
+//        element.sendKeys(Keys.CONTROL,"a");
+        element.clear();
         element.sendKeys(getInputText());
         return null;
     }

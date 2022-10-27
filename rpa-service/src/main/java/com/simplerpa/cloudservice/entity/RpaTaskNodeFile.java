@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.ruoyi.common.core.annotation.Excel;
 import com.ruoyi.common.core.web.domain.BaseEntity;
 
+import java.util.Date;
+
 @TableName("rpa_task_node_file")
 public class RpaTaskNodeFile {
     private static final long serialVersionUID = 1L;
@@ -23,6 +25,8 @@ public class RpaTaskNodeFile {
 
     @TableField("file")
     byte[] img;
+
+    private Date updateTime;
 
     public Long getId() {
         return id;
@@ -54,5 +58,13 @@ public class RpaTaskNodeFile {
 
     public void setImg(byte[] img) {
         this.img = img;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 }

@@ -9,9 +9,11 @@ import com.simplerpa.cloudservice.utils.factory.RpaNodeFactory;
 
 public class ForLoopNodeFactory implements RpaNodeFactory {
     private final TaskNodeDetail taskNodeDetail;
+    private final Long taskId;
 
-    public ForLoopNodeFactory(TaskNodeDetail nodeDetail){
-        taskNodeDetail = nodeDetail;
+    public ForLoopNodeFactory(TaskNodeDetail nodeDetail, Long taskId){
+        this.taskNodeDetail = nodeDetail;
+        this.taskId = taskId;
     }
 
 
@@ -34,6 +36,7 @@ public class ForLoopNodeFactory implements RpaNodeFactory {
         node.setStartPos(startPos);
         node.setEndPos(endPos);
         node.setOutputParamName(outputParamName);
+        node.setTaskId(taskId);
         return node;
     }
 }

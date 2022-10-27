@@ -60,13 +60,14 @@ public abstract class IRpaTaskNode {
                 String childSource = jsonObject.getString("childSource");
                 if(StringUtils.isNotEmpty(childSource)){
                     targetName = childSource;
+                    for (JSONObject json : resultByParamName) {
+                        if (json.containsKey(targetName)) {
+                            return json.get(targetName);
+                        }
+                    }
                 }
             }
-            for (JSONObject json : resultByParamName) {
-                if (json.containsKey(targetName)) {
-                    return json.get(targetName);
-                }
-            }
+            return resultByParamName;
         }
         return null;
     }

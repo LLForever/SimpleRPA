@@ -118,7 +118,7 @@ public class ReadExcelNode extends IRpaTaskNode {
                 try {
                     return String.valueOf(cell.getNumericCellValue());
                 }catch (Exception e3){
-                    return cell.getDateCellValue().toString();
+                    return null;
                 }
             }
         }

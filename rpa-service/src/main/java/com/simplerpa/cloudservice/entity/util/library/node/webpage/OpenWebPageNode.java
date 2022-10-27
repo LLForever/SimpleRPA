@@ -27,18 +27,17 @@ public class OpenWebPageNode extends IRpaTaskNode {
         JSONObject jsonObject = new JSONObject();
 //        WebDriverManager.globalConfig();
 //        WebDriverManager.chromedriver().setup();
+
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless"); //无浏览器模式
         options.addArguments("--no-sandbox");// 为了让root用户也能执行
-
-        // 优化参数
         options.addArguments("--disable-dev-shm-usage");
         options.addArguments("blink-settings=imagesEnabled=false");
         options.addArguments("--disable-gpu");
         options.addArguments("lang=zh_CN.UTF-8");
 
         WebDriver webDriver = new ChromeDriver(options);
-        webDriver.get(getURL());
+        webDriver.get(URL);
         jsonObject.put(DictionaryUtil.HTML_FLAG, webDriver);
         addOutput(jsonObject);
         return output;

@@ -70,7 +70,7 @@ public class RpaTaskOutput {
     }
 
     /**
-     * 添加一个json对象，若新增某个json数组时失败，则返回false
+     * 添加一个json对象（允许重复），若新增某个json数组时失败，则返回false
      * */
     public Boolean addObject(String key, JSONObject jsonObject){
         if(jsonObject == null){
@@ -82,6 +82,23 @@ public class RpaTaskOutput {
                 return true;
             }
         }else{
+            output.get(key).add(jsonObject);
+            return true;
+        }
+        return false;
+    }
+
+    public Boolean addObjectDistinct(String key, JSONObject jsonObject){
+        if(jsonObject == null){
+            return false;
+        }
+        if(!output.containsKey(key)){
+            if(canAddList(key, new ArrayList<>())){
+                output.get(key).add(jsonObject);
+                return true;
+            }
+        }else{
+            output.get(key).clear();
             output.get(key).add(jsonObject);
             return true;
         }

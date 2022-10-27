@@ -21,7 +21,7 @@ public class RpaTaskExplainer {
             rpaTaskStructure.addEdge(item.getFrom(), item.getTo());
         }
         for(TaskNodeDetail nodeDetail : detail.getNodeList()){
-            RpaNodeFactory factory = RpaNodeFactory.getFactory(nodeDetail);
+            RpaNodeFactory factory = RpaNodeFactory.getFactory(nodeDetail, detail.getTaskId());
             if(factory == null){
                 throw new Exception("RpaTaskExplainer : 节点[" + nodeDetail.getName() + "],类型[" + nodeDetail.getType() + "]暂时无法解析");
             }

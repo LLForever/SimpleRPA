@@ -1,5 +1,6 @@
 package com.simplerpa.cloudservice.service.impl;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -132,6 +133,7 @@ public class TaskDetailServiceImpl implements ITaskDetailService
         nodeFile.setNodeId(nodeId);
         nodeFile.setTaskId(taskId);
         nodeFile.setImg(img);
+        nodeFile.setUpdateTime(new Date());
         Map<String, Object> param = new HashMap<>();
         param.put("node_id", nodeId);
         param.put("task_id", taskId);

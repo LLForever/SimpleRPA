@@ -24,12 +24,15 @@ public class GetObjRowNode extends IRpaTaskNode {
     public RpaTaskOutput run(RpaTaskOutput input) throws Exception {
         String childSource = inputSource.getChildSource();
         String parentSource = inputSource.getParentSource();
-        Object objectByParams = getObjectByParams(rowNumStr, input);
+        String objectByParams = changeStringParams(rowNumStr, input);
+        if(objectByParams == null){
+            objectByParams = rowNumStr;
+        }
         if(objectByParams == null){
             throw new Exception(this.getClass().getName() + "缺少指定行参数");
         }
-        rowNum = (Integer) objectByParams;
-        if(parentSource == null){
+        rowNum = Integer.valueOf(objectByParams);
+        if(StringUtils.isEmpty(parentSource)){
             throw new Exception(this.getClass().getName() + "缺少输入参数");
         }
         ArrayList<JSONObject> resultByParamName = input.getResultByParamName(parentSource);
@@ -38,7 +41,7 @@ public class GetObjRowNode extends IRpaTaskNode {
                 throw new Exception(this.getClass().getName() + " " +
                         getRpaTaskDetail().getName() + "【组件】输入的行数大于目标数组元素个数，请重新输入一个值");
             }else{
-                addJsonObject(resultByParamName.get(rowNum-1));
+                addJsonObject(resultByParamName.get(rowNum));
                 return output;
             }
         }else{
@@ -52,7 +55,7 @@ public class GetObjRowNode extends IRpaTaskNode {
                     throw new Exception(this.getClass().getName() + " " +
                             getRpaTaskDetail().getName() + "【组件】输入的行数大于目标数组元素个数，请重新输入一个值");
                 }else{
-                    addJsonObject(list[rowNum-1]);
+                    addJsonObject(list[rowNum]);
                     return output;
                 }
             }else if(object instanceof AbstractList){
@@ -61,7 +64,7 @@ public class GetObjRowNode extends IRpaTaskNode {
                     throw new Exception(this.getClass().getName() + " " +
                             getRpaTaskDetail().getName() + "【组件】输入的行数大于目标数组元素个数，请重新输入一个值");
                 }else{
-                    addJsonObject(list.get(rowNum-1));
+                    addJsonObject(list.get(rowNum));
                     return output;
                 }
             }
@@ -76,7 +79,12 @@ public class GetObjRowNode extends IRpaTaskNode {
 
     private void addJsonObject(Object obj){
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(DictionaryUtil.SINGLE_PARAM_FLAG, obj);
+        if(obj instanceof JSONObject){
+            JSONObject temp = (JSONObject) obj;
+            addOutput(temp);
+        }else{
+            jsonObject.put(DictionaryUtil.SINGLE_PARAM_FLAG, obj);
+        }
         addOutput(jsonObject);
     }
 

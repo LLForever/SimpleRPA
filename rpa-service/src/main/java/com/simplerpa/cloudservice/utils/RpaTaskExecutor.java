@@ -61,17 +61,7 @@ public class RpaTaskExecutor implements Runnable{
                     if(res == null || !res.hasParam(DictionaryUtil.NO_MERGE_FLAG)){
                         allOutput.mergeOutput(res);
                     }else{
-                        ArrayList<JSONObject> resultByParamName = res.getResultByParamName(DictionaryUtil.NO_MERGE_FLAG);
-                        for(JSONObject object : resultByParamName){
-                            if(object.containsKey(DictionaryUtil.SINGLE_PARAM_FLAG)){
-                                JSONObject info = (JSONObject) object.get(DictionaryUtil.SINGLE_PARAM_FLAG);
-                                byte[] img64 = info.getBytes("img64");
-                                String nodeId = info.getString("id");
-                                Long taskId = rpaTaskStructure.getTaskId();
-                                WebsocketTask.getTaskDetailService().saveImageInfo(taskId, nodeId, img64);
-                                break;
-                            }
-                        }
+                        updateScreenShotFile(res, rpaTaskStructure.getTaskId());
                     }
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("now", nextNode);
@@ -96,7 +86,19 @@ public class RpaTaskExecutor implements Runnable{
             clearSelenium(allOutput);
             WebsocketTask.getTaskDetailService().changeRpaTaskStatus(DictionaryUtil.TASK_STATUS_COMPLETED, taskDetailVO.getTaskId(), taskDetailVO.getUserId());
         }
+    }
 
+    public static void updateScreenShotFile(RpaTaskOutput res, Long taskId){
+        ArrayList<JSONObject> resultByParamName = res.getResultByParamName(DictionaryUtil.NO_MERGE_FLAG);
+        for(JSONObject object : resultByParamName){
+            if(object.containsKey(DictionaryUtil.SINGLE_PARAM_FLAG)){
+                JSONObject info = (JSONObject) object.get(DictionaryUtil.SINGLE_PARAM_FLAG);
+                byte[] img64 = info.getBytes("img64");
+                String nodeId = info.getString("id");
+                WebsocketTask.getTaskDetailService().saveImageInfo(taskId, nodeId, img64);
+                break;
+            }
+        }
     }
 
     private void clearSelenium(RpaTaskOutput rpaTaskOutput){
