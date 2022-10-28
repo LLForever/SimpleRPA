@@ -36,7 +36,9 @@ public class ReplaceTextNodeFactory implements RpaNodeFactory {
             throw new Exception(this.getClass().getName() + "缺少目标内容信息！");
         }
         node.setAllReplace(allReplace);
+        node.setInputTextBck(inputTextStr);
         node.setInputText(inputTextStr);
+        node.setTargetTextBck(targetText);
         node.setTargetText(targetText);
         node.setInputSource(new InputSourceParams(source));
         return node;

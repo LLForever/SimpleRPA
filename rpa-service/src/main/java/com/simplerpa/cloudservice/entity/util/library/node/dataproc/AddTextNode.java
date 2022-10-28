@@ -11,7 +11,7 @@ import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 import java.util.ArrayList;
 
 public class AddTextNode extends IRpaTaskNode {
-    private String inputText;
+    private String inputText, inputTextBck;
     private InputSourceParams inputSource;
 
     public AddTextNode(TaskNodeDetail nodeDetail){
@@ -52,8 +52,13 @@ public class AddTextNode extends IRpaTaskNode {
     }
 
     @Override
-    public void detectParamsValue(RpaTaskOutput input) {
-        inputText = changeStringParams(inputText, input);
+    public void detectParamsValue(RpaTaskOutput input) throws Exception {
+        inputText = transformParams(inputText, inputTextBck, input);
+    }
+
+    @Override
+    public void clearRpaOutput() {
+
     }
 
     public InputSourceParams getInputSource() {
@@ -70,5 +75,13 @@ public class AddTextNode extends IRpaTaskNode {
 
     public void setInputText(String inputText) {
         this.inputText = inputText;
+    }
+
+    public String getInputTextBck() {
+        return inputTextBck;
+    }
+
+    public void setInputTextBck(String inputTextBck) {
+        this.inputTextBck = inputTextBck;
     }
 }

@@ -31,6 +31,7 @@ public class AddTextNodeFactory implements RpaNodeFactory {
         }
         node.setInputSource(new InputSourceParams(s));
         node.setInputText(text);
+        node.setInputTextBck(text);
         return node;
     }
 }

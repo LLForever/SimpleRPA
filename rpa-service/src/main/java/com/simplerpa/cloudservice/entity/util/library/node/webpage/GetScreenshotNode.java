@@ -30,4 +30,9 @@ public class GetScreenshotNode extends WebAction{
         output.addObject(DictionaryUtil.NO_MERGE_FLAG, jsonObject);
         return output;
     }
+
+    @Override
+    public void clearRpaOutput() {
+
+    }
 }

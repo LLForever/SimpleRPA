@@ -27,7 +27,9 @@ public class EmailSendNodeFactory implements RpaNodeFactory {
             throw new Exception(this.getClass().getName() + " : 缺少邮件内容！执行失败");
         }
         node.setContent(content);
+        node.setContentBck(content);
         node.setTo(to);
+        node.setToBck(to);
         return node;
     }
 }

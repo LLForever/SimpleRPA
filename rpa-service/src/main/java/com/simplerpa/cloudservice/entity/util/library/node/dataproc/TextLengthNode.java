@@ -47,6 +47,11 @@ public class TextLengthNode extends IRpaTaskNode {
 
     }
 
+    @Override
+    public void clearRpaOutput() {
+        output = new RpaTaskOutput();
+    }
+
     private String getInputString(ArrayList<JSONObject> result){
         return getInputString(result, DictionaryUtil.SINGLE_PARAM_FLAG);
     }

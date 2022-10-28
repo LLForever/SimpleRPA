@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @Description: TODO
@@ -15,9 +16,20 @@ import java.util.Map;
 public class RpaTaskOutput {
     // 运行结果
     private HashMap<String, ArrayList<JSONObject>> output;
+    private JSONObject outputParamsLayer;
 
     public RpaTaskOutput(){
         output = new HashMap<>();
+    }
+
+    public RpaTaskOutput(boolean flag){
+        output = new HashMap<>();
+        if(flag){
+            outputParamsLayer = new JSONObject();
+            JSONObject tmp = new JSONObject();
+            tmp.put(DictionaryUtil.SINGLE_PARAM_FLAG, 0);
+            addObject(DictionaryUtil.CURRENT_LAYER, tmp);
+        }
     }
 
     /**
@@ -27,13 +39,17 @@ public class RpaTaskOutput {
         if(rpaTaskOutput == null){
             return;
         }
+        Set<String> strings = rpaTaskOutput.getOutput().keySet();
+        for (String str : strings){
+            putLayerByParams(str);
+        }
         output.putAll(rpaTaskOutput.getOutput());
     }
 
     /**
      * 合并两个output且只做追加，不做新增和覆盖
     * */
-    public void mergeOutputOnlyAdd(RpaTaskOutput rpaTaskOutput){
+    public void mergeOutputRepeatable(RpaTaskOutput rpaTaskOutput){
         if(rpaTaskOutput == null){
             return;
         }
@@ -103,6 +119,30 @@ public class RpaTaskOutput {
             return true;
         }
         return false;
+    }
+
+    public void addLayer(){
+        Integer i = getLayer();
+        output.get(DictionaryUtil.CURRENT_LAYER).get(0).put(DictionaryUtil.SINGLE_PARAM_FLAG, i+1);
+    }
+
+    public void decreaseLayer(){
+        Integer i = getLayer();
+        output.get(DictionaryUtil.CURRENT_LAYER).get(0).put(DictionaryUtil.SINGLE_PARAM_FLAG, i-1);
+    }
+
+    public Integer getLayer(){
+        return (Integer) output.get(DictionaryUtil.CURRENT_LAYER).get(0).get(DictionaryUtil.SINGLE_PARAM_FLAG);
+    }
+
+    public Integer getLayerByParams(String param){
+        return outputParamsLayer.getInteger(param);
+    }
+
+    public void putLayerByParams(String str){
+        if(!outputParamsLayer.containsKey(str)){
+            outputParamsLayer.put(str, getLayer());
+        }
     }
 
     public HashMap<String, ArrayList<JSONObject>> getOutput() {

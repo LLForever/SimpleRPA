@@ -26,7 +26,7 @@ import java.util.ArrayList;
 public class ReadExcelNode extends IRpaTaskNode {
     private byte[] file; // 文件
     private String fileName;
-    private String sheetName, outputParamName; // 指定的表名(默认为第一张表)、数据参数名称(用户自定义的output名称)
+    private String sheetName, sheetNameBck, outputParamName; // 指定的表名(默认为第一张表)、数据参数名称(用户自定义的output名称)
     private Integer colNamePos; // 表头所在行
     private RpaTaskOutput output; // 解析后的数据
     private ArrayList<String> colNameList; // 表头信息
@@ -125,8 +125,13 @@ public class ReadExcelNode extends IRpaTaskNode {
     }
 
     @Override
-    public void detectParamsValue(RpaTaskOutput input) {
-        sheetName = changeStringParams(sheetName, input);
+    public void detectParamsValue(RpaTaskOutput input) throws Exception {
+        sheetName = transformParams(sheetName, sheetNameBck, input);
+    }
+
+    @Override
+    public void clearRpaOutput() {
+        output = new RpaTaskOutput();
     }
 
     private void addOutput(JSONObject jsonObject){
@@ -190,5 +195,13 @@ public class ReadExcelNode extends IRpaTaskNode {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public String getSheetNameBck() {
+        return sheetNameBck;
+    }
+
+    public void setSheetNameBck(String sheetNameBck) {
+        this.sheetNameBck = sheetNameBck;
     }
 }

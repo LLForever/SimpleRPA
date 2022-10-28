@@ -19,4 +19,9 @@ public class EndNode extends IRpaTaskNode {
     public void detectParamsValue(RpaTaskOutput input) {
 
     }
+
+    @Override
+    public void clearRpaOutput() {
+
+    }
 }

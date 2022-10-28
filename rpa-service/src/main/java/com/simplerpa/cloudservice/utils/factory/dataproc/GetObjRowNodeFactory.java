@@ -35,6 +35,7 @@ public class GetObjRowNodeFactory implements RpaNodeFactory {
         }
         node.setOutputParamName(outputParam);
         node.setRowNumStr(rowNum);
+        node.setRowNumStrBck(rowNum);
         node.setInputSource(new InputSourceParams(source));
         return node;
     }

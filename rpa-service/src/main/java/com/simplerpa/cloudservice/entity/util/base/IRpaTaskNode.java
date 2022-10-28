@@ -11,9 +11,10 @@ import java.util.ArrayList;
 public abstract class IRpaTaskNode {
     protected TaskNodeDetail nodeDetail;
     public abstract RpaTaskOutput run(RpaTaskOutput input) throws Exception;
-    public abstract void detectParamsValue(RpaTaskOutput input);
+    public abstract void detectParamsValue(RpaTaskOutput input) throws Exception;
+    public abstract void clearRpaOutput();
 
-    protected String changeStringParams(String str, RpaTaskOutput output) {
+    private String changeStringParams(String str, RpaTaskOutput output) {
         if(str == null){
             return str;
         }
@@ -70,6 +71,37 @@ public abstract class IRpaTaskNode {
             return resultByParamName;
         }
         return null;
+    }
+
+    protected String transformParams(String str, String str_bck, RpaTaskOutput output) throws Exception {
+        if(str == null && str_bck == null){
+            return str;
+        }
+        JSONObject jsonObject;
+        try {
+            jsonObject = JSONObject.parseObject(str_bck);
+            if (!jsonObject.containsKey("parentSource")) {
+                throw new Exception("参数源中没有父节点信息，请检查是否正确配置！");
+            }
+        } catch (Exception e) {
+            return str;
+        }
+        String parentSource = jsonObject.getString("parentSource");
+        Integer oldLayer, curLayer;
+        try {
+            oldLayer = output.getLayerByParams(parentSource);
+            curLayer = output.getLayer();
+        }catch (Exception e){
+            throw new Exception("找不到参数源配置的信息，请检查！");
+        }
+        if(curLayer < oldLayer){
+            throw new Exception("参数源无法读取！");
+        }
+        if(oldLayer.equals(curLayer)){
+            return changeStringParams(str_bck, output);
+        }else{
+            return changeStringParams(str, output);
+        }
     }
 
     public TaskNodeDetail getRpaTaskDetail(){

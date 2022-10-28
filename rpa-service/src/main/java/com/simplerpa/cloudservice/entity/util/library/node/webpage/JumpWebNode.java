@@ -8,7 +8,7 @@ import org.openqa.selenium.WebDriver;
 import java.util.ArrayList;
 
 public class JumpWebNode extends WebAction{
-    private String URL;
+    private String URL, URLBck;
 
     public JumpWebNode(TaskNodeDetail taskNodeDetail) {
         super(taskNodeDetail);
@@ -21,9 +21,14 @@ public class JumpWebNode extends WebAction{
     }
 
     @Override
-    public void detectParamsValue(RpaTaskOutput input) {
-        this.setxPath(changeStringParams(this.getxPath(), input));
-        URL = changeStringParams(URL, input);
+    public void detectParamsValue(RpaTaskOutput input) throws Exception {
+        this.setxPath(transformParams(this.getxPath(), this.getxPathBck(), input));
+        URL = transformParams(URL, URLBck, input);
+    }
+
+    @Override
+    public void clearRpaOutput() {
+
     }
 
     public String getURL() {
@@ -32,5 +37,13 @@ public class JumpWebNode extends WebAction{
 
     public void setURL(String URL) {
         this.URL = URL;
+    }
+
+    public String getURLBck() {
+        return URLBck;
+    }
+
+    public void setURLBck(String URLBck) {
+        this.URLBck = URLBck;
     }
 }

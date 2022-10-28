@@ -18,4 +18,9 @@ public class LoopEndNode extends IRpaTaskNode {
     public void detectParamsValue(RpaTaskOutput input) {
 
     }
+
+    @Override
+    public void clearRpaOutput() {
+
+    }
 }

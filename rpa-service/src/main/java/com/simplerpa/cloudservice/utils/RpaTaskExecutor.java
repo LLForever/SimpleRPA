@@ -31,7 +31,7 @@ public class RpaTaskExecutor implements Runnable{
     public void run() {
         RpaTaskStructure rpaTaskStructure = explainTask();
         if(rpaTaskStructure != null) {
-            RpaTaskOutput allOutput = new RpaTaskOutput();
+            RpaTaskOutput allOutput = new RpaTaskOutput(true);
             WebsocketTask.getTaskDetailService().changeRpaTaskStatus(DictionaryUtil.TASK_STATUS_RUNNING, taskDetailVO.getTaskId(), taskDetailVO.getUserId());
             while(!rpaTaskStructure.isEnd()){
                 String nextNode = rpaTaskStructure.getNextNodeId();

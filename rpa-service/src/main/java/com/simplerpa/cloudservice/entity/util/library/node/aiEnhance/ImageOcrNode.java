@@ -71,6 +71,11 @@ public class ImageOcrNode extends IRpaTaskNode {
 
     }
 
+    @Override
+    public void clearRpaOutput() {
+        output = new RpaTaskOutput();
+    }
+
     public String getOutputParamName() {
         return outputParamName;
     }

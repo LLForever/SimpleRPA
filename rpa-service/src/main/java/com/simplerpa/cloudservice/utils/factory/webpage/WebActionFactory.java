@@ -29,6 +29,7 @@ public abstract class WebActionFactory implements RpaNodeFactory {
         }
         if(StringUtils.isNotEmpty(xPath)){
             node.setxPath(xPath);
+            node.setxPathBck(xPath);
         }
         node.setInputSourceParams(new InputSourceParams((LinkedHashMap<String, String>) inputSource));
         return node;

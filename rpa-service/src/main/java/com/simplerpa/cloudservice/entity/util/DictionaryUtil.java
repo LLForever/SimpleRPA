@@ -54,6 +54,7 @@ public class DictionaryUtil {
     public static final String HTML_FLAG = "_@HTML_FLAG@";
     public static final String RPA_TASK_ID = "_@RPA_TASK_ID@";
     public static final String NO_MERGE_FLAG = "_@NO_MERGE_FLAG@";
+    public static final String CURRENT_LAYER = "_@CURRENT_LAYER@";
 
     public static final String AI_SERVER_URL = "http://192.168.103.99:10000/aienhance";
 }

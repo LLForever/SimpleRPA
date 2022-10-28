@@ -19,6 +19,7 @@ public class DragElementNodeFactory extends WebActionFactory{
             throw new Exception(this.getClass().getName() + "缺少目标位置信息！");
         }
         dragElementNode.setTargetPosition(targetPosition);
+        dragElementNode.setTargetPositionBck(targetPosition);
         return dragElementNode;
     }
 }

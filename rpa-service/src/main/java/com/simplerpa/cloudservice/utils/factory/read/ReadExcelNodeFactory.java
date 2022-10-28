@@ -43,6 +43,7 @@ public class ReadExcelNodeFactory implements RpaNodeFactory {
         }
         if(params.containsKey("sheetName")){
             readExcelNode.setSheetName(params.getString("sheetName"));
+            readExcelNode.setSheetNameBck(params.getString("sheetName"));
         }
         if(params.containsKey("colNamePos")){
             readExcelNode.setColNamePos(params.getInteger("colNamePos"));

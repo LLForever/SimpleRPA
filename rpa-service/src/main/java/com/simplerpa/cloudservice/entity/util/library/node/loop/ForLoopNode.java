@@ -29,9 +29,11 @@ public class ForLoopNode extends IRpaTaskNode {
         detectParamsValue(input);
         JSONObject jsonObject = new JSONObject();
         int i = Integer.parseInt(startPos), end = Integer.parseInt(endPos);
+        input.addLayer();
         for(; i<end; i++){
             jsonObject.put(DictionaryUtil.SINGLE_PARAM_FLAG, i);
             input.addObjectDistinct(outputParamName, jsonObject);
+            input.putLayerByParams(outputParamName);
             for (IRpaTaskNode node : forList) {
                 RpaTaskOutput run = node.run(input);
                 if(run == null || !run.hasParam(DictionaryUtil.NO_MERGE_FLAG)){
@@ -39,8 +41,10 @@ public class ForLoopNode extends IRpaTaskNode {
                 }else{
                     RpaTaskExecutor.updateScreenShotFile(run, taskId);
                 }
+                node.clearRpaOutput();
             }
         }
+        input.decreaseLayer();
         return null;
     }
 
@@ -54,6 +58,11 @@ public class ForLoopNode extends IRpaTaskNode {
         if(objectByParams != null){
             endPos = getLengthByObject(objectByParams);
         }
+    }
+
+    @Override
+    public void clearRpaOutput() {
+
     }
 
     private String getLengthByObject(Object objectByParams){

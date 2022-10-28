@@ -27,6 +27,7 @@ public class OpenWebPageNodeFactory implements RpaNodeFactory {
             throw new Exception(this.getClass().getName() + " : 没有数据输出参数名称！解析失败！");
         }
         node.setURL(url);
+        node.setURLBck(url);
         node.setOutputParamName((String) outputParamName);
         return node;
     }

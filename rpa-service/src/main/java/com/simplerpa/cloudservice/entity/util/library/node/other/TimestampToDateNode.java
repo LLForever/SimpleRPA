@@ -42,6 +42,11 @@ public class TimestampToDateNode extends IRpaTaskNode {
 
     }
 
+    @Override
+    public void clearRpaOutput() {
+
+    }
+
     private void changeSingleResult(ArrayList<JSONObject> result){
         changeResult(result, DictionaryUtil.SINGLE_PARAM_FLAG);
     }

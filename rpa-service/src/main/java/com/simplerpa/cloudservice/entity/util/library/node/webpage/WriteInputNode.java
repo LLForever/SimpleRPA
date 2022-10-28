@@ -11,7 +11,7 @@ import org.openqa.selenium.WebElement;
 import java.util.ArrayList;
 
 public class WriteInputNode extends WebAction{
-    private String inputText;
+    private String inputText, inputTextBck;
 
     public WriteInputNode(TaskNodeDetail taskNodeDetail) {
         super(taskNodeDetail);
@@ -27,9 +27,14 @@ public class WriteInputNode extends WebAction{
     }
 
     @Override
-    public void detectParamsValue(RpaTaskOutput input) {
-        this.setxPath(changeStringParams(this.getxPath(), input));
-        inputText = changeStringParams(inputText, input);
+    public void detectParamsValue(RpaTaskOutput input) throws Exception {
+        this.setxPath(transformParams(this.getxPath(), this.getxPathBck(), input));
+        inputText = transformParams(inputText, inputTextBck, input);
+    }
+
+    @Override
+    public void clearRpaOutput() {
+
     }
 
     public String getInputText() {
@@ -38,5 +43,13 @@ public class WriteInputNode extends WebAction{
 
     public void setInputText(String inputText) {
         this.inputText = inputText;
+    }
+
+    public String getInputTextBck() {
+        return inputTextBck;
+    }
+
+    public void setInputTextBck(String inputTextBck) {
+        this.inputTextBck = inputTextBck;
     }
 }

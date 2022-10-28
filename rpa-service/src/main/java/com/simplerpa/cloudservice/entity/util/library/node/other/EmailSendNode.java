@@ -7,6 +7,7 @@ import com.simplerpa.cloudservice.utils.EmailUtilSingleton;
 
 public class EmailSendNode extends IRpaTaskNode {
     private String to, content;
+    private String toBck, contentBck;
 
     public EmailSendNode(TaskNodeDetail nodeDetail){
         this.nodeDetail = nodeDetail;
@@ -21,9 +22,14 @@ public class EmailSendNode extends IRpaTaskNode {
     }
 
     @Override
-    public void detectParamsValue(RpaTaskOutput input){
-        to = changeStringParams(to, input);
-        content = changeStringParams(content, input);
+    public void detectParamsValue(RpaTaskOutput input) throws Exception {
+        to = transformParams(to, toBck, input);
+        content = transformParams(content, contentBck, input);
+    }
+
+    @Override
+    public void clearRpaOutput() {
+
     }
 
     public String getTo() {
@@ -40,5 +46,21 @@ public class EmailSendNode extends IRpaTaskNode {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getToBck() {
+        return toBck;
+    }
+
+    public void setToBck(String toBck) {
+        this.toBck = toBck;
+    }
+
+    public String getContentBck() {
+        return contentBck;
+    }
+
+    public void setContentBck(String contentBck) {
+        this.contentBck = contentBck;
     }
 }

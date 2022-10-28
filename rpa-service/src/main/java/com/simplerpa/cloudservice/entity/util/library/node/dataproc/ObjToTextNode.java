@@ -47,6 +47,11 @@ public class ObjToTextNode extends IRpaTaskNode {
 
     }
 
+    @Override
+    public void clearRpaOutput() {
+        output = new RpaTaskOutput();
+    }
+
     private Object getObject(ArrayList<JSONObject> result){
         return getObject(result, DictionaryUtil.SINGLE_PARAM_FLAG);
     }

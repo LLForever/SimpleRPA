@@ -11,7 +11,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 public class OpenWebPageNode extends IRpaTaskNode {
-    private String URL;
+    private String URL, URLBck;
     private String outputParamName;
     private RpaTaskOutput output;
 
@@ -44,8 +44,13 @@ public class OpenWebPageNode extends IRpaTaskNode {
     }
 
     @Override
-    public void detectParamsValue(RpaTaskOutput input) {
-        URL = changeStringParams(URL, input);
+    public void detectParamsValue(RpaTaskOutput input) throws Exception {
+        URL = transformParams(URL, URLBck, input);
+    }
+
+    @Override
+    public void clearRpaOutput() {
+        output = new RpaTaskOutput();
     }
 
     private void addOutput(JSONObject jsonObject){
@@ -69,5 +74,13 @@ public class OpenWebPageNode extends IRpaTaskNode {
 
     public void setOutputParamName(String outputParamName) {
         this.outputParamName = outputParamName;
+    }
+
+    public String getURLBck() {
+        return URLBck;
+    }
+
+    public void setURLBck(String URLBck) {
+        this.URLBck = URLBck;
     }
 }

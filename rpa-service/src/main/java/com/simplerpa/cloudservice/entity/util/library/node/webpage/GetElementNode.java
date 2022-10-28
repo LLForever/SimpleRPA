@@ -39,4 +39,9 @@ public class GetElementNode extends WebAction{
     public void setOutputParamName(String outputParamName) {
         this.outputParamName = outputParamName;
     }
+
+    @Override
+    public void clearRpaOutput() {
+
+    }
 }

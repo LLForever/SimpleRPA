@@ -23,4 +23,9 @@ public class MouseHoverNode extends WebAction{
         act.moveToElement(element).perform();
         return null;
     }
+
+    @Override
+    public void clearRpaOutput() {
+
+    }
 }

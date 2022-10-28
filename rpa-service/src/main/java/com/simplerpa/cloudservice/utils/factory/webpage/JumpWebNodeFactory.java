@@ -18,6 +18,7 @@ public class JumpWebNodeFactory extends WebActionFactory{
             throw new Exception(this.getClass().getName() + "URL不能为空");
         }
         node.setURL(url);
+        node.setURLBck(url);
         return node;
     }
 }

@@ -33,6 +33,11 @@ public class RandomNode extends IRpaTaskNode {
 
     }
 
+    @Override
+    public void clearRpaOutput() {
+        output = new RpaTaskOutput();
+    }
+
     private void addOutput(JSONObject jsonObject){
         if(output == null){
             output = new RpaTaskOutput();

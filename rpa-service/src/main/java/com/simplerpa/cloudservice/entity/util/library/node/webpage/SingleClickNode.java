@@ -21,4 +21,9 @@ public class SingleClickNode extends WebAction {
         element.click();
         return null;
     }
+
+    @Override
+    public void clearRpaOutput() {
+
+    }
 }

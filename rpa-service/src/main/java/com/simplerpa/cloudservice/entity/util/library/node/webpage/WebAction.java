@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public abstract class WebAction extends IRpaTaskNode {
     private InputSourceParams inputSourceParams;
-    private String xPath;
+    private String xPath, xPathBck;
 
     public WebAction(TaskNodeDetail taskNodeDetail){
         this.nodeDetail = taskNodeDetail;
@@ -38,8 +38,8 @@ public abstract class WebAction extends IRpaTaskNode {
     }
 
     @Override
-    public void detectParamsValue(RpaTaskOutput input) {
-        this.setxPath(changeStringParams(this.getxPath(), input));
+    public void detectParamsValue(RpaTaskOutput input) throws Exception {
+        xPath = transformParams(this.getxPath(), this.getxPathBck(), input);
     }
 
     private RpaTaskOutput doAction(RpaTaskOutput input, String parentSource){
@@ -89,5 +89,13 @@ public abstract class WebAction extends IRpaTaskNode {
 
     public void setxPath(String xPath) {
         this.xPath = xPath;
+    }
+
+    public String getxPathBck() {
+        return xPathBck;
+    }
+
+    public void setxPathBck(String xPathBck) {
+        this.xPathBck = xPathBck;
     }
 }

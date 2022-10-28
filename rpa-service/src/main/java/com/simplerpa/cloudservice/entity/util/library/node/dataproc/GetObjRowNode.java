@@ -11,7 +11,7 @@ import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 import java.util.*;
 
 public class GetObjRowNode extends IRpaTaskNode {
-    private String outputParamName, rowNumStr;
+    private String outputParamName, rowNumStr, rowNumStrBck;
     private RpaTaskOutput output;
     private InputSourceParams inputSource;
     private Integer rowNum;
@@ -22,16 +22,13 @@ public class GetObjRowNode extends IRpaTaskNode {
 
     @Override
     public RpaTaskOutput run(RpaTaskOutput input) throws Exception {
+        detectParamsValue(input);
         String childSource = inputSource.getChildSource();
         String parentSource = inputSource.getParentSource();
-        String objectByParams = changeStringParams(rowNumStr, input);
-        if(objectByParams == null){
-            objectByParams = rowNumStr;
-        }
-        if(objectByParams == null){
+        if(rowNumStr == null){
             throw new Exception(this.getClass().getName() + "缺少指定行参数");
         }
-        rowNum = Integer.valueOf(objectByParams);
+        rowNum = Integer.valueOf(rowNumStr);
         if(StringUtils.isEmpty(parentSource)){
             throw new Exception(this.getClass().getName() + "缺少输入参数");
         }
@@ -73,8 +70,13 @@ public class GetObjRowNode extends IRpaTaskNode {
     }
 
     @Override
-    public void detectParamsValue(RpaTaskOutput input) {
+    public void detectParamsValue(RpaTaskOutput input) throws Exception {
+        rowNumStr = transformParams(rowNumStr, rowNumStrBck, input);
+    }
 
+    @Override
+    public void clearRpaOutput() {
+        output = new RpaTaskOutput();
     }
 
     private void addJsonObject(Object obj){
@@ -134,5 +136,13 @@ public class GetObjRowNode extends IRpaTaskNode {
 
     public void setRowNumStr(String rowNumStr) {
         this.rowNumStr = rowNumStr;
+    }
+
+    public String getRowNumStrBck() {
+        return rowNumStrBck;
+    }
+
+    public void setRowNumStrBck(String rowNumStrBck) {
+        this.rowNumStrBck = rowNumStrBck;
     }
 }

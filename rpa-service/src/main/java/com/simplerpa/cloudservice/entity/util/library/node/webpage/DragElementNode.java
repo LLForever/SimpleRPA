@@ -11,7 +11,7 @@ import org.openqa.selenium.interactions.Actions;
 import java.util.ArrayList;
 
 public class DragElementNode extends WebAction{
-    private String targetPosition;
+    private String targetPosition, targetPositionBck;
 
     public DragElementNode(TaskNodeDetail taskNodeDetail){
         super(taskNodeDetail);
@@ -27,9 +27,14 @@ public class DragElementNode extends WebAction{
     }
 
     @Override
-    public void detectParamsValue(RpaTaskOutput input) {
-        this.setxPath(changeStringParams(this.getxPath(), input));
-        targetPosition = changeStringParams(targetPosition, input);
+    public void detectParamsValue(RpaTaskOutput input) throws Exception {
+        this.setxPath(transformParams(this.getxPath(), this.getxPathBck(), input));
+        targetPosition = transformParams(targetPosition, targetPositionBck, input);
+    }
+
+    @Override
+    public void clearRpaOutput() {
+
     }
 
     public String getTargetPosition() {
@@ -38,5 +43,13 @@ public class DragElementNode extends WebAction{
 
     public void setTargetPosition(String targetPosition) {
         this.targetPosition = targetPosition;
+    }
+
+    public String getTargetPositionBck() {
+        return targetPositionBck;
+    }
+
+    public void setTargetPositionBck(String targetPositionBck) {
+        this.targetPositionBck = targetPositionBck;
     }
 }

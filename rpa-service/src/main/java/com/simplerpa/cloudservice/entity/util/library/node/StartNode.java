@@ -25,4 +25,9 @@ public class StartNode extends IRpaTaskNode {
     public void detectParamsValue(RpaTaskOutput input) {
 
     }
+
+    @Override
+    public void clearRpaOutput() {
+
+    }
 }

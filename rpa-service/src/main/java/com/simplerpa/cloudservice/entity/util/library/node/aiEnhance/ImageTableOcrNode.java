@@ -58,6 +58,11 @@ public class ImageTableOcrNode extends IRpaTaskNode {
 
     }
 
+    @Override
+    public void clearRpaOutput() {
+        output = new RpaTaskOutput();
+    }
+
     private void getAttributeValue(){
         JSONObject jsonObject = new JSONObject();
         if(horizontal){

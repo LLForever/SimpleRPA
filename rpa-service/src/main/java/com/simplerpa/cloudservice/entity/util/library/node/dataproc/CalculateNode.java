@@ -8,6 +8,7 @@ import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 
 public class CalculateNode extends IRpaTaskNode {
     private String targetText, outputParamName, source;
+    private String targetTextBck, sourceBck;
     private Integer calculateType;
     private RpaTaskOutput output;
 
@@ -39,9 +40,14 @@ public class CalculateNode extends IRpaTaskNode {
     }
 
     @Override
-    public void detectParamsValue(RpaTaskOutput input) {
-        targetText = changeStringParams(targetText, input);
-        source = changeStringParams(source, input);
+    public void detectParamsValue(RpaTaskOutput input) throws Exception {
+        targetText = transformParams(targetText, targetTextBck, input);
+        source = transformParams(source, sourceBck, input);
+    }
+
+    @Override
+    public void clearRpaOutput() {
+        output = new RpaTaskOutput();
     }
 
     private void addOutput(JSONObject jsonObject){
@@ -81,5 +87,21 @@ public class CalculateNode extends IRpaTaskNode {
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public String getSourceBck() {
+        return sourceBck;
+    }
+
+    public void setSourceBck(String sourceBck) {
+        this.sourceBck = sourceBck;
+    }
+
+    public String getTargetTextBck() {
+        return targetTextBck;
+    }
+
+    public void setTargetTextBck(String targetTextBck) {
+        this.targetTextBck = targetTextBck;
     }
 }

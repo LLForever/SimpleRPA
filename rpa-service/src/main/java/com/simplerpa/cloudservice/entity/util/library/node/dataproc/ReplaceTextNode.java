@@ -11,8 +11,8 @@ import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 import java.util.ArrayList;
 
 public class ReplaceTextNode extends IRpaTaskNode {
-    private String inputText;
-    private String targetText;
+    private String inputText, inputTextBck;
+    private String targetText, targetTextBck;
     private InputSourceParams inputSource;
     private boolean allReplace;
 
@@ -56,9 +56,14 @@ public class ReplaceTextNode extends IRpaTaskNode {
     }
 
     @Override
-    public void detectParamsValue(RpaTaskOutput input) {
-        inputText = changeStringParams(inputText, input);
-        targetText = changeStringParams(targetText, input);
+    public void detectParamsValue(RpaTaskOutput input) throws Exception {
+        inputText = transformParams(inputText, inputTextBck, input);
+        targetText = transformParams(targetText, targetTextBck,input);
+    }
+
+    @Override
+    public void clearRpaOutput() {
+
     }
 
     public String getInputText() {
@@ -91,5 +96,21 @@ public class ReplaceTextNode extends IRpaTaskNode {
 
     public void setAllReplace(boolean allReplace) {
         this.allReplace = allReplace;
+    }
+
+    public String getInputTextBck() {
+        return inputTextBck;
+    }
+
+    public void setInputTextBck(String inputTextBck) {
+        this.inputTextBck = inputTextBck;
+    }
+
+    public String getTargetTextBck() {
+        return targetTextBck;
+    }
+
+    public void setTargetTextBck(String targetTextBck) {
+        this.targetTextBck = targetTextBck;
     }
 }

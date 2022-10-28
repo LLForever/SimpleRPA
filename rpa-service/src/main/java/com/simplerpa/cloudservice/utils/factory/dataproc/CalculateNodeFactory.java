@@ -38,6 +38,8 @@ public class CalculateNodeFactory implements RpaNodeFactory {
         node.setOutputParamName(outputParamName);
         node.setTargetText(targetText);
         node.setSource(source);
+        node.setSourceBck(source);
+        node.setTargetTextBck(targetText);
         return node;
     }
 }

@@ -42,6 +42,11 @@ public class SleepNode extends IRpaTaskNode {
 
     }
 
+    @Override
+    public void clearRpaOutput() {
+
+    }
+
     public Long getSleepTime() {
         return sleepTime;
     }

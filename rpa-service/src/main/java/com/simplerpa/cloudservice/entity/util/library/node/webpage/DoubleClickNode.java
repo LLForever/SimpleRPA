@@ -23,4 +23,9 @@ public class DoubleClickNode extends WebAction {
         actions.doubleClick(element).perform();
         return null;
     }
+
+    @Override
+    public void clearRpaOutput() {
+
+    }
 }
