@@ -38,8 +38,8 @@ public class RpaTaskExplainer {
 //
     public static void main(String[] args) {
         try {
-            String url = "https://ai.bdstatic.com/file/5DA8385D9D9F42CE866DB9738F68F7DB";
-            JSONObject ocrResult = AiEnhanceTool.getAiResult(url, "TABLE_OCR");
+            String url = "https://s1.ax1x.com/2022/10/29/x4zi80.png";
+            JSONObject ocrResult = AiEnhanceTool.getAiResult(url, AiEnhanceTool.TABLE_OCR);
             System.out.println(JSONObject.toJSONString(ocrResult));
         } catch (Exception e) {
             e.printStackTrace();

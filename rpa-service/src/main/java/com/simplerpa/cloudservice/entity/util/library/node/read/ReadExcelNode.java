@@ -6,16 +6,15 @@ import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import com.simplerpa.cloudservice.entity.util.RpaTaskOutput;
 import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * @Description: TODO
@@ -116,6 +115,11 @@ public class ReadExcelNode extends IRpaTaskNode {
                 return cell.getBooleanCellValue()? "true" : "false";
             }catch (Exception e2){
                 try {
+                    if(DateUtil.isCellDateFormatted(cell)){
+                        Date dateCellValue = cell.getDateCellValue();
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        return simpleDateFormat.format(dateCellValue);
+                    }
                     return String.valueOf(cell.getNumericCellValue());
                 }catch (Exception e3){
                     return null;

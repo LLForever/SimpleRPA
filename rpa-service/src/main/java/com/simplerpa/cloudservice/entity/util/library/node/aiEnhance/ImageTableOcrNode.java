@@ -5,12 +5,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.core.utils.StringUtils;
 import com.simplerpa.cloudservice.entity.InputSourceParams;
 import com.simplerpa.cloudservice.entity.TaskNodeDetail;
+import com.simplerpa.cloudservice.entity.util.DictionaryUtil;
 import com.simplerpa.cloudservice.entity.util.RpaTaskOutput;
 import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 import com.simplerpa.cloudservice.entity.util.library.tools.AiEnhanceTool;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
+import java.net.URL;
 import java.util.ArrayList;
 
 public class ImageTableOcrNode extends IRpaTaskNode {
@@ -47,7 +49,18 @@ public class ImageTableOcrNode extends IRpaTaskNode {
                     getTableListByHTML(html);
                     getAttributeValue();
                 }
-                break;
+            }else if(jsonObject.containsKey(DictionaryUtil.SINGLE_PARAM_FLAG)){
+                try {
+                    String string = jsonObject.getString(DictionaryUtil.SINGLE_PARAM_FLAG);
+                    if(isURLValid(string)){
+                        JSONObject aiResult = AiEnhanceTool.getAiResult(string, AiEnhanceTool.TABLE_OCR);
+                        String html = aiResult.getString("res");
+                        getTableListByHTML(html);
+                        getAttributeValue();
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         }
         return output;
@@ -63,6 +76,16 @@ public class ImageTableOcrNode extends IRpaTaskNode {
         output = new RpaTaskOutput();
     }
 
+    private boolean isURLValid(String url){
+        try {
+            new URL(url);
+            return true;
+        }catch (Exception e){
+//            e.printStackTrace();
+            return false;
+        }
+    }
+
     private void getAttributeValue(){
         JSONObject jsonObject = new JSONObject();
         if(horizontal){
@@ -74,9 +97,23 @@ public class ImageTableOcrNode extends IRpaTaskNode {
                              i++;
                              break;
                          }
+                         String s = item.get(i);
+                         if(s.length() > str.length()+1){
+                             String substring = s.substring(0, str.length());
+                             if(StrUtil.similar(substring, str) >= 0.9){
+                                 if(s.charAt(str.length()) == ':' || s.charAt(str.length()) == '：' || s.charAt(str.length()) == ' '){
+                                     substring = s.substring(str.length()+1);
+                                 }else{
+                                     substring = s.substring(str.length());
+                                 }
+                                 jsonObject.put(str, substring);
+                             }
+                             break;
+                         }
                      }
                 }
             }
+            addOutput(jsonObject);
         }else{
             // not complete
             for(ArrayList<String> item : tableList){
@@ -91,7 +128,6 @@ public class ImageTableOcrNode extends IRpaTaskNode {
                 }
             }
         }
-        addOutput(jsonObject);
     }
 
     private void getTableListByHTML(String html){

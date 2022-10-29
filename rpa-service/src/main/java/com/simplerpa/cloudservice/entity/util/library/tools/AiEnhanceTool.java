@@ -17,7 +17,7 @@ import java.net.URL;
 
 public class AiEnhanceTool {
     private static final String IMAGE_FLAG = "imageByte", TYPE = "type";
-    public static final String TABLE_OCR = "TABLE_OCR";
+    public static final String TABLE_OCR = "TABLE_OCR", OCR = "OCR";
 
     public static JSONObject getOcrResult(byte[] imageByURL) throws Exception{
         String url = DictionaryUtil.AI_SERVER_URL;
@@ -28,7 +28,7 @@ public class AiEnhanceTool {
         httpPost.setHeader("Content-Type", "application/json;charset=UTF-8");
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(IMAGE_FLAG, imageByURL);
-        jsonObject.put(TYPE, "OCR");
+        jsonObject.put(TYPE, OCR);
         StringEntity entity = new StringEntity(jsonObject.toJSONString(), "UTF-8");
         entity.setContentType("application/json");
         httpPost.setEntity(entity);
