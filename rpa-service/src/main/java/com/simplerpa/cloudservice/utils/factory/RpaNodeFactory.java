@@ -4,6 +4,7 @@ import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 import com.simplerpa.cloudservice.utils.factory.aiEnhance.ImageOcrNodeFactory;
 import com.simplerpa.cloudservice.utils.factory.aiEnhance.ImageTableOcrNodeFactory;
+import com.simplerpa.cloudservice.utils.factory.aiEnhance.KeyWordExtraNodeFactory;
 import com.simplerpa.cloudservice.utils.factory.dataproc.*;
 import com.simplerpa.cloudservice.utils.factory.loop.ForLoopNodeFactory;
 import com.simplerpa.cloudservice.utils.factory.loop.LoopEndNodeFactory;
@@ -63,6 +64,7 @@ public interface RpaNodeFactory {
             // id: 8X
             case "ai_ocr": return new ImageOcrNodeFactory(taskNodeDetail);
             case "ai_table_ocr": return new ImageTableOcrNodeFactory(taskNodeDetail);
+            case "key_word_extra": return new KeyWordExtraNodeFactory(taskNodeDetail);
         }
         return null;
     }

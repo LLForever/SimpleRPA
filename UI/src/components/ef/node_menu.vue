@@ -588,6 +588,22 @@ export default {
                                 outputParamName: '',
                                 outputAttributeList: []
                             }
+                        },
+                        {
+                            id: '83',
+                            type: 'key_word_extra',
+                            name: '图片信息提取',
+                            ico: 'el-icon-cpu',
+                            // 自定义覆盖样式
+                            style: {},
+                            params: {
+                                inputSource: {
+                                    parentSource: '',
+                                    childSource: ''
+                                },
+                                outputParamName: '',
+                                outputAttributeList: []
+                            }
                         }
                     ]
                 }

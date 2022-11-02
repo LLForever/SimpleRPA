@@ -14,10 +14,11 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.net.URL;
+import java.util.List;
 
 public class AiEnhanceTool {
-    private static final String IMAGE_FLAG = "imageByte", TYPE = "type";
-    public static final String TABLE_OCR = "TABLE_OCR", OCR = "OCR";
+    private static final String IMAGE_FLAG = "imageByte", TYPE = "type", SCHEMA = "schema";
+    public static final String TABLE_OCR = "TABLE_OCR", OCR = "OCR", KEY_EXT = "KEY_WORD_EXTRA";
 
     public static JSONObject getOcrResult(byte[] imageByURL) throws Exception{
         String url = DictionaryUtil.AI_SERVER_URL;
@@ -71,6 +72,34 @@ public class AiEnhanceTool {
 
     public static JSONObject getAiResult(String imgURL, String type) throws Exception {
         return getAiResult(getImageByURL(imgURL), type);
+    }
+
+    public static JSONObject getAiResult(String imgURL, String type, List<String> list) throws Exception {
+        return getAiResult(getImageByURL(imgURL), type, list);
+    }
+
+    public static JSONObject getAiResult(byte[] imageByURL, String type, List<String> list) throws Exception{
+        String url = DictionaryUtil.AI_SERVER_URL;
+
+        CloseableHttpClient client = HttpClientBuilder.create().build();
+
+        HttpPost httpPost = new HttpPost(url);
+        httpPost.setHeader("Content-Type", "application/json;charset=UTF-8");
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(IMAGE_FLAG, imageByURL);
+        jsonObject.put(TYPE, type);
+        jsonObject.put(SCHEMA, list);
+        StringEntity entity = new StringEntity(jsonObject.toJSONString(), "UTF-8");
+        entity.setContentType("application/json");
+        httpPost.setEntity(entity);
+
+        CloseableHttpResponse execute = client.execute(httpPost);
+        HttpEntity httpEntity = execute.getEntity();
+        String s = EntityUtils.toString(httpEntity);
+        JSONObject json = JSONObject.parseObject(s);
+        client.close();
+
+        return json;
     }
 
     public static byte[] getImageByURL(String str) throws Exception{

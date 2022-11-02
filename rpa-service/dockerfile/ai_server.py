@@ -9,6 +9,7 @@ from PIL import Image
 import uuid
 import os
 from table_ana_tool import *
+from paddlenlp import Taskflow
 
 errStr = {
     "code" : -1,
@@ -22,13 +23,13 @@ def getSuccessStr(res):
     successStr["res"] = res
     return successStr
 
-def getOcrRes(current_req_json):
+def getOcrOriginRes(current_req_json):
     current_data = current_req_json.get("imageByte")
     current_data = base64.b64decode(current_data)
     image_data = BytesIO(current_data)
     img = Image.open(image_data)
     get_timestamp_uuid = uuid.uuid1()
-    imgName = str(get_timestamp_uuid) + ".png";
+    imgName = str(get_timestamp_uuid) + ".png"
     img.save(imgName)
 
     ocr = hub.Module(name="chinese_ocr_db_crnn_mobile", enable_mkldnn=True)       # mkldnn加速仅在CPU下有效
@@ -36,6 +37,10 @@ def getOcrRes(current_req_json):
     successStr = getSuccessStr(successStr[0].get("data"))
 
     os.remove(imgName)
+    return successStr
+
+def getOcrRes(current_req_json):
+    successStr = getOcrOriginRes(current_req_json)
     return str(successStr)
 
 def getTableOcrRes(current_req_json):
@@ -44,7 +49,7 @@ def getTableOcrRes(current_req_json):
     image_data = BytesIO(current_data)
     img = Image.open(image_data)
     get_timestamp_uuid = uuid.uuid1()
-    imgName = str(get_timestamp_uuid) + ".png";
+    imgName = str(get_timestamp_uuid) + ".png"
     img.save(imgName)
 
     table_sys = TableSystem()
@@ -54,10 +59,20 @@ def getTableOcrRes(current_req_json):
 
     os.remove(imgName)
 
-    successStr = getSuccessStr(pred_res['html']);
+    successStr = getSuccessStr(pred_res['html'])
 
     return str(successStr)
 
+def getWordExtraRes(current_req_json):
+    strRes = getOcrOriginRes(current_req_json)
+    dictList = strRes['res']
+    schema = current_req_json.get("schema")
+    strRes = ''
+    for i in range(0, len(dictList)):
+        strRes += str(dictList[i]['text'])
+        strRes += ","
+    ie = Taskflow('information_extraction', schema=schema)
+    return str(getSuccessStr(ie(strRes)))
 
 def AIRunFactory(current_req_json):
     data_type = current_req_json.get("type")
@@ -65,6 +80,8 @@ def AIRunFactory(current_req_json):
         return getOcrRes(current_req_json)
     if data_type == "TABLE_OCR":
         return getTableOcrRes(current_req_json)
+    if data_type == "KEY_WORD_EXTRA":
+        return getWordExtraRes(current_req_json)
     return str(getSuccessStr("None Type Detect"))
 
 def RunServer(environ, start_response):

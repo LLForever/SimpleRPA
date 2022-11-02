@@ -7,6 +7,7 @@ import com.simplerpa.cloudservice.entity.InputSourceParams;
 import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import com.simplerpa.cloudservice.entity.util.DictionaryUtil;
 import com.simplerpa.cloudservice.entity.util.RpaTaskOutput;
+import com.simplerpa.cloudservice.entity.util.RpaTools;
 import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 import com.simplerpa.cloudservice.entity.util.library.tools.AiEnhanceTool;
 import org.openqa.selenium.By;
@@ -52,7 +53,7 @@ public class ImageTableOcrNode extends IRpaTaskNode {
             }else if(jsonObject.containsKey(DictionaryUtil.SINGLE_PARAM_FLAG)){
                 try {
                     String string = jsonObject.getString(DictionaryUtil.SINGLE_PARAM_FLAG);
-                    if(isURLValid(string)){
+                    if(RpaTools.isURLValid(string)){
                         JSONObject aiResult = AiEnhanceTool.getAiResult(string, AiEnhanceTool.TABLE_OCR);
                         String html = aiResult.getString("res");
                         getTableListByHTML(html);
@@ -74,16 +75,6 @@ public class ImageTableOcrNode extends IRpaTaskNode {
     @Override
     public void clearRpaOutput() {
         output = new RpaTaskOutput();
-    }
-
-    private boolean isURLValid(String url){
-        try {
-            new URL(url);
-            return true;
-        }catch (Exception e){
-//            e.printStackTrace();
-            return false;
-        }
     }
 
     private void getAttributeValue(){

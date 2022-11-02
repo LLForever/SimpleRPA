@@ -1,5 +1,6 @@
 package com.simplerpa.cloudservice.utils;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.simplerpa.cloudservice.entity.TaskLineDetail;
 import com.simplerpa.cloudservice.entity.TaskNodeDetail;
@@ -7,6 +8,10 @@ import com.simplerpa.cloudservice.entity.VO.TaskDetailVO;
 import com.simplerpa.cloudservice.entity.util.RpaTaskStructure;
 import com.simplerpa.cloudservice.entity.util.library.tools.AiEnhanceTool;
 import com.simplerpa.cloudservice.utils.factory.RpaNodeFactory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @Description: TODO
@@ -38,11 +43,37 @@ public class RpaTaskExplainer {
 //
     public static void main(String[] args) {
         try {
-            String url = "https://s1.ax1x.com/2022/10/29/x4zi80.png";
-            JSONObject ocrResult = AiEnhanceTool.getAiResult(url, AiEnhanceTool.TABLE_OCR);
+//            String url = "https://s1.ax1x.com/2022/11/01/x71uWj.png";
+            String url = "https://s1.ax1x.com/2022/11/02/xHvKfJ.png";
+            String[] strArr = {"姓名", "出生", "发票", "产品", "付款条款"};
+            List<String> list = Arrays.asList(strArr);
+            JSONObject ocrResult = AiEnhanceTool.getAiResult(url, AiEnhanceTool.KEY_EXT, list);
             System.out.println(JSONObject.toJSONString(ocrResult));
+            getAttributeValue(ocrResult.getJSONArray("res"));
+            outputRes(ocrResult);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void outputRes(JSONObject ocrResult){
+        ArrayList<String> list = new ArrayList<>();
+        JSONArray res = ocrResult.getJSONArray("res");
+        for(int i=0; i<res.size(); i++){
+            JSONObject object = res.getObject(i, JSONObject.class);
+            list.add(object.getString("text"));
+        }
+        System.out.println(Arrays.toString(list.toArray()));
+    }
+
+    private static void getAttributeValue(JSONArray jsonArray){
+        JSONObject jsonObject = jsonArray.getJSONObject(0);
+        for (String key : jsonObject.keySet()){
+            JSONArray jsonArray1 = jsonObject.getJSONArray(key);
+            JSONObject jsonObject1 = jsonArray1.getJSONObject(0);
+            JSONObject o = new JSONObject();
+            o.put(key, jsonObject1.getString("text"));
+            System.out.println(o);
         }
     }
 }
