@@ -370,7 +370,7 @@ export default {
                             id: '65',
                             type: 'write_input',
                             name: '填写输入框',
-                            ico: 'el-icon-mouse',
+                            ico: 'el-icon-edit-outline',
                             // 自定义覆盖样式
                             style: {},
                             params: {
@@ -466,6 +466,20 @@ export default {
                                     childSource: ''
                                 },
                                 outputParamName: ''
+                            }
+                        },
+                        {
+                            id: '612',
+                            type: 'close_web',
+                            name: '关闭网页',
+                            ico: 'el-icon-close',
+                            // 自定义覆盖样式
+                            style: {},
+                            params: {
+                                inputSource: {
+                                    parentSource: '',
+                                    childSource: ''
+                                }
                             }
                         }
                     ]

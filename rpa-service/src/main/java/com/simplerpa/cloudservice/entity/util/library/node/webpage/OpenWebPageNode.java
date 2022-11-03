@@ -24,6 +24,8 @@ public class OpenWebPageNode extends IRpaTaskNode {
         if(URL == null || outputParamName == null){
             throw new Exception(this.getClass().getName() + " : 缺少必要参数，执行失败！");
         }
+        detectParamsValue(input);
+
         JSONObject jsonObject = new JSONObject();
 //        WebDriverManager.globalConfig();
 //        WebDriverManager.chromedriver().setup();

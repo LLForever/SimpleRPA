@@ -45,9 +45,10 @@ public class RpaTaskExplainer {
         try {
 //            String url = "https://s1.ax1x.com/2022/11/01/x71uWj.png";
             String url = "https://s1.ax1x.com/2022/11/02/xHvKfJ.png";
-            String[] strArr = {"姓名", "出生", "发票", "产品", "付款条款"};
+            String fapiaoUrl = "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fss2.meipian.me%2Fusers%2F18784074%2F6ac8639a5f21443493b4aa0685450458.jpg%3Fmeipian-raw%2Fbucket%2Fivwen%2Fkey%2FdXNlcnMvMTg3ODQwNzQvNmFjODYzOWE1ZjIxNDQzNDkzYjRhYTA2ODU0NTA0NTguanBn%2Fsign%2Fe68651a55681b23ccb968ce32f4eb155.jpg&refer=http%3A%2F%2Fss2.meipian.me&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1670052461&t=94ea15524e5ae091b5806866eac8169d";
+            String[] strArr = {"发票代码", "发票号码", "开票日期"};
             List<String> list = Arrays.asList(strArr);
-            JSONObject ocrResult = AiEnhanceTool.getAiResult(url, AiEnhanceTool.KEY_EXT, list);
+            JSONObject ocrResult = AiEnhanceTool.getAiResult(fapiaoUrl, AiEnhanceTool.KEY_EXT, list);
             System.out.println(JSONObject.toJSONString(ocrResult));
             getAttributeValue(ocrResult.getJSONArray("res"));
             outputRes(ocrResult);
