@@ -20,16 +20,22 @@ public class EmailSendNodeFactory implements RpaNodeFactory {
         JSONObject params = taskNodeDetail.getParams();
         String to = params.getString("to");
         String content = params.getString("content");
+        String subject = params.getString("subject");
         if(StringUtils.isEmpty(to)){
             throw new Exception(this.getClass().getName() + " : 缺少收件人！执行失败");
         }
         if(StringUtils.isEmpty(content)){
             throw new Exception(this.getClass().getName() + " : 缺少邮件内容！执行失败");
         }
+        if(StringUtils.isEmpty(subject)){
+            subject = "no subject";
+        }
         node.setContent(content);
         node.setContentBck(content);
         node.setTo(to);
         node.setToBck(to);
+        node.setSubject(subject);
+        node.setSubjectBck(subject);
         return node;
     }
 }

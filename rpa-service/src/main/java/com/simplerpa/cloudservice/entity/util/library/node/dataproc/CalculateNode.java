@@ -21,8 +21,8 @@ public class CalculateNode extends IRpaTaskNode {
     @Override
     public RpaTaskOutput run(RpaTaskOutput input) throws Exception {
         detectParamsValue(input);
-        Integer targetNum = Integer.valueOf(targetText);
-        Integer sourceNum = Integer.valueOf(source);
+        Double targetNum = Double.valueOf(targetText);
+        Double sourceNum = Double.valueOf(source);
         JSONObject jsonObject = new JSONObject();
         if(PLUS.equals(calculateType)){
             jsonObject.put(DictionaryUtil.SINGLE_PARAM_FLAG, targetNum + sourceNum);

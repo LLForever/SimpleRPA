@@ -8,6 +8,11 @@ import com.simplerpa.cloudservice.entity.VO.TaskDetailVO;
 import com.simplerpa.cloudservice.entity.util.RpaTaskStructure;
 import com.simplerpa.cloudservice.entity.util.library.tools.AiEnhanceTool;
 import com.simplerpa.cloudservice.utils.factory.RpaNodeFactory;
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,11 +49,12 @@ public class RpaTaskExplainer {
     public static void main(String[] args) {
         try {
 //            String url = "https://s1.ax1x.com/2022/11/01/x71uWj.png";
+
             String url = "https://s1.ax1x.com/2022/11/02/xHvKfJ.png";
-            String fapiaoUrl = "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fss2.meipian.me%2Fusers%2F18784074%2F6ac8639a5f21443493b4aa0685450458.jpg%3Fmeipian-raw%2Fbucket%2Fivwen%2Fkey%2FdXNlcnMvMTg3ODQwNzQvNmFjODYzOWE1ZjIxNDQzNDkzYjRhYTA2ODU0NTA0NTguanBn%2Fsign%2Fe68651a55681b23ccb968ce32f4eb155.jpg&refer=http%3A%2F%2Fss2.meipian.me&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1670052461&t=94ea15524e5ae091b5806866eac8169d";
-            String[] strArr = {"发票代码", "发票号码", "开票日期"};
+//            String fapiaoUrl = "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fss2.meipian.me%2Fusers%2F18784074%2F6ac8639a5f21443493b4aa0685450458.jpg%3Fmeipian-raw%2Fbucket%2Fivwen%2Fkey%2FdXNlcnMvMTg3ODQwNzQvNmFjODYzOWE1ZjIxNDQzNDkzYjRhYTA2ODU0NTA0NTguanBn%2Fsign%2Fe68651a55681b23ccb968ce32f4eb155.jpg&refer=http%3A%2F%2Fss2.meipian.me&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1670052461&t=94ea15524e5ae091b5806866eac8169d";
+            String[] strArr = {"姓名", "求职意向", "电话", "邮箱"};
             List<String> list = Arrays.asList(strArr);
-            JSONObject ocrResult = AiEnhanceTool.getAiResult(fapiaoUrl, AiEnhanceTool.KEY_EXT, list);
+            JSONObject ocrResult = AiEnhanceTool.getAiResult(url, AiEnhanceTool.KEY_EXT, list);
             System.out.println(JSONObject.toJSONString(ocrResult));
             getAttributeValue(ocrResult.getJSONArray("res"));
             outputRes(ocrResult);

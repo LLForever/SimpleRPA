@@ -519,7 +519,11 @@ export default {
                             ico: 'el-icon-s-promotion',
                             // 自定义覆盖样式
                             style: {},
-                            params: {}
+                            params: {
+                                to: '',
+                                content: '',
+                                subject: ''
+                            }
                         },
                         {
                             id: '74',

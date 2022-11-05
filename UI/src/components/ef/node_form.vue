@@ -97,6 +97,16 @@
                         <el-checkbox v-model="node.params.allReplace">替换所有输入源对应文本</el-checkbox>
                     </el-form-item>
 
+                    <el-form-item label="对方邮箱" v-if="node.id && node.params.to !== undefined">
+                        <s-input v-model="node.params.to" :list="inputParamList"></s-input>
+                    </el-form-item>
+                    <el-form-item label="主题" v-if="node.id && node.params.subject !== undefined">
+                        <s-input v-model="node.params.subject" :list="inputParamList"></s-input>
+                    </el-form-item>
+                    <el-form-item label="内容" v-if="node.id && node.params.content !== undefined">
+                        <s-input v-model="node.params.content" :list="inputParamList"></s-input>
+                    </el-form-item>
+
                     <el-form-item label="输出参数" v-if="node.id && node.params.outputParamName !== undefined">
                         <el-input v-model="node.params.outputParamName"></el-input>
                     </el-form-item>

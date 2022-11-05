@@ -20,7 +20,7 @@ public class EmailUtilSingleton {
         javaMailSender.setHost("smtp.qq.com");
         javaMailSender.setPort(587);
         javaMailSender.setUsername("346904028@qq.com");
-        javaMailSender.setPassword("niivaeihkkswcbbb");
+        javaMailSender.setPassword("zelsxaxylxpgcaed");
         javaMailSender.setDefaultEncoding("utf-8");
     }
 
@@ -36,10 +36,14 @@ public class EmailUtilSingleton {
     }
 
     public void sendMail(String to, String content){
+        sendMail(to, content, "Simple RPA Notify(No Reply)");
+    }
+
+    public void sendMail(String to, String content, String subject){
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(MAIL_FROM);
         message.setTo(to);
-        message.setSubject("Simple RPA Notify(No Reply)");
+        message.setSubject(subject);
         message.setText(content);
         javaMailSender.send(message);
     }

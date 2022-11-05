@@ -28,7 +28,11 @@ public class GetObjRowNode extends IRpaTaskNode {
         if(rowNumStr == null){
             throw new Exception(this.getClass().getName() + "缺少指定行参数");
         }
-        rowNum = Integer.valueOf(rowNumStr);
+        double rowNumDouble = Double.parseDouble(rowNumStr);
+        rowNum = (int) rowNumDouble;
+        if(rowNumDouble - Double.parseDouble(rowNum.toString()) > 1e-10){
+            throw new Exception(this.getClass().getName() + "指定的行不是一个整数");
+        }
         if(StringUtils.isEmpty(parentSource)){
             throw new Exception(this.getClass().getName() + "缺少输入参数");
         }

@@ -27,7 +27,7 @@ public class ImageTableOcrNode extends IRpaTaskNode {
     public ImageTableOcrNode(TaskNodeDetail nodeDetail){
         this.nodeDetail = nodeDetail;
         this.tableList = new ArrayList<>();
-        horizontal = true;
+        horizontal = false;
     }
 
     @Override
@@ -107,16 +107,21 @@ public class ImageTableOcrNode extends IRpaTaskNode {
             addOutput(jsonObject);
         }else{
             // not complete
-            for(ArrayList<String> item : tableList){
+            for(int z=1; z<tableList.size(); z++){
+                jsonObject = new JSONObject();
+                ArrayList<String> item = tableList.get(z);
                 for(int i=0; i<item.size(); i++){
+                    if(i >= tableList.get(0).size()){
+                        break;
+                    }
                     for(String str : outputAttributeList){
-                        if(StrUtil.similar(str, item.get(i)) >= 0.9 && i != item.size()-1){
-                            jsonObject.put(str, item.get(i+1));
-                            i++;
+                        if(StrUtil.similar(str, tableList.get(0).get(i)) >= 0.9){
+                            jsonObject.put(str, item.get(i));
                             break;
                         }
                     }
                 }
+                addOutput(jsonObject);
             }
         }
     }
