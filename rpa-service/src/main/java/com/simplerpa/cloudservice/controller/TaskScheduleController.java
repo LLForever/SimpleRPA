@@ -31,12 +31,9 @@ public class TaskScheduleController extends BaseController {
         TaskDetail taskDetail = taskDetailService.selectTaskDetailById(id);
         TaskDetailVO taskDetailVO = new TaskDetailVO(taskDetail);
         LoginUser loginUser = SecurityUtils.getLoginUser();
-        loginUser = new LoginUser();
         if (loginUser != null) {
             Long userid = loginUser.getUserid();
-            userid = 1L;
             if (userid != null && Objects.equals(taskDetailVO.getUserId(), userid)) {
-//                ThreadPoolSingleton.getInstance().submit(new RpaTaskExecutor(taskDetailVO));
                 TaskScheduleAllocator allocator = new TaskScheduleAllocator();
                 try {
                     allocator.AllocateTask(taskDetailVO);
@@ -49,8 +46,12 @@ public class TaskScheduleController extends BaseController {
 
     @GetMapping("/get_perform")
     public JSONObject getPerformance(){
+        return getPerformanceJSON();
+    }
+
+    public static JSONObject getPerformanceJSON(){
         JSONObject res = new JSONObject();
-        // not completed
+
         JSONObject memPerform = getMEMPerform();
         JSONObject cpuPerform = getCPUPerform();
         JSONObject netioPerform = getNETIOPerform();
@@ -82,7 +83,7 @@ public class TaskScheduleController extends BaseController {
         return res;
     }
 
-    private JSONObject getCPUPerform(){
+    private static JSONObject getCPUPerform(){
         JSONObject systemInfo = TaskScheduleAllocator.getSystemInfo(DictionaryUtil.CPU_URL, DictionaryUtil.CPU_URL_TAIL);
         JSONObject res = new JSONObject();
         JSONArray jsonArray = systemInfo.getJSONObject("data").getJSONArray("result");
@@ -96,7 +97,7 @@ public class TaskScheduleController extends BaseController {
         return res;
     }
 
-    private JSONObject getMEMPerform(){
+    private static JSONObject getMEMPerform(){
         JSONObject systemInfo = TaskScheduleAllocator.getSystemInfo(DictionaryUtil.MEM_URL);
         JSONObject res = new JSONObject();
         JSONArray jsonArray = systemInfo.getJSONObject("data").getJSONArray("result");
@@ -110,7 +111,7 @@ public class TaskScheduleController extends BaseController {
         return res;
     }
 
-    private JSONObject getNETIOPerform(){
+    private static JSONObject getNETIOPerform(){
         JSONObject res = new JSONObject();
         JSONObject master = TaskScheduleAllocator.getSystemInfo(DictionaryUtil.NET_IO, DictionaryUtil.GetNetIO("master"));
         JSONObject node1 = TaskScheduleAllocator.getSystemInfo(DictionaryUtil.NET_IO, DictionaryUtil.GetNetIO("node1"));

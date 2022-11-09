@@ -31,6 +31,7 @@ public class RpaTaskExecutor implements Runnable{
     public void run() {
         RpaTaskStructure rpaTaskStructure = explainTask();
         if(rpaTaskStructure != null) {
+            TaskCostCountUtil.addCost(TaskCostCountUtil.getSumCostById(taskDetailVO.getId()));
             RpaTaskOutput allOutput = new RpaTaskOutput(true);
             WebsocketTask.getTaskDetailService().changeRpaTaskStatus(DictionaryUtil.TASK_STATUS_RUNNING, taskDetailVO.getTaskId(), taskDetailVO.getUserId());
             while(!rpaTaskStructure.isEnd()){
@@ -102,6 +103,7 @@ public class RpaTaskExecutor implements Runnable{
     }
 
     private void clearSelenium(RpaTaskOutput rpaTaskOutput){
+        TaskCostCountUtil.minusCost(TaskCostCountUtil.getSumCostById(taskDetailVO.getId()));
         if(rpaTaskOutput == null){
             return;
         }
