@@ -15,15 +15,18 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TaskScheduleAllocator {
     String SERVER_HOST = "http://192.168.103.";
     String END_POINT = "12022";
     String CMD_TAIL = "/panel-task/run";
     String[] serverList;
-    private static int pos;
+    private static final AtomicInteger pos = new AtomicInteger();
+
+    static {
+        pos.set(0);
+    }
 
     public void initParams(Integer num, String[] ips){
         serverList = new String[num];
@@ -33,13 +36,13 @@ public class TaskScheduleAllocator {
     }
 
     public TaskScheduleAllocator(){
-        pos = 0;
         String[] ips = {"116", "117", "118", "99"};
         initParams(ips.length, ips);
     }
 
     private void LunXunAlgorithm(TaskDetailVO vo) throws Exception{
-        int i = pos % serverList.length;
+        int i = pos.get() % serverList.length;
+        pos.incrementAndGet();
         String url = serverList[i] + CMD_TAIL;
         CloseableHttpClient client = HttpClientBuilder.create().build();
         HttpPost httpPost = new HttpPost(url);
@@ -53,8 +56,6 @@ public class TaskScheduleAllocator {
         HttpEntity httpEntity = execute.getEntity();
         String res = EntityUtils.toString(httpEntity);
         client.close();
-
-        System.out.println(res);
     }
 
     public void AllocateTask(TaskDetailVO vo) throws Exception{
