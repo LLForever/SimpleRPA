@@ -93,6 +93,7 @@
                         <s-input v-model="node.params.targetText" :list="inputParamList"></s-input>
                     </el-form-item>
 
+
                     <el-form-item label="替换状态" v-if="node.id && node.params.allReplace !== undefined">
                         <el-checkbox v-model="node.params.allReplace">替换所有输入源对应文本</el-checkbox>
                     </el-form-item>
