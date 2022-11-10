@@ -9,6 +9,7 @@ import com.simplerpa.cloudservice.entity.TaskDetail;
 import com.simplerpa.cloudservice.entity.VO.TaskDetailVO;
 import com.simplerpa.cloudservice.entity.util.DictionaryUtil;
 import com.simplerpa.cloudservice.service.ITaskDetailService;
+import com.simplerpa.cloudservice.utils.TaskCostCountUtil;
 import com.simplerpa.cloudservice.utils.TaskScheduleAllocator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,6 +43,11 @@ public class TaskScheduleController extends BaseController {
                 }
             }
         }
+    }
+
+    @GetMapping("/get_cost")
+    public JSONObject getCostInformation(){
+        return TaskCostCountUtil.getCostInformation();
     }
 
     @GetMapping("/get_perform")
@@ -98,7 +104,7 @@ public class TaskScheduleController extends BaseController {
     }
 
     private static JSONObject getMEMPerform(){
-        JSONObject systemInfo = TaskScheduleAllocator.getSystemInfo(DictionaryUtil.MEM_URL);
+        JSONObject systemInfo = TaskScheduleAllocator.sendGetRequest(DictionaryUtil.MEM_URL);
         JSONObject res = new JSONObject();
         JSONArray jsonArray = systemInfo.getJSONObject("data").getJSONArray("result");
         for (int i=0; i<jsonArray.size(); i++){
