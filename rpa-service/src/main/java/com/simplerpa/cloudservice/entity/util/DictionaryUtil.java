@@ -62,10 +62,10 @@ public class DictionaryUtil {
     public static final String AI_SERVER_URL = "http://127.0.0.1:10000/aienhance";
 
     public static final String CPU_URL = "http://192.168.103.116:30090/api/v1/query?query={json}";
-    public static final String CPU_URL_TAIL = "100*(1 - sum by (instance)(increase(node_cpu_seconds_total{mode=\"idle\"}[30s])) / sum by (instance)(increase(node_cpu_seconds_total[30s])))";
+    public static final String CPU_URL_TAIL = "100*(1 - sum by (instance)(increase(node_cpu_seconds_total{mode=\"idle\"}[60s])) / sum by (instance)(increase(node_cpu_seconds_total[60s])))";
     public static final String MEM_URL = "http://192.168.103.116:30090/api/v1/query?query=(node_memory_MemTotal_bytes-(node_memory_MemFree_bytes%2Bnode_memory_Cached_bytes%2Bnode_memory_Buffers_bytes))%2Fnode_memory_MemTotal_bytes*100";
     public static final String NET_IO = "http://192.168.103.116:30090/api/v1/query?query={json}";
-    public static final String NET_IO_TAIL = "sum(rate (container_network_receive_bytes_total{node=\"{node_name}\"}[1m]))/1024";
+    public static final String NET_IO_TAIL = "sum(rate (container_network_receive_bytes_total{node=\"{node_name}\"}[70s]))/1024";
 
     public static String GetNetIO(String nodeName){
         return StringUtils.replace(NET_IO_TAIL, "{node_name}", nodeName);

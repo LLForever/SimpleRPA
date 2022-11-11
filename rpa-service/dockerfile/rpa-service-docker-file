@@ -28,4 +28,6 @@ ENV JAVA_HOME=/jdk1.8.0_221
 ENV CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
 ENV PATH=$JAVA_HOME/bin:$PATH
 RUN chmod 777 start_cmd.sh
+RUN chmod 777 rpa-service.jar
+RUN chmod 777 jdk1.8.0_221 -R
 ENTRYPOINT ["bash","start_cmd.sh"]
