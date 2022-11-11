@@ -58,7 +58,8 @@ public class DictionaryUtil {
     public static final String NO_MERGE_FLAG = "_@NO_MERGE_FLAG@";
     public static final String CURRENT_LAYER = "_@CURRENT_LAYER@";
 
-    public static final String AI_SERVER_URL = "http://192.168.103.99:10000/aienhance";
+//    public static final String AI_SERVER_URL = "http://192.168.103.99:10000/aienhance";
+    public static final String AI_SERVER_URL = "http://127.0.0.1:10000/aienhance";
 
     public static final String CPU_URL = "http://192.168.103.116:30090/api/v1/query?query={json}";
     public static final String CPU_URL_TAIL = "100*(1 - sum by (instance)(increase(node_cpu_seconds_total{mode=\"idle\"}[30s])) / sum by (instance)(increase(node_cpu_seconds_total[30s])))";

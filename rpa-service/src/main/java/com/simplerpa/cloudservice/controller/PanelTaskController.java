@@ -77,4 +77,18 @@ public class PanelTaskController extends BaseController {
         }
         return AjaxResult.error("运行出错！请检查登陆状态是否正常！");
     }
+
+    @PostMapping("/run_task")
+    @Transactional
+    public AjaxResult run_task(@RequestBody TaskDetailVO taskDetailVO){
+        if(taskDetailVO.getTaskId() == null){
+            return AjaxResult.error("该任务的ID为空，无法运行！");
+        }
+        if (Math.abs(taskDetailVO.getTaskProgress() - 999) < 1e-20) {
+            uploadTaskDetailAndStore(taskDetailVO);
+            ThreadPoolSingleton.getInstance().submit(new RpaTaskExecutor(taskDetailVO));
+            return AjaxResult.success("任务启动成功！正在运行...");
+        }
+        return AjaxResult.error("运行出错！请检查登陆状态是否正常！");
+    }
 }

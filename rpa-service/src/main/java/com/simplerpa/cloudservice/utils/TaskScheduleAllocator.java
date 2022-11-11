@@ -23,11 +23,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class TaskScheduleAllocator {
     private static final String SERVER_HOST = "http://192.168.103.";
     private static final String END_POINT = "12022";
-    private static final String CMD_TAIL = "/panel-task/run", GET_COST_TAIL = "/get_cost";
+    private static final String CMD_TAIL = "/panel-task/run_task", GET_COST_TAIL = "/get_cost";
     private static String[] serverList;
     private static final AtomicInteger pos = new AtomicInteger();
     private static final ArrayList<TaskDetailVO> waitingQueue;
     private static final ArrayList<String> machineName;
+
+    private static String schedule_type;
 
     static {
         waitingQueue = new ArrayList<>();
@@ -49,6 +51,9 @@ public class TaskScheduleAllocator {
 
     private void SendTask(TaskDetailVO vo, int i) throws Exception{
         String url = serverList[i] + CMD_TAIL;
+        vo.setTaskProgress(999.0);
+        String msg = "*************************\nsend a task to : \n" + url + "\n" + "*************************";
+        System.out.println(msg);
         CloseableHttpClient client = HttpClientBuilder.create().build();
         HttpPost httpPost = new HttpPost(url);
         httpPost.setHeader("Content-Type", "application/json;charset=UTF-8");
@@ -61,6 +66,9 @@ public class TaskScheduleAllocator {
         HttpEntity httpEntity = execute.getEntity();
         String res = EntityUtils.toString(httpEntity);
         client.close();
+        System.out.println("*************RESULT****************");
+        System.out.println(res);
+        System.out.println("*************RESULT****************");
     }
 
     private void LunXunSchedule(ArrayList<TaskDetailVO> list) throws Exception {
@@ -101,9 +109,13 @@ public class TaskScheduleAllocator {
             }
             JSONObject performanceJSON = TaskScheduleController.getPerformanceJSON();
             JSONObject machinesCostInfo = getMachinesCostInfo();
-//            LunXunSchedule(scheduleTaskList);
-//            TanXinSchedule(scheduleTaskList, machinesCostInfo);
+            if("tanxin".equals(schedule_type)){
+                TanXinSchedule(scheduleTaskList, machinesCostInfo);
+            }else if("liziqun".equals(schedule_type)){
 
+            }else{
+                LunXunSchedule(scheduleTaskList);
+            }
         }
     }
 
@@ -142,5 +154,13 @@ public class TaskScheduleAllocator {
             res.put(machineName.get(i), jsonObject);
         }
         return res;
+    }
+
+    public static String getSchedule_type() {
+        return schedule_type;
+    }
+
+    public static void setSchedule_type(String schedule_type) {
+        TaskScheduleAllocator.schedule_type = schedule_type;
     }
 }

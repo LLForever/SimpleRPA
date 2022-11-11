@@ -106,7 +106,6 @@ public class ImageTableOcrNode extends IRpaTaskNode {
             }
             addOutput(jsonObject);
         }else{
-            // not complete
             for(int z=1; z<tableList.size(); z++){
                 jsonObject = new JSONObject();
                 ArrayList<String> item = tableList.get(z);

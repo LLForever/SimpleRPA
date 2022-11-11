@@ -12,6 +12,7 @@ import com.simplerpa.cloudservice.service.ITaskDetailService;
 import com.simplerpa.cloudservice.utils.TaskCostCountUtil;
 import com.simplerpa.cloudservice.utils.TaskScheduleAllocator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,9 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/schedule")
 public class TaskScheduleController extends BaseController {
+
+    @Value("${scheduler.type}")
+    private String schedule_type;
 
     @Autowired
     ITaskDetailService taskDetailService;
@@ -37,6 +41,7 @@ public class TaskScheduleController extends BaseController {
             if (userid != null && Objects.equals(taskDetailVO.getUserId(), userid)) {
                 TaskScheduleAllocator allocator = new TaskScheduleAllocator();
                 try {
+                    TaskScheduleAllocator.setSchedule_type(schedule_type);
                     allocator.AllocateTask(taskDetailVO);
                 } catch (Exception e) {
                     e.printStackTrace();
