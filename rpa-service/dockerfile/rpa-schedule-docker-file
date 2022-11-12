@@ -1,0 +1,6 @@
+FROM openjdk:8
+VOLUME /tmp
+workdir .
+COPY rpa-service.jar .
+RUN chmod 777 rpa-service.jar
+ENTRYPOINT ["java","-jar","rpa-service.jar"]

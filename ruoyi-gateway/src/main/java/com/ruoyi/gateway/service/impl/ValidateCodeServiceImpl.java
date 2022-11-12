@@ -110,6 +110,10 @@ public class ValidateCodeServiceImpl implements ValidateCodeService
         String captcha = redisService.getCacheObject(verifyKey);
         redisService.deleteObject(verifyKey);
 
+        System.out.println("*********************checkCaptcha****************************");
+        System.out.println(code + " " + captcha);
+        System.out.println("*********************END****************************");
+
         if (!code.equalsIgnoreCase(captcha))
         {
             throw new CaptchaException("验证码错误");

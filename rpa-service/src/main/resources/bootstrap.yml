@@ -31,3 +31,7 @@ mybatis:
 #  type-aliases-package: com.simplerpa.cloudservice.entities
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

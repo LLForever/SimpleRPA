@@ -35,19 +35,15 @@ public class TaskScheduleController extends BaseController {
     public void startExecTask(@PathVariable("id") Long id){
         TaskDetail taskDetail = taskDetailService.selectTaskDetailById(id);
         TaskDetailVO taskDetailVO = new TaskDetailVO(taskDetail);
-        LoginUser loginUser = SecurityUtils.getLoginUser();
-        if (loginUser != null) {
-            Long userid = loginUser.getUserid();
-            if (userid != null && Objects.equals(taskDetailVO.getUserId(), userid)) {
-                TaskScheduleAllocator allocator = new TaskScheduleAllocator();
-                try {
-                    TaskScheduleAllocator.setSchedule_type(schedule_type);
-                    allocator.AllocateTask(taskDetailVO);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        new Thread(() -> {
+            TaskScheduleAllocator allocator = new TaskScheduleAllocator();
+            try {
+                TaskScheduleAllocator.setSchedule_type(schedule_type);
+                allocator.AllocateTask(taskDetailVO);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }
+        }).start();
     }
 
     @GetMapping("/get_cost")
@@ -96,9 +92,9 @@ public class TaskScheduleController extends BaseController {
 
     private static JSONObject getCPUPerform(){
         JSONObject systemInfo = TaskScheduleAllocator.getSystemInfo(DictionaryUtil.CPU_URL, DictionaryUtil.CPU_URL_TAIL);
-        System.out.println("*********************getCPUPerform**********************");
-        System.out.println(systemInfo);
-        System.out.println("*********************END**********************");
+//        System.out.println("*********************getCPUPerform**********************");
+//        System.out.println(systemInfo);
+//        System.out.println("*********************END**********************");
         JSONObject res = new JSONObject();
         JSONArray jsonArray = systemInfo.getJSONObject("data").getJSONArray("result");
         for (int i=0; i<jsonArray.size(); i++){
@@ -113,9 +109,9 @@ public class TaskScheduleController extends BaseController {
 
     private static JSONObject getMEMPerform(){
         JSONObject systemInfo = TaskScheduleAllocator.sendGetRequest(DictionaryUtil.MEM_URL);
-        System.out.println("*********************getMEMPerform**********************");
-        System.out.println(systemInfo);
-        System.out.println("*********************END**********************");
+//        System.out.println("*********************getMEMPerform**********************");
+//        System.out.println(systemInfo);
+//        System.out.println("*********************END**********************");
         JSONObject res = new JSONObject();
         JSONArray jsonArray = systemInfo.getJSONObject("data").getJSONArray("result");
         for (int i=0; i<jsonArray.size(); i++){
@@ -145,9 +141,9 @@ public class TaskScheduleController extends BaseController {
         if(jsonObject == null){
             return 100.0;
         }
-        System.out.println("*********************getNetSpeed**********************");
-        System.out.println(jsonObject);
-        System.out.println("*********************END**********************");
+//        System.out.println("*********************getNetSpeed**********************");
+//        System.out.println(jsonObject);
+//        System.out.println("*********************END**********************");
         Object o = jsonObject.getJSONObject("data").getJSONArray("result").getJSONObject(0).get("value");
         ArrayList<String> doubles = (ArrayList<String>) o;
         return Double.parseDouble(doubles.get(1))/1024;

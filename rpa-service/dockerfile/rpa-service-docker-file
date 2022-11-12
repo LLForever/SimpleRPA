@@ -18,7 +18,7 @@ RUN apt-get install fonts-arphic-ukai -y
 RUN pip install paddlepaddle-2.3.2-cp38-cp38-linux_x86_64.whl
 RUN pip install --upgrade paddlehub -i https://mirror.baidu.com/pypi/simple
 RUN pip install --upgrade paddlenlp -i https://mirror.baidu.com/pypi/simple
-RUN pip install -r ./PaddleOCR/requirements.txt
+RUN pip install -r ./PaddleOCR/requirements.txt -i https://mirror.baidu.com/pypi/simple
 RUN chmod 777 google-chrome-stable_current_amd64.deb
 RUN chmod 777 /usr/local/bin/chromedriver
 RUN apt install ./google-chrome-stable_current_amd64.deb -y
