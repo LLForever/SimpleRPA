@@ -46,6 +46,11 @@ public class TaskScheduleController extends BaseController {
         }).start();
     }
 
+    @GetMapping("/get_schedule_type")
+    public String get_schedule_type(){
+        return schedule_type;
+    }
+
     @GetMapping("/get_cost")
     public JSONObject getCostInformation(){
         return TaskCostCountUtil.getCostInformation();

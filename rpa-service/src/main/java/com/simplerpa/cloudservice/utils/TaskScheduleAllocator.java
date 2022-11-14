@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class TaskScheduleAllocator {
     private static final String SERVER_HOST = "http://192.168.103.";
     private static final String END_POINT = "12022";
-    private static final String CMD_TAIL = "/panel-task/run_task", GET_COST_TAIL = "/get_cost";
+    private static final String CMD_TAIL = "/panel-task/run_task", GET_COST_TAIL = "/schedule/get_cost";
     private static String[] serverList;
     private static final AtomicInteger pos = new AtomicInteger();
     private static final ArrayList<TaskDetailVO> waitingQueue;
@@ -52,7 +52,7 @@ public class TaskScheduleAllocator {
     private void SendTask(TaskDetailVO vo, int i) throws Exception{
         String url = serverList[i] + CMD_TAIL;
         vo.setTaskProgress(999.0);
-        String msg = "*************************\nsend a task to : \n" + url + "\n" + "*************************";
+        String msg = "*************************\n" + schedule_type + " send a task to : \n" + url + "\n" + vo.getTaskId() + " " + vo.getTaskName() + "\n" + "*************************";
         System.out.println(msg);
         CloseableHttpClient client = HttpClientBuilder.create().build();
         HttpPost httpPost = new HttpPost(url);

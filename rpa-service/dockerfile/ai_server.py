@@ -70,7 +70,7 @@ def getWordExtraRes(current_req_json):
     strRes = ''
     for i in range(0, len(dictList)):
         strRes += str(dictList[i]['text'])
-        strRes += " "
+        strRes += ","
     ie = Taskflow('information_extraction', schema=schema)
     return str(getSuccessStr(ie(strRes)))
 

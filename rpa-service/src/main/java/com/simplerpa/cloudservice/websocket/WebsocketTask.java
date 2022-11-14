@@ -5,6 +5,7 @@ import com.ruoyi.common.core.utils.StringUtils;
 import com.simplerpa.cloudservice.entity.PanelTaskMessage;
 import com.simplerpa.cloudservice.entity.VO.TaskDetailVO;
 import com.simplerpa.cloudservice.entity.util.DictionaryUtil;
+import com.simplerpa.cloudservice.service.IRpaTaskNodeExecLogsService;
 import com.simplerpa.cloudservice.service.ITaskDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Component
 public class WebsocketTask implements IWebsocketTaskSubject {
     private static ITaskDetailService taskDetailService;
+    private static IRpaTaskNodeExecLogsService taskNodeExecLogsService;
 
     private static AtomicInteger onlineUserNumber = new AtomicInteger(0);
     private static ConcurrentHashMap<Long, TaskDetailVO> taskDetailMap = new ConcurrentHashMap<>();
@@ -38,6 +40,11 @@ public class WebsocketTask implements IWebsocketTaskSubject {
     @Autowired
     public void setTaskDetailService(ITaskDetailService service){
         taskDetailService = service;
+    }
+
+    @Autowired
+    public void setIRpaTaskNodeExecLogsService(IRpaTaskNodeExecLogsService service){
+        taskNodeExecLogsService = service;
     }
 
     @OnOpen
@@ -183,6 +190,10 @@ public class WebsocketTask implements IWebsocketTaskSubject {
 
     public static ITaskDetailService getTaskDetailService() {
         return taskDetailService;
+    }
+
+    public static IRpaTaskNodeExecLogsService getTaskNodeExecLogsService() {
+        return taskNodeExecLogsService;
     }
 
     /*

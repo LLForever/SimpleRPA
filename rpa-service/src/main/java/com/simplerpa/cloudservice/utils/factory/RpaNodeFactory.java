@@ -53,6 +53,7 @@ public interface RpaNodeFactory {
             case "element_content_getter" : return new ElementContentGetterNodeFactory(taskNodeDetail);
             case "get_screenshot": return new GetScreenshotNodeFactory(taskNodeDetail);
             case "close_web": return new CloseWebNodeFactory(taskNodeDetail);
+            case "wait_element_disappear": return new WaitElementDisappearNodeFactory(taskNodeDetail);
 
             // id: 7X
             case "sleep" : return new SleepNodeFactory(taskNodeDetail);

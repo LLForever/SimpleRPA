@@ -29,6 +29,9 @@ public class ForLoopNode extends IRpaTaskNode {
         detectParamsValue(input);
         JSONObject jsonObject = new JSONObject();
         int i = Integer.parseInt(startPos), end = Integer.parseInt(endPos);
+        System.out.println("***********************************ForLoopNode***********************************");
+        System.out.println(i + " " + end);
+        System.out.println("***********************************END***********************************");
         input.addLayer();
         for(; i<end; i++){
             jsonObject.put(DictionaryUtil.SINGLE_PARAM_FLAG, i);
@@ -67,7 +70,7 @@ public class ForLoopNode extends IRpaTaskNode {
 
     private String getLengthByObject(Object objectByParams){
         if(objectByParams instanceof String){
-            return String.valueOf( ((String) objectByParams).length() );
+            return objectByParams.toString();
         }else if(objectByParams instanceof AbstractCollection){
             return String.valueOf( ((AbstractCollection<?>) objectByParams).size() );
         }else if(objectByParams instanceof JSONObject){

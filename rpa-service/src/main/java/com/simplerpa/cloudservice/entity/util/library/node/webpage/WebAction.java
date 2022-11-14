@@ -59,9 +59,23 @@ public abstract class WebAction extends IRpaTaskNode {
 
     public WebElement getElement(WebDriver webDriver, ArrayList<JSONObject> list){
         if(StringUtils.isNotEmpty(xPath)){
-            new WebDriverWait(webDriver, 5).until(ExpectedConditions.presenceOfElementLocated(By.xpath(xPath)));
-            new WebDriverWait(webDriver, 5).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xPath)));
-            new WebDriverWait(webDriver, 5).until(ExpectedConditions.elementToBeClickable(By.xpath(xPath)));
+            int cnt = 3;
+            do{
+                try{
+                    new WebDriverWait(webDriver, 30).until(ExpectedConditions.presenceOfElementLocated(By.xpath(xPath)));
+                    new WebDriverWait(webDriver, 30).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xPath)));
+                    new WebDriverWait(webDriver, 30).until(ExpectedConditions.elementToBeClickable(By.xpath(xPath)));
+                }catch (Exception e){
+                    if(cnt <= 1){
+                        try {
+                            throw new Exception("没有找到相关的元素！");
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+                cnt--;
+            }while (cnt > 0);
             return webDriver.findElement(By.xpath(xPath));
         }else if(StringUtils.isNotEmpty(inputSourceParams.getChildSource())){
             for (JSONObject jsonObject : list) {

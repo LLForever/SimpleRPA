@@ -56,7 +56,7 @@ public abstract class IRpaTaskNode {
         }
         if (jsonObject.containsKey("parentSource")) {
             ArrayList<JSONObject> resultByParamName = output.getResultByParamName(jsonObject.getString("parentSource"));
-            String targetName = DictionaryUtil.SINGLE_PARAM_FLAG;
+            String targetName;
             if (jsonObject.containsKey("childSource")) {
                 String childSource = jsonObject.getString("childSource");
                 if(StringUtils.isNotEmpty(childSource)){

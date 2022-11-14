@@ -2,6 +2,7 @@ package com.simplerpa.cloudservice.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.simplerpa.cloudservice.entity.PanelTaskMessage;
+import com.simplerpa.cloudservice.entity.RpaTaskNodeExecLogs;
 import com.simplerpa.cloudservice.entity.VO.TaskDetailVO;
 import com.simplerpa.cloudservice.entity.util.DictionaryUtil;
 import com.simplerpa.cloudservice.entity.util.RpaTaskOutput;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 
 public class RpaTaskExecutor implements Runnable{
@@ -77,6 +79,10 @@ public class RpaTaskExecutor implements Runnable{
                     PanelTaskMessage panelTaskMessage =
                             new PanelTaskMessage(DictionaryUtil.TASK_MESSAGE_RUN_ERROR, e.getMessage());
                     WebsocketTask.sendMessageToUser(taskDetailVO.getTaskId(), taskDetailVO.getUserId(), panelTaskMessage);
+
+                    RpaTaskNodeExecLogs logs = new RpaTaskNodeExecLogs(taskDetailVO.getTaskId(), taskDetailVO.getTaskName(), nextNode, e.getMessage(), new Date());
+                    WebsocketTask.getTaskNodeExecLogsService().saveOrUpdate(logs);
+
                     clearSelenium(allOutput);
                     return;
                 }
@@ -86,6 +92,9 @@ public class RpaTaskExecutor implements Runnable{
             }
             clearSelenium(allOutput);
             WebsocketTask.getTaskDetailService().changeRpaTaskStatus(DictionaryUtil.TASK_STATUS_COMPLETED, taskDetailVO.getTaskId(), taskDetailVO.getUserId());
+
+            RpaTaskNodeExecLogs logs = new RpaTaskNodeExecLogs(taskDetailVO.getTaskId(), taskDetailVO.getTaskName(), null, "exec success", new Date());
+            WebsocketTask.getTaskNodeExecLogsService().saveOrUpdate(logs);
         }
     }
 

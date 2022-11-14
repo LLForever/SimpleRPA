@@ -415,6 +415,21 @@ export default {
                             }
                         },
                         {
+                            id: '613',
+                            type: 'wait_element_disappear',
+                            name: '等待元素消失',
+                            ico: 'el-icon-document-remove',
+                            // 自定义覆盖样式
+                            style: {},
+                            params: {
+                                inputSource: {
+                                    parentSource: '',
+                                    childSource: ''
+                                },
+                                xPath: ''
+                            }
+                        },
+                        {
                             id: '68',
                             type: 'jump_web',
                             name: '跳转至新网址',
