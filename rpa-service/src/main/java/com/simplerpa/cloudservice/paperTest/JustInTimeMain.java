@@ -3,6 +3,7 @@ package com.simplerpa.cloudservice.paperTest;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.simplerpa.cloudservice.entity.util.library.tools.AiEnhanceTool;
+import com.simplerpa.cloudservice.utils.gentic.Population;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -18,11 +19,21 @@ public class JustInTimeMain {
         try {
 //            testAiEnhanceTools();
 
-            generateCsvFiles();
+//            generateCsvFiles();
+            testGen();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static void testGen(){
+//        Population population = new Population(new JSONObject(), new JSONObject(), new Long[1]);
+//        for(int i=0;i<500;i++){
+//            population.reproduction();
+//
+//            System.out.println("第"+(i+1)+"代最优解:"+ population.getTopIndividual().calcFitness());
+//        }
     }
 
     /**

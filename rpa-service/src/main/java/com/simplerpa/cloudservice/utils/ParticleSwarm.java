@@ -1,5 +1,6 @@
 package com.simplerpa.cloudservice.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -8,7 +9,9 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class ParticleSwarm {
@@ -156,6 +159,13 @@ class PSO{
      * 算法的学习因子
      * */
     public double c1, c2, R1, R2;
+
+    /**
+     * 服务器状态
+     * */
+    private JSONObject machinesAllocateInfo, machinePerformanceJSON;
+    private Long[] ids;
+
     /**
      * 惯性权重系数
      * */
@@ -201,11 +211,23 @@ class PSO{
 
     public static final int WindowSize = 10, TEST_COUNT = 1;
     //    static Random rand1=new Random();
-    //构造函数,无析构函数
+
+    PSO(double[] x_low, double[] x_up, JSONObject mai, JSONObject mpj, Long[] ids){
+//        this(1.49445, 1.49445, 0.729, ids.length, 200, 50, x_low, x_up);
+        machinesAllocateInfo = mai;
+        machinePerformanceJSON = mpj;
+        this.ids = ids.clone();
+        initEveryParams(1.49445, 1.49445, 0.729, ids.length, 500, 50, x_low, x_up);
+    }
+
 	/*
 	构造函数初始化
 	*/
     PSO(double c1,double c2,double w,int nVar,int MaxIter,int nPop,double[] x_low,double[] x_up){
+        initEveryParams(c1, c2, w, nVar, MaxIter, nPop, x_low, x_up);
+    }
+
+    private void initEveryParams(double c1,double c2,double w,int nVar,int MaxIter,int nPop,double[] x_low,double[] x_up){
         this.c1=c1;
         this.c2=c2;
         this.w=w;
@@ -272,8 +294,9 @@ class PSO{
     // 适应值函数
     public double function_fitness(double[] var){
 //        return fun8(var[0], var[1]);
-        return Sphere(var);
+//        return Sphere(var);
 //        return Rosenbrock(var);
+        return Schedule(var);
     }
 
     private double Sphere(double[] var){
@@ -292,12 +315,49 @@ class PSO{
         }
         return sum;
     }
-    private double fun6(double x1, double x2){
-        return Math.sin(x1 + x2) + (x1-x2)*(x1-x2) - 1.5*x1 + 2.5*x2 + 1;
+
+    private double Schedule(double[] var){
+        double[][] sumList = new double[4][3];
+        double sum;
+        for(int i=0; i<4; i++){
+            for (int j=0; j<3; j++){
+                sumList[i][j] = 0.0;
+            }
+        }
+        for(int i=0; i<nVar; i++){
+            int targetMachine = (int) var[i];
+            if(targetMachine > 3){
+                targetMachine = 3;
+            }
+            List<Double> costListByTaskId = TaskCostCountUtil.getCostListByTaskId(ids[i]);
+            sumList[targetMachine][0] += costListByTaskId.get(0); // cpu
+            sumList[targetMachine][1] += costListByTaskId.get(1); // mem
+            sumList[targetMachine][2] += costListByTaskId.get(2); // net
+        }
+        for(int i=0; i<4; i++){
+            String machineName = TaskScheduleAllocator.machineName.get(i);
+            double[] machineCostList = machinesAllocateInfo.getJSONObject(machineName).getObject(TaskCostCountUtil.LIST, double[].class);
+            sumList[i][0] += machineCostList[0];
+            sumList[i][1] += machineCostList[1];
+            sumList[i][2] += machineCostList[2];
+        }
+        double F = 0.0, G = 0.0;
+        for(int i=0; i<4; i++){
+            double Nc, Nm, Nn;
+            double Rc, Rm, Rn;
+            Nc = machinePerformanceJSON.getJSONObject(TaskScheduleAllocator.machineName.get(i)).getDouble("cpu");
+            Nm = machinePerformanceJSON.getJSONObject(TaskScheduleAllocator.machineName.get(i)).getDouble("mem");
+            Nn = machinePerformanceJSON.getJSONObject(TaskScheduleAllocator.machineName.get(i)).getDouble("net");
+            Rc = 100-Nc;
+            Rm = 100-Nm;
+            Rn = 100-Nn;
+            F += Math.sqrt((sumList[i][0]/Rc)*(sumList[i][0]/Rc) + (sumList[i][1]/Rm)*(sumList[i][1]/Rm) + (sumList[i][2]/Rn)*(sumList[i][2]/Rn));
+            G += Math.sqrt((sumList[i][0] + Nc)*(sumList[i][0] + Nc) + (sumList[i][1] + Nm)*(sumList[i][1] + Nm) + (sumList[i][2] + Nn)*(sumList[i][2] + Nn));
+        }
+        sum = 0.5*F + 0.5*G;
+        return sum;
     }
-    private double fun8(double x, double y){
-        return 100*Math.sqrt(Math.abs(y - 0.01*x*x)) + 0.01*Math.abs(x+10);
-    }
+
     /*
     种群搜索过程，粒子更新的方法
     1.先计算粒子的速度，按公式计算，采用基本粒子群算法的更新公式
@@ -346,7 +406,7 @@ class PSO{
                 if(pop[i].fitness < best_fitness)
                 {
                     best_fitness=pop[i].fitness;
-                    best_solution=(double[])pop[i].position.clone();
+                    best_solution = pop[i].position.clone();
                     best_speed = pop[i].velecity.clone();
                 }
             }
@@ -366,27 +426,26 @@ class PSO{
 //                }
 //            }
 
-//            adamDeltas[i].fitnessWindow.insertOriginElement(pop[i].fitness);
-//            if(adamDeltas[i].fitnessWindow.getMinElement() > pop[i].P_fitness || Math.abs(adamDeltas[i].fitnessWindow.getElementAVG() - pop[i].P_fitness) < 1e-3){
-//                for(int j=0; j<nVar; j++){
-//                    pop[i].position[j] += pop[i].velecity[j]*Math.abs(worstFitness - pop[i].fitness)*ParticleSwarm.rand1.nextDouble();
-//                    if(pop[i].position[j]>x_up[j]){
-//                        pop[i].position[j]=x_up[j];
-//                    }
-//                    if(pop[i].position[j]<x_low[j]){
-//                        pop[i].position[j]=x_low[j];
-//                    }
-//                }
-//                pop[i].P_fitness = function_fitness(pop[i].position);
-//                adamDeltas[i].fitnessWindow = new WindowQueue(WindowSize);
-//            }
-
+            adamDeltas[i].fitnessWindow.insertOriginElement(pop[i].fitness);
+            if(adamDeltas[i].fitnessWindow.getMinElement() > pop[i].P_fitness || Math.abs(adamDeltas[i].fitnessWindow.getElementAVG() - pop[i].P_fitness) < 1e-3){
+                for(int j=0; j<nVar; j++){
+                    pop[i].position[j] += pop[i].velecity[j]*Math.abs(worstFitness - pop[i].fitness)*ParticleSwarm.rand1.nextDouble();
+                    if(pop[i].position[j]>x_up[j]){
+                        pop[i].position[j]=x_up[j];
+                    }
+                    if(pop[i].position[j]<x_low[j]){
+                        pop[i].position[j]=x_low[j];
+                    }
+                }
+                pop[i].P_fitness = function_fitness(pop[i].position);
+                adamDeltas[i].fitnessWindow = new WindowQueue(WindowSize);
+            }
         }
     }
     // 显示结果，显示每一次迭代计算后的最优适应值
     public void show_result(int Iter_c){
-        System.out.printf("Iteration: %3d , global best fit:%5f\n",Iter_c,best_fitness);
-        if(Iter_c==(MaxIter-1))
+//        System.out.printf("Iteration: %3d , global best fit:%5f\n",Iter_c,best_fitness);
+        if(Iter_c==(MaxIter-1) && false)
         {
             for(int i=0;i<nVar;i++){
                 System.out.println(best_solution[i]);
@@ -395,7 +454,7 @@ class PSO{
         }
     }
     // PSO 程序开始运行
-    public double[] run()
+    public JSONObject run()
     {
 //        up_date();
         // 按照设置的最大迭代次数迭代计算
@@ -418,9 +477,10 @@ class PSO{
                 e.printStackTrace();
             }
         }
-        double[] list = new double[2];
-        list[1] = best_fitness;
-        return list;
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("best_fit", best_fitness);
+        jsonObject.put("best_sov", best_solution);
+        return jsonObject;
     }
 
     private double getC1(int i, int j){
@@ -437,7 +497,7 @@ class PSO{
         double x = (double) i / max;
         x = 2*x - 1;
         double w = Math.cos(x) / (1 + Math.exp(3*x)) + 0.1;
-        w = 0.9 - 0.8*((double) i / max);
+//        w = 0.9 - 0.8*((double) i / max);
 //        w = 0.4 + 0.2*ParticleSwarm.rand1.nextDouble();
         return w;
     }
@@ -453,7 +513,7 @@ class MainPSO{
         sum[1] = 0;
 
         for(int i = 0; i < PSO.TEST_COUNT; i++){
-            int dimension = 30;
+            int dimension = 1;
             double[] x_low = new double[dimension], x_up = new double[dimension];
             for(int j=0; j<dimension; j++){
 //                x_low = new double[]{-15, -3};
@@ -461,11 +521,14 @@ class MainPSO{
                 x_low[j] = 0;
                 x_up[j] = 20;
             }
-            PSO pso=new PSO(1.49445,1.49445,0.729,dimension,2000,80,x_low,x_up);
             System.out.println("The PSO START....");
-            double[] list = pso.run();
-            sum[1] += list[1];
-            smallestNum = Math.min(list[1], smallestNum);
+//            long st = System.currentTimeMillis();
+            PSO pso=new PSO(1.49445,1.49445,0.729,dimension,500,50,x_low,x_up);
+            JSONObject run = pso.run();
+//            long et = System.currentTimeMillis();
+//            System.out.println(et - st);
+            sum[1] += run.getDouble("best_fit");
+            smallestNum = Math.min(run.getDouble("best_fit"), smallestNum);
             System.out.println("The PSO END....");
 //            System.out.println("worstFitness : " + pso.worstFitness);
 //            System.out.println("bestSpeed : " + Arrays.toString(pso.best_speed));

@@ -6,15 +6,16 @@ import com.google.common.util.concurrent.AtomicDouble;
 import java.util.*;
 
 public class TaskCostCountUtil {
-    private static final AtomicDouble cost;
+    private static final AtomicDouble cost = new AtomicDouble(0.0);;
     private static final HashMap<Long, List<Double>> taskCostMap;
     private static final HashMap<Long, Double> taskRecordMap;
     private static final Integer CPU_ID = 0, MEM_ID = 1, NET_ID = 2;
     private static final Double MAX_MEM = 7819.15;
+    private static final double[] machineCurrentCost = new double[3];
     public static final String COST_VAL = "cost", LIST = "id_list", MEM = "mem", CPU = "cpu", NETWORK = "net";
+
     static {
-        cost = new AtomicDouble();
-        cost.set(0.0);
+        Arrays.fill(machineCurrentCost, 0);
 
         taskRecordMap = new HashMap<>();
 
@@ -42,6 +43,11 @@ public class TaskCostCountUtil {
     public static void addCost(Double num, Long id){
         cost.addAndGet(num);
         taskRecordMap.put(id, num);
+        if(taskCostMap.containsKey(id)){
+            machineCurrentCost[CPU_ID] += taskCostMap.get(id).get(CPU_ID);
+            machineCurrentCost[MEM_ID] += taskCostMap.get(id).get(MEM_ID);
+            machineCurrentCost[NET_ID] += taskCostMap.get(id).get(NET_ID);
+        }
     }
 
     public static void minusCost(Long id){
@@ -49,6 +55,11 @@ public class TaskCostCountUtil {
             Double num = taskRecordMap.get(id);
             cost.addAndGet(-num);
             taskRecordMap.remove(id);
+            if(taskCostMap.containsKey(id)){
+                machineCurrentCost[CPU_ID] -= taskCostMap.get(id).get(CPU_ID);
+                machineCurrentCost[MEM_ID] -= taskCostMap.get(id).get(MEM_ID);
+                machineCurrentCost[NET_ID] -= taskCostMap.get(id).get(NET_ID);
+            }
         }
     }
 
@@ -72,10 +83,10 @@ public class TaskCostCountUtil {
 
     public static JSONObject getCostInformation(){
         double v = cost.get();
-        ArrayList<Long> list = new ArrayList<>(taskRecordMap.keySet());
+//        ArrayList<Long> list = new ArrayList<>(taskRecordMap.keySet());
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(COST_VAL, v);
-        jsonObject.put(LIST, list);
+        jsonObject.put(LIST, machineCurrentCost);
         return jsonObject;
     }
 }
