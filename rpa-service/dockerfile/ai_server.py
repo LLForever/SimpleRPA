@@ -1,5 +1,6 @@
 from wsgiref.simple_server import make_server
 import json
+import math
 import paddlehub as hub
 import cv2
 import base64
@@ -10,6 +11,111 @@ import uuid
 import os
 from table_ana_tool import *
 from paddlenlp import Taskflow
+from pyMultiobjective.algorithm import non_dominated_sorting_genetic_algorithm_III
+
+class NSGA_III:
+    def __init__(self, ids, machinesAllocateInfo, machinePerformanceJSON):
+        self.ids = ids
+        self.n = len(ids)
+        self.machinesAllocateInfo = machinesAllocateInfo
+        self.machinePerformanceJSON = machinePerformanceJSON
+        self.machineName = ['master', 'node1', 'node2', 'node3']
+        self.taskCostMap={32:[19.875, 215.73, 6.498, 74.0], 34:[8.92, 117.91, 6.988, 27.0], 35:[7.645, 190.16, 1.915, 87.0], 36:[5.3149999999999995, 124.59, 1.382, 32.0], 38:[9.13, 115.48, 1.074, 189.0], 16:[10.089, 166.39, 13.751, 31.0], 17:[8.253, 219.39, 31.686, 15.0], 18:[7.5335, 156.14, 8.698, 60.0], 19:[8.413499999999999, 164.98, 14.308, 32.0], 20:[8.3995, 151.14, 9.953, 46.0], 21:[18.915, 837.43, 10.192, 57.0], 22:[20.755, 1025.56, 9.518, 63.0], 23:[7.005, 113.37, 34.891, 14.0], 24:[2.56, 1.0, 0.0, 1.0], 25:[8.51, 142.07, 10.172, 44.0], 26:[31.375, 1701.99, 3.949, 149.0], 27:[8.98, 121.19, 14.857, 28.0], 28:[9.035, 124.32, 13.765, 29.0], 29:[8.844999999999999, 117.75, 33.72, 14.0], 30:[11.17, 172.18, 16.325, 30.0], 31:[12.795000000000002, 252.16, 11.53, 58.0]}
+
+    def getMemCost(self, machine, mem):
+        if machine == 0:
+            return 100*mem / 9787.14
+        elif machine == 3:
+            return 100*mem / 7535.09
+        return 100*mem / 7819.15
+
+    def checkValueAndChange(self, a):
+        a = math.exp(a/10)
+        return a
+
+    def run(self):
+        min_values = []
+        max_values = []
+        for i in range(self.n):
+            min_values.append(-4)
+            max_values.append(4)
+
+        parameters = {
+            'references': 5,
+            'min_values': min_values,
+            'max_values': max_values,
+            'mutation_rate': 0.1,
+            'generations': 500,
+            'mu': 1,
+            'eta': 1,
+            'k': 2, 
+            'verbose': False
+        }
+        sol = non_dominated_sorting_genetic_algorithm_III(list_of_functions = [self.funF, self.funG], **parameters)
+        return sol
+
+    def funF(self, variables=[0,0]):
+        sumList = [[0,0,0],[0,0,0],[0,0,0],[0,0,0]]
+        for i in range(self.n):
+            target = abs(int(variables[i]))
+            if target > 3:
+                target = 3
+            costList = self.taskCostMap[self.ids[i]]
+            sumList[target][0] += costList[0]
+            sumList[target][1] += costList[1]
+            sumList[target][2] += costList[2]
+        for i in range(4):
+            machineName = self.machineName[i]
+            machineCostList = self.machinesAllocateInfo.get(machineName).get('id_list')
+            sumList[i][0] += machineCostList[0]
+            sumList[i][1] += machineCostList[1]
+            sumList[i][2] += machineCostList[2]
+        F = 0
+        for i in range(4):
+            sumList[i][1] = self.getMemCost(i, sumList[i][1])
+            Nc = self.machinePerformanceJSON.get(self.machineName[i]).get('cpu')
+            Nm = self.machinePerformanceJSON.get(self.machineName[i]).get('mem')
+            Nn = self.machinePerformanceJSON.get(self.machineName[i]).get('net')
+            Rc = 100-Nc
+            Rm = 100-Nm
+            Rn = 100-Nn
+            sumList[i][0] = self.checkValueAndChange(sumList[i][0])
+            sumList[i][1] = self.checkValueAndChange(sumList[i][1])
+            sumList[i][2] = self.checkValueAndChange(sumList[i][2])
+            F += math.sqrt((sumList[i][0]/Rc)*(sumList[i][0]/Rc) + (sumList[i][1]/Rm)*(sumList[i][1]/Rm) + (sumList[i][2]/Rn)*(sumList[i][2]/Rn))
+        return 0.5*F
+
+
+    def funG(self, variables=[0,0]):
+        sumList = [[0,0,0],[0,0,0],[0,0,0],[0,0,0]]
+        for i in range(self.n):
+            target = abs(int(variables[i]))
+            if target > 3:
+                target = 3
+            costList = self.taskCostMap[self.ids[i]]
+            sumList[target][0] += costList[0]
+            sumList[target][1] += costList[1]
+            sumList[target][2] += costList[2]
+        for i in range(4):
+            machineName = self.machineName[i]
+            machineCostList = self.machinesAllocateInfo.get(machineName).get('id_list')
+            sumList[i][0] += machineCostList[0]
+            sumList[i][1] += machineCostList[1]
+            sumList[i][2] += machineCostList[2]
+        F = 0
+        for i in range(4):
+            sumList[i][1] = self.getMemCost(i, sumList[i][1])
+            Nc = self.machinePerformanceJSON.get(self.machineName[i]).get('cpu')
+            Nm = self.machinePerformanceJSON.get(self.machineName[i]).get('mem')
+            Nn = self.machinePerformanceJSON.get(self.machineName[i]).get('net')
+            Rc = 100-Nc
+            Rm = 100-Nm
+            Rn = 100-Nn
+            sumList[i][0] = self.checkValueAndChange(sumList[i][0])
+            sumList[i][1] = self.checkValueAndChange(sumList[i][1])
+            sumList[i][2] = self.checkValueAndChange(sumList[i][2])
+            F += math.sqrt((sumList[i][0] + Nc)*(sumList[i][0] + Nc) + (sumList[i][1] + Nm)*(sumList[i][1] + Nm) + (sumList[i][2] + Nn)*(sumList[i][2] + Nn))
+        return 0.5*F
 
 errStr = {
     "code" : -1,
@@ -82,6 +188,13 @@ def AIRunFactory(current_req_json):
         return getTableOcrRes(current_req_json)
     if data_type == "KEY_WORD_EXTRA":
         return getWordExtraRes(current_req_json)
+    if data_type == 'NSGA3':
+        ids = current_req_json.get('ids');
+        mai = current_req_json.get('mai');
+        mpj = current_req_json.get('mpj');
+        nsga3 = NSGA_III(ids, mai, mpj)
+        sol = nsga3.run()
+        return str(getSuccessStr(" ".join('%f'  %id for id in sol[0])))
     return str(getSuccessStr("None Type Detect"))
 
 def RunServer(environ, start_response):

@@ -60,7 +60,7 @@ public class Population {
             best_solve[i] = gene.decode(gene.getGene());
         }
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("best_fit", best_fitness);
+        jsonObject.put("best_fit", Math.exp(1/best_fitness));
         jsonObject.put("best_sov", best_solve);
         return jsonObject;
     }

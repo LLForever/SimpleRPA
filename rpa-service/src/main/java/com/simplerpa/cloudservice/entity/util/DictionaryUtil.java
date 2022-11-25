@@ -2,6 +2,8 @@ package com.simplerpa.cloudservice.entity.util;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
+
 /**
  * @Description: TODO
  * @author: ChenRui98
@@ -51,6 +53,8 @@ public class DictionaryUtil {
     public static final Integer NODE_MESSAGE_CHANGE = 1;
     public static final Integer NODE_MESSAGE_ADD = 2;
 
+    public static final double F_VAL = 0.5, G_VAL = 0.5, T_VAL = 0.0;
+
     // 独立参数信息
     public static final String SINGLE_PARAM_FLAG = "_@SINGLE_PARAM_FLAG@";
     public static final String HTML_FLAG = "_@HTML_FLAG@";
@@ -69,5 +73,29 @@ public class DictionaryUtil {
 
     public static String GetNetIO(String nodeName){
         return StringUtils.replace(NET_IO_TAIL, "{node_name}", nodeName);
+    }
+
+    public static double checkValueAndChange(double a){
+//        if(a > 100) {
+//            double v = a - 100;
+//            a = 100;
+//            a += 10*v;
+//        }
+        a = Math.exp(a/10);
+        return a;
+    }
+
+    public static double getAvgByList(ArrayList<Double> list){
+        return list.stream().mapToDouble(Double::doubleValue).average().getAsDouble();
+    }
+
+    public static double getStdDevByList(ArrayList<Double> list){
+        double average = getAvgByList(list);
+        double dsum=0;
+        for (Double aDouble : list) {
+            double s = aDouble - average;
+            dsum += Math.pow(s, 2);
+        }
+        return Math.sqrt(dsum / list.size());
     }
 }

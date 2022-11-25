@@ -9,9 +9,10 @@ public class TaskCostCountUtil {
     private static final AtomicDouble cost = new AtomicDouble(0.0);;
     private static final HashMap<Long, List<Double>> taskCostMap;
     private static final HashMap<Long, Double> taskRecordMap;
-    private static final Integer CPU_ID = 0, MEM_ID = 1, NET_ID = 2;
+    private static final Integer CPU_ID = 0, MEM_ID = 1, NET_ID = 2, TIME_ID = 3;
+    // 内存不同、需要重新计算权重
     private static final Double MAX_MEM = 7819.15;
-    private static final double[] machineCurrentCost = new double[3];
+    private static final double[] machineCurrentCost = new double[4];
     public static final String COST_VAL = "cost", LIST = "id_list", MEM = "mem", CPU = "cpu", NETWORK = "net";
 
     static {
@@ -38,40 +39,59 @@ public class TaskCostCountUtil {
         taskCostMap.put(31L, getInitList(11.38, 14.21, 252.16, 11.53, 58.0));
         taskCostMap.put(32L, getInitList(12.4, 27.35, 215.73, 6.498, 74.0));
         taskCostMap.put(34L, getInitList(7.12, 10.72, 117.91, 6.988, 27.0));
+        taskCostMap.put(35L, getInitList(6.05, 9.24, 190.16, 1.915, 87.0));
+        taskCostMap.put(36L, getInitList(4.04, 6.59, 124.59, 1.382, 32.0));
+        taskCostMap.put(38L, getInitList(6.55, 11.71, 115.48, 1.074, 189.0));
     }
 
-    public static void addCost(Double num, Long id){
+    public static synchronized void addCost(Double num, Long id){
         cost.addAndGet(num);
         taskRecordMap.put(id, num);
         if(taskCostMap.containsKey(id)){
             machineCurrentCost[CPU_ID] += taskCostMap.get(id).get(CPU_ID);
             machineCurrentCost[MEM_ID] += taskCostMap.get(id).get(MEM_ID);
             machineCurrentCost[NET_ID] += taskCostMap.get(id).get(NET_ID);
+            machineCurrentCost[TIME_ID] += taskCostMap.get(id).get(TIME_ID);
         }
     }
 
-    public static void minusCost(Long id){
-        if(taskRecordMap.containsKey(id)){
-            Double num = taskRecordMap.get(id);
-            cost.addAndGet(-num);
-            taskRecordMap.remove(id);
-            if(taskCostMap.containsKey(id)){
-                machineCurrentCost[CPU_ID] -= taskCostMap.get(id).get(CPU_ID);
-                machineCurrentCost[MEM_ID] -= taskCostMap.get(id).get(MEM_ID);
-                machineCurrentCost[NET_ID] -= taskCostMap.get(id).get(NET_ID);
-            }
+    public static synchronized void minusCost(Long id){
+        Double num = taskRecordMap.get(id);
+        cost.addAndGet(-num);
+//        taskRecordMap.remove(id);
+        if(taskCostMap.containsKey(id)){
+            machineCurrentCost[CPU_ID] -= taskCostMap.get(id).get(CPU_ID);
+            machineCurrentCost[MEM_ID] -= taskCostMap.get(id).get(MEM_ID);
+            machineCurrentCost[NET_ID] -= taskCostMap.get(id).get(NET_ID);
+            machineCurrentCost[TIME_ID] -= taskCostMap.get(id).get(TIME_ID);
+        }
+        if(machineCurrentCost[CPU_ID] <= 1e-15){
+            machineCurrentCost[CPU_ID] = 0;
+        }
+        if(machineCurrentCost[MEM_ID] <= 1e-15){
+            machineCurrentCost[MEM_ID] = 0;
+        }
+        if(machineCurrentCost[NET_ID] <= 1e-15){
+            machineCurrentCost[NET_ID] = 0;
+        }
+        if(machineCurrentCost[TIME_ID] <= 1e-15){
+            machineCurrentCost[TIME_ID] = 0;
         }
     }
 
     private static List<Double> getInitList(Double avg_cpu, Double max_cpu, Double mem, Double net, Double time){
-        return Arrays.asList(avg_cpu*0.5+max_cpu*0.5, mem/MAX_MEM, net, time);
+        return Arrays.asList(avg_cpu*0.5+max_cpu*0.5, mem, net, time);
     }
 
     public static List<Double> getCostListByTaskId(Long id){
         if(taskCostMap.containsKey(id)){
             return taskCostMap.get(id);
         }
-        return null;
+        return new ArrayList<Double>(){{
+            add(0.0);
+            add(0.0);
+            add(0.0);
+        }};
     }
 
     public static Double getSumCostById(Long id){
@@ -88,5 +108,14 @@ public class TaskCostCountUtil {
         jsonObject.put(COST_VAL, v);
         jsonObject.put(LIST, machineCurrentCost);
         return jsonObject;
+    }
+
+    public static double getMemCost(int machine, double mem){
+        if(machine == 0){
+            return 100*mem/9787.14;
+        }else if(machine == 3){
+            return 100*mem/7535.09;
+        }
+        return 100*mem/MAX_MEM;
     }
 }

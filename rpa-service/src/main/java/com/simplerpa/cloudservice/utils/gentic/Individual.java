@@ -1,6 +1,7 @@
 package com.simplerpa.cloudservice.utils.gentic;
 
 import com.alibaba.fastjson.JSONObject;
+import com.simplerpa.cloudservice.entity.util.DictionaryUtil;
 import com.simplerpa.cloudservice.utils.TaskCostCountUtil;
 import com.simplerpa.cloudservice.utils.TaskScheduleAllocator;
 
@@ -66,6 +67,7 @@ public class Individual {
                 sumList[i][j] = 0.0;
             }
         }
+        double F = 0.0, G = 0.0, T = 0.0;
         for(int i=0; i<ids.length; i++){
             Gene gene = genes.get(i);
             double val = gene.decode(gene.getGene());
@@ -77,6 +79,7 @@ public class Individual {
             sumList[targetMachine][0] += costListByTaskId.get(0); // cpu
             sumList[targetMachine][1] += costListByTaskId.get(1); // mem
             sumList[targetMachine][2] += costListByTaskId.get(2); // net
+            T += costListByTaskId.get(3);
         }
         for(int i=0; i<4; i++){
             String machineName = TaskScheduleAllocator.machineName.get(i);
@@ -84,9 +87,10 @@ public class Individual {
             sumList[i][0] += machineCostList[0];
             sumList[i][1] += machineCostList[1];
             sumList[i][2] += machineCostList[2];
+            T += machineCostList[3];
         }
-        double F = 0.0, G = 0.0;
         for(int i=0; i<4; i++){
+            sumList[i][1] = TaskCostCountUtil.getMemCost(i, sumList[i][1]);
             double Nc, Nm, Nn;
             double Rc, Rm, Rn;
             Nc = machinePerformanceJSON.getJSONObject(TaskScheduleAllocator.machineName.get(i)).getDouble("cpu");
@@ -95,11 +99,14 @@ public class Individual {
             Rc = 100-Nc;
             Rm = 100-Nm;
             Rn = 100-Nn;
+            sumList[i][0] = DictionaryUtil.checkValueAndChange(sumList[i][0]);
+            sumList[i][1] = DictionaryUtil.checkValueAndChange(sumList[i][1]);
+            sumList[i][2] = DictionaryUtil.checkValueAndChange(sumList[i][2]);
             F += Math.sqrt((sumList[i][0]/Rc)*(sumList[i][0]/Rc) + (sumList[i][1]/Rm)*(sumList[i][1]/Rm) + (sumList[i][2]/Rn)*(sumList[i][2]/Rn));
             G += Math.sqrt((sumList[i][0] + Nc)*(sumList[i][0] + Nc) + (sumList[i][1] + Nm)*(sumList[i][1] + Nm) + (sumList[i][2] + Nn)*(sumList[i][2] + Nn));
         }
-        sum = 0.5*F + 0.5*G;
-        return sum;
+        sum = DictionaryUtil.F_VAL*F + DictionaryUtil.G_VAL*G + DictionaryUtil.T_VAL*T;
+        return 1/Math.log(sum);
     }
 
     public List<Gene> getGenes() {
