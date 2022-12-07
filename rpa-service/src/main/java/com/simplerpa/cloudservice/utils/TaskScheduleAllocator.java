@@ -33,14 +33,17 @@ public class TaskScheduleAllocator {
     private static final AtomicInteger pos = new AtomicInteger();
     private static final ArrayList<TaskDetailVO> waitingQueue;
     public static final ArrayList<String> machineName;
-    public static final ArrayList<Double> opt_pso_list, pso_list, gene_list;
+    public static final ArrayList<Double> opt_pso_list, pso_list, chaos_pso_list, ch_pso_list, gene_list;
 
     private static String schedule_type;
+    private static Integer startStatus;
 
     static {
         opt_pso_list = new ArrayList<>();
         pso_list = new ArrayList<>();
         gene_list = new ArrayList<>();
+        chaos_pso_list = new ArrayList<>();
+        ch_pso_list = new ArrayList<>();
 
         waitingQueue = new ArrayList<>();
         pos.set(0);
@@ -61,7 +64,7 @@ public class TaskScheduleAllocator {
 
     private void SendTask(TaskDetailVO vo, int i) throws Exception{
         String url = serverList[i] + CMD_TAIL;
-        vo.setTaskProgress(999.0);
+        vo.setTaskProgress((double)(1000 + i));
 //        String msg = "*************************\n" + schedule_type + " send a task to : \n" + url + "\n" + vo.getTaskId() + " " + vo.getTaskName() + "\n" + "*************************";
 //        System.out.println(msg);
         CloseableHttpClient client = HttpClientBuilder.create().build();
@@ -120,12 +123,13 @@ public class TaskScheduleAllocator {
         JSONObject performanceJSON = TaskScheduleController.getPerformanceJSON();
         JSONObject run;
 
-        System.out.println(performanceJSON);
-        System.out.println(machinesCostInfo);
-        System.out.println(Arrays.toString(ids));
+//        System.out.println(performanceJSON);
+//        System.out.println(machinesCostInfo);
+//        System.out.println(Arrays.toString(ids));
+        double[] scheduleAns;
 
+        PSO pso = new PSO(x_low, x_up, machinesCostInfo, performanceJSON, ids, 1);
         long startTime = System.currentTimeMillis(), endTime;
-        PSO pso = new PSO(x_low, x_up, machinesCostInfo, performanceJSON, ids, true);
         run = pso.run();
         endTime = System.currentTimeMillis();
         double[] best_sovs = run.getObject("best_sov", double[].class);
@@ -139,8 +143,38 @@ public class TaskScheduleAllocator {
             pso_list.add(run.getDouble("best_fit"));
         }
 
+        pso = new PSO(x_low, x_up, machinesCostInfo, performanceJSON, ids, -1);
         startTime = System.currentTimeMillis();
-        pso = new PSO(x_low, x_up, machinesCostInfo, performanceJSON, ids, false);
+        run = pso.run();
+        endTime = System.currentTimeMillis();
+        best_sovs = run.getObject("best_sov", double[].class);
+        System.out.println("******************************** chaos PSO ********************************");
+        System.out.println("time consume: " + (endTime-startTime));
+        System.out.println(Arrays.toString(best_sovs));
+        System.out.println(run.getDouble("best_fit"));
+        System.out.println("******************************** END ********************************");
+
+        if(ids.length > 1){
+            chaos_pso_list.add(run.getDouble("best_fit"));
+        }
+
+        pso = new PSO(x_low, x_up, machinesCostInfo, performanceJSON, ids, -2);
+        startTime = System.currentTimeMillis();
+        run = pso.run();
+        endTime = System.currentTimeMillis();
+        best_sovs = run.getObject("best_sov", double[].class);
+        System.out.println("******************************** ChPSO ********************************");
+        System.out.println("time consume: " + (endTime-startTime));
+        System.out.println(Arrays.toString(best_sovs));
+        System.out.println(run.getDouble("best_fit"));
+        System.out.println("******************************** END ********************************");
+
+        if(ids.length > 1){
+            ch_pso_list.add(run.getDouble("best_fit"));
+        }
+
+        pso = new PSO(x_low, x_up, machinesCostInfo, performanceJSON, ids, 0);
+        startTime = System.currentTimeMillis();
         run = pso.run();
         endTime = System.currentTimeMillis();
         best_sovs = run.getObject("best_sov", double[].class);
@@ -150,18 +184,19 @@ public class TaskScheduleAllocator {
         System.out.println(run.getDouble("best_fit"));
         System.out.println("******************************** END ********************************");
 
+        scheduleAns = best_sovs.clone();
+
+//        double[] doubles = testAlgorithmCost(machinesCostInfo, performanceJSON, ids);
+
         if(ids.length > 1){
             opt_pso_list.add(run.getDouble("best_fit"));
 
-            testAlgorithmCost(machinesCostInfo, performanceJSON, ids);
-
             System.out.println("********************** RESULT **********************");
-            System.out.println("pso_list : " + pso_list);
-            System.out.println(DictionaryUtil.getAvgByList(pso_list) + " " + DictionaryUtil.getStdDevByList(pso_list));
-            System.out.println("optimized_pso : " + opt_pso_list);
-            System.out.println(DictionaryUtil.getAvgByList(opt_pso_list) + " " + DictionaryUtil.getStdDevByList(opt_pso_list));
-            System.out.println("gene: " + gene_list);
-            System.out.println(DictionaryUtil.getAvgByList(gene_list) + " " + DictionaryUtil.getStdDevByList(gene_list));
+            outputResList(pso_list, "pso_list : ");
+            outputResList(chaos_pso_list, "CHAOS_pso_list : ");
+            outputResList(ch_pso_list, "ChPSO_list : ");
+            outputResList(opt_pso_list, "optimized_pso : ");
+//            outputResList(gene_list, "gene: ");
             System.out.println("********************** END **********************");
         }
 
@@ -176,16 +211,24 @@ public class TaskScheduleAllocator {
 //        System.out.println(run.getDouble("best_fit"));
 //        System.out.println("******************************** END ********************************");
 
-//        for (int i=0; i < scheduleTaskList.size(); i++){
-//            int machine_id = (int) Math.abs(best_sovs[i]);
-//            if(machine_id > 3){
-//                machine_id = 3;
-//            }
-//            SendTask(scheduleTaskList.get(i), machine_id);
-//        }
+        if(startStatus == 1){
+            for (int i=0; i < scheduleTaskList.size(); i++){
+                int machine_id = (int) Math.abs(scheduleAns[i]);
+                if(machine_id > 3){
+                    machine_id = 3;
+                }
+                SendTask(scheduleTaskList.get(i), machine_id);
+            }
+//            System.out.println("发送成功！ " + Arrays.toString(scheduleAns));
+        }
     }
 
-    private void testAlgorithmCost(JSONObject machinesCostInfo, JSONObject performanceJSON, Long[] ids){
+    private void outputResList(ArrayList<Double> list, String name){
+        System.out.println(name + list);
+        System.out.println(DictionaryUtil.getAvgByList(list) + " " + DictionaryUtil.getStdDevByList(list));
+    }
+
+    private double[] testAlgorithmCost(JSONObject machinesCostInfo, JSONObject performanceJSON, Long[] ids){
         long startTime = System.currentTimeMillis(), endTime;
         Population population = new Population(machinesCostInfo, performanceJSON, ids);
         JSONObject run = population.run(500);
@@ -196,6 +239,8 @@ public class TaskScheduleAllocator {
         System.out.println(Arrays.toString(best_sovs));
         System.out.println(run.getDouble("best_fit"));
         System.out.println("******************************** END ********************************");
+
+        double[] res = new double[0];
 
         try {
             startTime = System.currentTimeMillis();
@@ -210,6 +255,11 @@ public class TaskScheduleAllocator {
 
             if(ids.length > 1) {
                 gene_list.add(Double.parseDouble(split[split.length-1]) + Double.parseDouble(split[split.length-2]));
+            }
+
+            res = new double[split.length-2];
+            for(int i=0; i<res.length; i++){
+                res[i] = Double.parseDouble(split[i]);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -246,6 +296,8 @@ public class TaskScheduleAllocator {
         System.out.println("******************************** TANXIN ********************************");
         System.out.println(schedule);
         System.out.println("******************************** END ********************************");
+
+        return res;
     }
 
     private double Schedule(double[] var, Long[] ids, JSONObject machinesAllocateInfo, JSONObject machinePerformanceJSON){
@@ -256,9 +308,9 @@ public class TaskScheduleAllocator {
                 sumList[i][j] = 0.0;
             }
         }
-        double F = 1.0, G = 1.0, T = 0.0;
+        double F = 0.0, G = 0.0, T = 0.0;
         for(int i=0; i<ids.length; i++){
-            int targetMachine = (int) var[i];
+            int targetMachine = (int) Math.abs(var[i]);
             if(targetMachine > 3){
                 targetMachine = 3;
             }
@@ -286,11 +338,16 @@ public class TaskScheduleAllocator {
             Rc = 100-Nc;
             Rm = 100-Nm;
             Rn = 100-Nn;
-            sumList[i][0] = DictionaryUtil.checkValueAndChange(sumList[i][0]);
-            sumList[i][1] = DictionaryUtil.checkValueAndChange(sumList[i][1]);
-            sumList[i][2] = DictionaryUtil.checkValueAndChange(sumList[i][2]);
-            F += Math.sqrt((sumList[i][0]/Rc)*(sumList[i][0]/Rc) + (sumList[i][1]/Rm)*(sumList[i][1]/Rm) + (sumList[i][2]/Rn)*(sumList[i][2]/Rn));
-            G += Math.sqrt((sumList[i][0] + Nc)*(sumList[i][0] + Nc) + (sumList[i][1] + Nm)*(sumList[i][1] + Nm) + (sumList[i][2] + Nn)*(sumList[i][2] + Nn));
+
+            Rc = DictionaryUtil.checkValueAndChange(sumList[i][0]/Rc);
+            Rm = DictionaryUtil.checkValueAndChange(sumList[i][1]/Rm);
+            Rn = DictionaryUtil.checkValueAndChange(sumList[i][2]/Rn);
+            Nc = DictionaryUtil.checkValueAndChange(sumList[i][0] + Nc);
+            Nm = DictionaryUtil.checkValueAndChange(sumList[i][1] + Nm);
+            Nn = DictionaryUtil.checkValueAndChange(sumList[i][2] + Nn);
+
+            F += Math.sqrt(Rc*Rc + Rm*Rm + Rn*Rn);
+            G += Math.sqrt(Nc*Nc + Nm*Nm + Nn*Nn);
         }
         sum = DictionaryUtil.F_VAL*F + DictionaryUtil.G_VAL*G + DictionaryUtil.T_VAL*T;
         return sum;
@@ -363,5 +420,12 @@ public class TaskScheduleAllocator {
 
     public static void setSchedule_type(String schedule_type) {
         TaskScheduleAllocator.schedule_type = schedule_type;
+    }
+
+    public static void setStartStatus(Integer startStatus) {
+        if(startStatus == null){
+            startStatus = 0;
+        }
+        TaskScheduleAllocator.startStatus = startStatus;
     }
 }

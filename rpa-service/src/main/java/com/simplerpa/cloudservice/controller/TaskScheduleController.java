@@ -13,10 +13,7 @@ import com.simplerpa.cloudservice.utils.TaskCostCountUtil;
 import com.simplerpa.cloudservice.utils.TaskScheduleAllocator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -32,13 +29,14 @@ public class TaskScheduleController extends BaseController {
     ITaskDetailService taskDetailService;
 
     @GetMapping("/exec/{id}")
-    public void startExecTask(@PathVariable("id") Long id){
+    public void startExecTask(@PathVariable("id") Long id, @RequestParam("start") Integer integer){
         TaskDetail taskDetail = taskDetailService.selectTaskDetailById(id);
         TaskDetailVO taskDetailVO = new TaskDetailVO(taskDetail);
         new Thread(() -> {
             TaskScheduleAllocator allocator = new TaskScheduleAllocator();
             try {
                 TaskScheduleAllocator.setSchedule_type(schedule_type);
+                TaskScheduleAllocator.setStartStatus(integer);
                 allocator.AllocateTask(taskDetailVO);
             } catch (Exception e) {
                 e.printStackTrace();

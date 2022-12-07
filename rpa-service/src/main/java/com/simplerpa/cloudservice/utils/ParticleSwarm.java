@@ -54,7 +54,7 @@ public class ParticleSwarm {
     /**
      输入变量：所求变量的个数，变量的下边界，上边界
      */
-    ParticleSwarm(int nVar,double[] x_low,double[] x_up){
+    ParticleSwarm(int nVar,double[] x_low,double[] x_up, int psoType, int T){
         position = new double[nVar];
         velecity = new double[nVar];
         P_position = new double[nVar];
@@ -64,8 +64,17 @@ public class ParticleSwarm {
         // 初始化在边界内：位置，速度
         for(int i=0;i<nVar;i++){
             int flag = rand1.nextBoolean()? 1 : -1;
-            position[i] = getRandPosition(x_up[i], x_low[i]);
-            velecity[i]=rand1.nextDouble() * flag;
+            if(psoType == -1){
+                position[i] = getRandPosition(1, 0);
+                while(position[i] == 0 || position[i] == 1 || position[i] == 0.25 || position[i] == 0.75){
+                    position[i] = getRandPosition(1, 0);
+                }
+                position[i] = PSO.chaosValue(position[i]);
+                position[i] = x_low[i] + position[i] * (x_up[i] - x_low[i]);
+            }else{
+                position[i] = getRandPosition(x_up[i], x_low[i]);
+            }
+            velecity[i] = rand1.nextDouble() * flag;
         }
     }
 
@@ -87,7 +96,7 @@ public class ParticleSwarm {
 }
 
 class WindowQueue{
-    private double[] list;
+    private final double[] list;
     private final int size;
     private int pos, remainSize;
     private double sum;
@@ -99,13 +108,6 @@ class WindowQueue{
         this.sum = 0;
         this.list = new double[size];
         Arrays.fill(list, 0);
-    }
-    public double getParamsRes(){
-        double res = 0.149 / (Math.sqrt(sum + MIN_NUM));
-//        if (res > MAX_STEP){
-//            res = MAX_STEP;
-//        }
-        return res;
     }
     public void insertElement(double item){
         sum -= list[pos]*list[pos];
@@ -191,10 +193,7 @@ class BestFitSet{
             this.it = it;
             return false;
         }
-        if((it - this.it) % 25 == 0){
-            return true;
-        }
-        return false;
+        return (it - this.it) % 25 == 0;
     }
 
     public double[] getRandPosition(){
@@ -207,7 +206,7 @@ class BestFitSet{
     public void putPosition(double[] position){
         StringBuilder str = new StringBuilder();
         for (double v : position) {
-            str.append((int) v);
+            str.append((int) Math.abs(v));
         }
         if(!hashMap.containsKey(str.toString())){
             hashMap.put(str.toString(), position);
@@ -227,7 +226,8 @@ class PSO{
     /**
      * 服务器状态
      * */
-    private JSONObject machinesAllocateInfo, machinePerformanceJSON;
+    private final double[][] performanceList = new double[4][4];
+    private final double[][] allocateInfoList = new double[4][4];
     private Long[] ids;
 
     /**
@@ -273,22 +273,37 @@ class PSO{
 
     private static boolean GRAPH_SHOW = false;
 
-    public static final int WindowSize = 25, TEST_COUNT = 1;
+    public static final int WindowSize = 30, TEST_COUNT = 1;
 
-    private boolean standard_pso;
+    private int standard_pso;
     private final BestFitSet bestFitSet = new BestFitSet();
+    private static final double Epsilon = 0.2;
 
-    PSO(double[] x_low, double[] x_up, JSONObject mai, JSONObject mpj, Long[] ids, boolean isStandard, boolean graphShow){
+    PSO(double[] x_low, double[] x_up, JSONObject mai, JSONObject mpj, Long[] ids, int isStandard, boolean graphShow){
 //        this(1.49445, 1.49445, 0.729, ids.length, 200, 50, x_low, x_up);
         standard_pso = isStandard;
-        machinesAllocateInfo = mai;
-        machinePerformanceJSON = mpj;
+        for(int i=0; i<4; i++){
+            String machineName = TaskScheduleAllocator.machineName.get(i);
+            double[] object = mai.getJSONObject(machineName).getObject(TaskCostCountUtil.LIST, double[].class);
+            allocateInfoList[i] = object;
+
+            Double Nc = mpj.getJSONObject(machineName).getDouble("cpu");
+            Double Nm = mpj.getJSONObject(machineName).getDouble("mem");
+            Double Nn = mpj.getJSONObject(machineName).getDouble("net");
+            performanceList[i][0] = Nc;
+            performanceList[i][1] = Nm;
+            performanceList[i][2] = Nn;
+        }
         this.ids = ids.clone();
         GRAPH_SHOW = graphShow;
-        initEveryParams(1.49445, 1.49445, 0.729, ids.length, 500, 50, x_low, x_up);
+        int SwarmNum = 50;
+        if(isStandard == -2){
+            SwarmNum = 20;
+        }
+        initEveryParams(1.49445, 1.49445, 0.729, ids.length, 500, SwarmNum, x_low, x_up);
     }
 
-    PSO(double[] x_low, double[] x_up, JSONObject mai, JSONObject mpj, Long[] ids, boolean isStandard){
+    PSO(double[] x_low, double[] x_up, JSONObject mai, JSONObject mpj, Long[] ids, int isStandard){
         this(x_low, x_up, mai, mpj, ids, isStandard, false);
     }
 
@@ -315,7 +330,7 @@ class PSO{
 
         // 种群初始化
         for(int i=0;i<nPop;i++){
-            pop[i]=new ParticleSwarm(nVar,x_low,x_up);  				// 初始化每个粒子
+            pop[i]=new ParticleSwarm(nVar,x_low,x_up,standard_pso, MaxIter);  				// 初始化每个粒子
             pop[i].fitness=function_fitness(pop[i].position);	// 计算每个粒子的适应值
             pop[i].P_fitness=pop[i].fitness;					// 初始化粒子的最优适应值
             pop[i].P_position=(double[])pop[i].position.clone();// 初始化粒子的最优位值，数组的复制用clone，
@@ -390,11 +405,6 @@ class PSO{
     private double Schedule(double[] var){
         double[][] sumList = new double[4][3];
         double sum;
-        for(int i=0; i<4; i++){
-            for (int j=0; j<3; j++){
-                sumList[i][j] = 0.0;
-            }
-        }
         double F = 0, G = 0, T = 0.0;
         for(int i=0; i<nVar; i++){
             int targetMachine = (int) Math.abs(var[i]);
@@ -408,28 +418,31 @@ class PSO{
             T += costListByTaskId.get(3);
         }
         for(int i=0; i<4; i++){
-            String machineName = TaskScheduleAllocator.machineName.get(i);
-            double[] machineCostList = machinesAllocateInfo.getJSONObject(machineName).getObject(TaskCostCountUtil.LIST, double[].class);
+            double[] machineCostList = allocateInfoList[i];
             sumList[i][0] += machineCostList[0];
             sumList[i][1] += machineCostList[1];
             sumList[i][2] += machineCostList[2];
             T += machineCostList[3];
-        }
-        for(int i=0; i<4; i++){
+
             sumList[i][1] = TaskCostCountUtil.getMemCost(i, sumList[i][1]);
             double Nc, Nm, Nn;
             double Rc, Rm, Rn;
-            Nc = machinePerformanceJSON.getJSONObject(TaskScheduleAllocator.machineName.get(i)).getDouble("cpu");
-            Nm = machinePerformanceJSON.getJSONObject(TaskScheduleAllocator.machineName.get(i)).getDouble("mem");
-            Nn = machinePerformanceJSON.getJSONObject(TaskScheduleAllocator.machineName.get(i)).getDouble("net");
+            Nc = performanceList[i][0];
+            Nm = performanceList[i][1];
+            Nn = performanceList[i][2];
             Rc = 100-Nc;
             Rm = 100-Nm;
             Rn = 100-Nn;
-            sumList[i][0] = DictionaryUtil.checkValueAndChange(sumList[i][0]);
-            sumList[i][1] = DictionaryUtil.checkValueAndChange(sumList[i][1]);
-            sumList[i][2] = DictionaryUtil.checkValueAndChange(sumList[i][2]);
-            F += Math.sqrt((sumList[i][0]/Rc)*(sumList[i][0]/Rc) + (sumList[i][1]/Rm)*(sumList[i][1]/Rm) + (sumList[i][2]/Rn)*(sumList[i][2]/Rn));
-            G += Math.sqrt((sumList[i][0] + Nc)*(sumList[i][0] + Nc) + (sumList[i][1] + Nm)*(sumList[i][1] + Nm) + (sumList[i][2] + Nn)*(sumList[i][2] + Nn));
+
+            Rc = DictionaryUtil.checkValueAndChange(sumList[i][0]/Rc);
+            Rm = DictionaryUtil.checkValueAndChange(sumList[i][1]/Rm);
+            Rn = DictionaryUtil.checkValueAndChange(sumList[i][2]/Rn);
+            Nc = DictionaryUtil.checkValueAndChange(sumList[i][0] + Nc);
+            Nm = DictionaryUtil.checkValueAndChange(sumList[i][1] + Nm);
+            Nn = DictionaryUtil.checkValueAndChange(sumList[i][2] + Nn);
+
+            F += Math.sqrt(Rc*Rc + Rm*Rm + Rn*Rn);
+            G += Math.sqrt(Nc*Nc + Nm*Nm + Nn*Nn);
         }
         sum = DictionaryUtil.F_VAL*F + DictionaryUtil.G_VAL*G + DictionaryUtil.T_VAL*T;
         return sum;
@@ -443,34 +456,38 @@ class PSO{
     4.对出界的位置进行限制
     */
     public void up_search(){
-        for(int i=0;i<nPop;i++){
-            for(int j=0;j<nVar;j++){
-                pop[i].velecity[j]= w * pop[i].velecity[j] + R1*(pop[i].P_position[j]-pop[i].position[j])*getC1(i, j) + R2*(best_solution[j]-pop[i].position[j])*getC2(i, j);
+        for(int i=0;i<nPop;i++) {
+            for (int j = 0; j < nVar; j++) {
+                pop[i].velecity[j] = w * pop[i].velecity[j] + R1 * (pop[i].P_position[j] - pop[i].position[j]) * getC1(i, j) + R2 * (best_solution[j] - pop[i].position[j]) * getC2(i, j);
 
-                if(!standard_pso && (Math.abs(pop[i].velecity[j]) < ((x_up[j] - x_low[j])*0.05))){
-                    if(pop[i].velecity[j] > 0){
-                        pop[i].velecity[j] = (x_up[j] - x_low[j])*0.05;
-                    }else{
-                        pop[i].velecity[j] = (x_low[j] - x_up[j])*0.05;
+                if (standard_pso == 0 && Math.abs(pop[i].velecity[j]) < ((x_up[j] - x_low[j]) * 0.05)) {
+                    if (pop[i].velecity[j] > 0) {
+                        pop[i].velecity[j] = (x_up[j] - x_low[j]) * 0.05;
+                    } else {
+                        pop[i].velecity[j] = (x_low[j] - x_up[j]) * 0.05;
                     }
                 }
 
-                pop[i].position[j]=pop[i].position[j]+pop[i].velecity[j];
-                if(pop[i].position[j]>x_up[j]){
-                    pop[i].position[j]=x_up[j];
+                pop[i].position[j] = pop[i].position[j] + pop[i].velecity[j];
+
+                if (Double.isNaN(pop[i].position[j])) {
+                    pop[i].position[j] = 0;
                 }
-                if(pop[i].position[j]<x_low[j]){
-                    pop[i].position[j]=x_low[j];
+
+                if (pop[i].position[j] > x_up[j]) {
+                    pop[i].position[j] = x_up[j];
+                }
+                if (pop[i].position[j] < x_low[j]) {
+                    pop[i].position[j] = x_low[j];
                 }
             }
-
         }
     }
     //更新适应值
     public void up_date(int it){
         for(int i=0;i<this.nPop;i++){
             //计算适应值
-            pop[i].fitness=function_fitness(pop[i].position);
+            pop[i].fitness = function_fitness(pop[i].position);
 //            worstFitness = Math.max(pop[i].fitness, worstFitness);
             if(worstFitness < pop[i].fitness){
                 worstFitness = pop[i].fitness;
@@ -478,7 +495,7 @@ class PSO{
             }
 
             if(pop[i].fitness == best_fitness){
-                bestFitSet.putPosition(pop[i].position);
+                bestFitSet.putPosition(pop[i].position.clone());
             }
 
          // 如果个体的适应值大于个体历史最优适应值，则更新个体历史最优适应值，位置信息同样的也更新
@@ -490,14 +507,27 @@ class PSO{
                 {
                     best_fitness = pop[i].fitness;
                     best_solution = pop[i].position.clone();
-                    if(!standard_pso){
+                    if(standard_pso == 0){
                         bestFitSet.setFitness(best_fitness, it);
-                        bestFitSet.putPosition(best_solution);
+                        bestFitSet.putPosition(best_solution.clone());
                     }
                 }
             }
 
-            if(!standard_pso){
+            if(standard_pso == -1){
+                double[] clone = best_solution.clone();
+                for (int z=0; z<clone.length; z++){
+                    clone[z] = (clone[z] - x_up[0]) / (x_up[0] - x_low[0]);
+                    clone[z] = chaosValue(clone[z]);
+                    clone[z] = clone[z] * (x_up[0] - x_low[0]) + x_low[0];
+                    clone[z] = getEpsilon(it, MaxIter);
+                }
+                double v = function_fitness(clone);
+                if(v < best_fitness){
+                    best_fitness = v;
+                    best_solution = clone;
+                }
+            } else if(standard_pso == 0){
                 adamDeltas[i].fitnessWindow.insertOriginElement(pop[i].fitness);
                 if(adamDeltas[i].fitnessWindow.isFull() && (adamDeltas[i].fitnessWindow.getMinElement() > pop[i].P_fitness)){
 //                    for(int j=0; j<nVar; j++){
@@ -518,7 +548,7 @@ class PSO{
                 }
             }
         }
-        if(!standard_pso && bestFitSet.shouldChange(it)){
+        if(standard_pso == 0 && bestFitSet.shouldChange(it)){
             best_fitness = bestFitSet.getFitness();
             best_solution = bestFitSet.getRandPosition().clone();
         }
@@ -528,12 +558,6 @@ class PSO{
         double[] var = particleSwarm.position;
         double[][] sumList = new double[4][3];
         double[][] costList = new double[4][3];
-        for(int i=0; i<4; i++){
-            for (int j=0; j<3; j++){
-                sumList[i][j] = 0.0;
-                costList[i][j] = 0.0;
-            }
-        }
         for(int i=0; i<nVar; i++){
             int targetMachine = (int) Math.abs(var[i]);
             if(targetMachine > 3){
@@ -545,8 +569,7 @@ class PSO{
             costList[targetMachine][2] += costListByTaskId.get(2); // net
         }
         for(int i=0; i<4; i++){
-            String machineName = TaskScheduleAllocator.machineName.get(i);
-            double[] machineCostList = machinesAllocateInfo.getJSONObject(machineName).getObject(TaskCostCountUtil.LIST, double[].class);
+            double[] machineCostList = allocateInfoList[i];
             sumList[i][0] += machineCostList[0];
             sumList[i][1] += machineCostList[1];
             sumList[i][2] += machineCostList[2];
@@ -556,20 +579,27 @@ class PSO{
             double F = 0, G = 0;
             List<Double> costListByTaskId = TaskCostCountUtil.getCostListByTaskId(ids[z]);
             for(int i=0; i<4; i++){
-                double memSum = TaskCostCountUtil.getMemCost(i, sumList[i][1] + costList[i][1] - costListByTaskId.get(1)), cpuSum = sumList[i][0] + costList[i][0] - costListByTaskId.get(0), netSum = sumList[i][2] + costList[i][2] - costListByTaskId.get(2);
+                double memSum = TaskCostCountUtil.getMemCost(i, sumList[i][1] + costList[i][1] - costListByTaskId.get(1)),
+                        cpuSum = sumList[i][0] + costList[i][0] - costListByTaskId.get(0),
+                        netSum = sumList[i][2] + costList[i][2] - costListByTaskId.get(2);
                 double Nc, Nm, Nn;
                 double Rc, Rm, Rn;
-                Nc = machinePerformanceJSON.getJSONObject(TaskScheduleAllocator.machineName.get(i)).getDouble("cpu");
-                Nm = machinePerformanceJSON.getJSONObject(TaskScheduleAllocator.machineName.get(i)).getDouble("mem");
-                Nn = machinePerformanceJSON.getJSONObject(TaskScheduleAllocator.machineName.get(i)).getDouble("net");
+                Nc = performanceList[i][0];
+                Nm = performanceList[i][1];
+                Nn = performanceList[i][2];
                 Rc = 100-Nc;
                 Rm = 100-Nm;
                 Rn = 100-Nn;
-                cpuSum = DictionaryUtil.checkValueAndChange(cpuSum);
-                memSum = DictionaryUtil.checkValueAndChange(memSum);
-                netSum = DictionaryUtil.checkValueAndChange(netSum);
-                F += Math.sqrt((cpuSum/Rc)*(cpuSum/Rc) + (memSum/Rm)*(memSum/Rm) + (netSum/Rn)*(netSum/Rn));
-                G += Math.sqrt((cpuSum + Nc)*(cpuSum + Nc) + (memSum + Nm)*(memSum + Nm) + (netSum + Nn)*(netSum + Nn));
+
+                Rc = DictionaryUtil.checkValueAndChange(cpuSum/Rc);
+                Rm = DictionaryUtil.checkValueAndChange(memSum/Rm);
+                Rn = DictionaryUtil.checkValueAndChange(netSum/Rn);
+                Nc = DictionaryUtil.checkValueAndChange(cpuSum + Nc);
+                Nm = DictionaryUtil.checkValueAndChange(memSum + Nm);
+                Nn = DictionaryUtil.checkValueAndChange(netSum + Nn);
+
+                F += Math.sqrt(Rc*Rc + Rm*Rm + Rn*Rn);
+                G += Math.sqrt(Nc*Nc + Nm*Nm + Nn*Nn);
             }
             double FG = (F * DictionaryUtil.F_VAL) + (G * DictionaryUtil.G_VAL);
             treeMap.put(FG, z);
@@ -610,7 +640,7 @@ class PSO{
             this.w = getW(it, MaxIter);
 
             up_search();	// 速度位置更新
-            up_date(it+1);		// 适应值的更新
+            up_date(it);		// 适应值的更新
 //            show_result(it);  // 输出结果的显示
 
             try{
@@ -629,22 +659,51 @@ class PSO{
 
     private double getC1(int i, int j){
 //        double c1 = adamDeltas[i].list[j].getParamsRes();
+        if(standard_pso == -1){
+            double cmax = 2.5, cmin = 0.5;
+            return 0.5*(cmax - cmin) * ((double) i / j) * ((double) i / j)  + cmin;
+        }else if(standard_pso == -2){
+            double cmax = 2.5, cmin = 1.5;
+            return cmax - Math.pow((1 - (Math.exp(1) / (Math.exp(1) - Math.exp(1.0 / j)))) + (1/(Math.exp(1) - Math.exp(1.0/j)))*Math.exp((double) i/j), 0.5)*(cmax - cmin);
+        }
         return c1;
     }
 
     private double getC2(int i, int j){
 //        double c2 = adamDeltas[i].globalList[j].getParamsRes();
+        if(standard_pso == -1){
+            double cmax = 2.5, cmin = 0.5;
+            return (cmax - cmin) * ((double) i / j) * ((double) i / j)  + cmax;
+        }else if(standard_pso == -2){
+            double cmax = 2.5, cmin = 1.5;
+            return cmin + Math.pow((1 - (Math.exp(1) / (Math.exp(1) - Math.exp(1.0 / j)))) + (1/(Math.exp(1) - Math.exp(1.0/j)))*Math.exp((double) i/j), 0.5)*(cmax - cmin);
+        }
         return c2;
     }
 
-    private double getW(int i, int max){
-        double x = (double) i / max;
-        x = 2*x - 1;
-        double w = 0.6*(Math.cos(x) / (1 + Math.exp(3*x))) + 0.35;
-//        w = 0.9 - 0.8*((double) i / max);
-//        w = 0.4 + 0.2*ParticleSwarm.rand1.nextDouble();
-        w = this.w;
+    private double getW(int k, int T){
+        double w = this.w;
+        if(standard_pso == -1){
+            double wmax = 0.9, wmin = 0.4;
+            double percent = (double) k / T;
+            if(percent <= 0.1){
+                w = wmax;
+            }else{
+                w = wmin + (wmax + wmin) / (Math.exp(-wmax) + Math.exp(-1.2 + 20*k/(double) T));
+            }
+        }else if(standard_pso == -2){
+            double wmax=0.8, wmin=0.001;
+            w = (wmax - wmin)*((T - k)/(double)(T - 1)) + wmin;
+        }
         return w;
+    }
+
+    public static double chaosValue(double num){
+        return 4 * num * (1 - num);
+    }
+
+    public static double getEpsilon(int k, int T){
+        return Epsilon + 1 / (Math.exp(0.1 + 5*k/(double)T));
     }
 }
 

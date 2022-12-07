@@ -2,23 +2,23 @@ package com.simplerpa.cloudservice.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.util.concurrent.AtomicDouble;
+import com.simplerpa.cloudservice.controller.TaskScheduleController;
 
 import java.util.*;
 
 public class TaskCostCountUtil {
     private static final AtomicDouble cost = new AtomicDouble(0.0);;
     private static final HashMap<Long, List<Double>> taskCostMap;
-    private static final HashMap<Long, Double> taskRecordMap;
-    private static final Integer CPU_ID = 0, MEM_ID = 1, NET_ID = 2, TIME_ID = 3;
+    public static final Integer CPU_ID = 0, MEM_ID = 1, NET_ID = 2, TIME_ID = 3;
     // 内存不同、需要重新计算权重
     private static final Double MAX_MEM = 7819.15;
     private static final double[] machineCurrentCost = new double[4];
     public static final String COST_VAL = "cost", LIST = "id_list", MEM = "mem", CPU = "cpu", NETWORK = "net";
+    private static volatile Double Rm = null;
+    private static Integer nodeNum;
 
     static {
         Arrays.fill(machineCurrentCost, 0);
-
-        taskRecordMap = new HashMap<>();
 
         taskCostMap = new HashMap<>();
         taskCostMap.put(16L, getInitList(7.469, 12.709, 166.39, 13.751, 31.0));
@@ -46,7 +46,6 @@ public class TaskCostCountUtil {
 
     public static synchronized void addCost(Double num, Long id){
         cost.addAndGet(num);
-        taskRecordMap.put(id, num);
         if(taskCostMap.containsKey(id)){
             machineCurrentCost[CPU_ID] += taskCostMap.get(id).get(CPU_ID);
             machineCurrentCost[MEM_ID] += taskCostMap.get(id).get(MEM_ID);
@@ -56,25 +55,26 @@ public class TaskCostCountUtil {
     }
 
     public static synchronized void minusCost(Long id){
-        Double num = taskRecordMap.get(id);
+        Double num = getSumCostById(id);
         cost.addAndGet(-num);
-//        taskRecordMap.remove(id);
         if(taskCostMap.containsKey(id)){
             machineCurrentCost[CPU_ID] -= taskCostMap.get(id).get(CPU_ID);
             machineCurrentCost[MEM_ID] -= taskCostMap.get(id).get(MEM_ID);
             machineCurrentCost[NET_ID] -= taskCostMap.get(id).get(NET_ID);
             machineCurrentCost[TIME_ID] -= taskCostMap.get(id).get(TIME_ID);
+
+            Rm += getMemCost(nodeNum, taskCostMap.get(id).get(MEM_ID));
         }
-        if(machineCurrentCost[CPU_ID] <= 1e-15){
+        if(machineCurrentCost[CPU_ID] <= 1e-20){
             machineCurrentCost[CPU_ID] = 0;
         }
-        if(machineCurrentCost[MEM_ID] <= 1e-15){
+        if(machineCurrentCost[MEM_ID] <= 1e-20){
             machineCurrentCost[MEM_ID] = 0;
         }
-        if(machineCurrentCost[NET_ID] <= 1e-15){
+        if(machineCurrentCost[NET_ID] <= 1e-20){
             machineCurrentCost[NET_ID] = 0;
         }
-        if(machineCurrentCost[TIME_ID] <= 1e-15){
+        if(machineCurrentCost[TIME_ID] <= 1e-20){
             machineCurrentCost[TIME_ID] = 0;
         }
     }
@@ -117,5 +117,31 @@ public class TaskCostCountUtil {
             return 100*mem/7535.09;
         }
         return 100*mem/MAX_MEM;
+    }
+
+    private static void initRParams(int i){
+        if(Rm == null){
+            synchronized (TaskCostCountUtil.class){
+                if(Rm == null){
+                    String machineName = TaskScheduleAllocator.machineName.get(i);
+                    JSONObject performanceJSON = TaskScheduleController.getPerformanceJSON();
+                    Double Nm = performanceJSON.getJSONObject(machineName).getDouble("mem");
+                    Rm = 105-Nm;
+                }
+            }
+        }
+    }
+
+    public static double getRm(int i) {
+        initRParams(i);
+        return Rm;
+    }
+
+    public static void setRm(double rm) {
+        Rm = rm;
+    }
+
+    public static void setNodeNum(Integer nodeNum) {
+        TaskCostCountUtil.nodeNum = nodeNum;
     }
 }

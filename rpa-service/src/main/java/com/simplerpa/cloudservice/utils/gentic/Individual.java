@@ -62,16 +62,11 @@ public class Individual {
     public double calcFitness(){
         double[][] sumList = new double[4][3];
         double sum;
-        for(int i=0; i<4; i++){
-            for (int j=0; j<3; j++){
-                sumList[i][j] = 0.0;
-            }
-        }
         double F = 0.0, G = 0.0, T = 0.0;
         for(int i=0; i<ids.length; i++){
             Gene gene = genes.get(i);
             double val = gene.decode(gene.getGene());
-            int targetMachine = (int) val;
+            int targetMachine = (int) Math.abs(val);
             if(targetMachine > 3){
                 targetMachine = 3;
             }
@@ -99,11 +94,16 @@ public class Individual {
             Rc = 100-Nc;
             Rm = 100-Nm;
             Rn = 100-Nn;
-            sumList[i][0] = DictionaryUtil.checkValueAndChange(sumList[i][0]);
-            sumList[i][1] = DictionaryUtil.checkValueAndChange(sumList[i][1]);
-            sumList[i][2] = DictionaryUtil.checkValueAndChange(sumList[i][2]);
-            F += Math.sqrt((sumList[i][0]/Rc)*(sumList[i][0]/Rc) + (sumList[i][1]/Rm)*(sumList[i][1]/Rm) + (sumList[i][2]/Rn)*(sumList[i][2]/Rn));
-            G += Math.sqrt((sumList[i][0] + Nc)*(sumList[i][0] + Nc) + (sumList[i][1] + Nm)*(sumList[i][1] + Nm) + (sumList[i][2] + Nn)*(sumList[i][2] + Nn));
+
+            Rc = DictionaryUtil.checkValueAndChange(sumList[i][0]/Rc);
+            Rm = DictionaryUtil.checkValueAndChange(sumList[i][1]/Rm);
+            Rn = DictionaryUtil.checkValueAndChange(sumList[i][2]/Rn);
+            Nc = DictionaryUtil.checkValueAndChange(sumList[i][0] + Nc);
+            Nm = DictionaryUtil.checkValueAndChange(sumList[i][1] + Nm);
+            Nn = DictionaryUtil.checkValueAndChange(sumList[i][2] + Nn);
+
+            F += Math.sqrt(Rc*Rc + Rm*Rm + Rn*Rn);
+            G += Math.sqrt(Nc*Nc + Nm*Nm + Nn*Nn);
         }
         sum = DictionaryUtil.F_VAL*F + DictionaryUtil.G_VAL*G + DictionaryUtil.T_VAL*T;
         return 1/Math.log(sum);

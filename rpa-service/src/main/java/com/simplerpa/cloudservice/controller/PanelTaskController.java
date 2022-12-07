@@ -12,10 +12,7 @@ import com.simplerpa.cloudservice.entity.VO.TaskDetailVO;
 import com.simplerpa.cloudservice.entity.util.DictionaryUtil;
 import com.simplerpa.cloudservice.entity.util.RpaTaskStructure;
 import com.simplerpa.cloudservice.service.ITaskDetailService;
-import com.simplerpa.cloudservice.utils.RpaTaskExecutor;
-import com.simplerpa.cloudservice.utils.RpaTaskExplainer;
-import com.simplerpa.cloudservice.utils.TaskCostCountUtil;
-import com.simplerpa.cloudservice.utils.ThreadPoolSingleton;
+import com.simplerpa.cloudservice.utils.*;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -84,9 +81,13 @@ public class PanelTaskController extends BaseController {
         if(taskDetailVO.getTaskId() == null){
             return AjaxResult.error("该任务的ID为空，无法运行！");
         }
-        if (Math.abs(taskDetailVO.getTaskProgress() - 999) < 1e-20) {
+        if (taskDetailVO.getTaskProgress() - 999 > 0) {
+            int node = (int) taskDetailVO.getTaskProgress().doubleValue();
+            node -= 1000;
             uploadTaskDetailAndStore(taskDetailVO);
-            ThreadPoolSingleton.getInstance().submit(new RpaTaskExecutor(taskDetailVO));
+            TaskQueueAllocator.setNode(node);
+//            ThreadPoolSingleton.getInstance().submit(new RpaTaskExecutor(taskDetailVO));
+            TaskQueueAllocator.pushElement(taskDetailVO);
             return AjaxResult.success("任务启动成功！正在运行...");
         }
         return AjaxResult.error("运行出错！请检查登陆状态是否正常！");
