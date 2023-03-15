@@ -1,9 +1,12 @@
 <template>
-  <div class="app-container home">
-    <el-row :gutter="20">
-      <h1>Welcome to SimpleRPA</h1>
-    </el-row>
-  </div>
+<!--  <div class="app-container home">-->
+<!--    <el-row :gutter="20">-->
+<!--      <h1></h1>-->
+<!--    </el-row>-->
+<!--  </div>-->
+    <div class="welcome">
+
+    </div>
 </template>
 
 <script>
@@ -84,6 +87,15 @@ export default {
       padding-inline-start: 40px;
     }
   }
+}
+.welcome {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+    background-image: url("../assets/images/Welcome-Page.png");
+    background-size: cover;
 }
 </style>
 

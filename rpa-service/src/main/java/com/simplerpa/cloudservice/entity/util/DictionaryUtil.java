@@ -53,7 +53,7 @@ public class DictionaryUtil {
     public static final Integer NODE_MESSAGE_CHANGE = 1;
     public static final Integer NODE_MESSAGE_ADD = 2;
 
-    public static final double F_VAL = 0.5, G_VAL = 0.5, T_VAL = 0.0;
+    public static final double F_VAL = 0.2 , G_VAL = 0.8, T_VAL = 0.0;
 
     // 独立参数信息
     public static final String SINGLE_PARAM_FLAG = "_@SINGLE_PARAM_FLAG@";
@@ -62,26 +62,21 @@ public class DictionaryUtil {
     public static final String NO_MERGE_FLAG = "_@NO_MERGE_FLAG@";
     public static final String CURRENT_LAYER = "_@CURRENT_LAYER@";
 
-//    public static final String AI_SERVER_URL = "http://192.168.103.99:10000/aienhance";
-    public static final String AI_SERVER_URL = "http://127.0.0.1:10000/aienhance";
+    public static final String AI_SERVER_URL = "http://192.168.103.119:10000/aienhance";
+//    public static final String AI_SERVER_URL = "http://127.0.0.1:10000/aienhance";
 
     public static final String CPU_URL = "http://192.168.103.116:30090/api/v1/query?query={json}";
     public static final String CPU_URL_TAIL = "100*(1 - sum by (instance)(increase(node_cpu_seconds_total{mode=\"idle\"}[60s])) / sum by (instance)(increase(node_cpu_seconds_total[60s])))";
     public static final String MEM_URL = "http://192.168.103.116:30090/api/v1/query?query=(node_memory_MemTotal_bytes-(node_memory_MemFree_bytes%2Bnode_memory_Cached_bytes%2Bnode_memory_Buffers_bytes))%2Fnode_memory_MemTotal_bytes*100";
     public static final String NET_IO = "http://192.168.103.116:30090/api/v1/query?query={json}";
-    public static final String NET_IO_TAIL = "sum(rate (container_network_receive_bytes_total{node=\"{node_name}\"}[70s]))/1024";
+    public static final String NET_IO_TAIL = "sum(rate (container_network_receive_bytes_total{node=\"{node_name}\"}[110s]))/1024";
 
     public static String GetNetIO(String nodeName){
         return StringUtils.replace(NET_IO_TAIL, "{node_name}", nodeName);
     }
 
     public static double checkValueAndChange(double a){
-//        if(a > 100) {
-//            double v = a - 100;
-//            a = 100;
-//            a += 10*v;
-//        }
-        a = Math.exp(a/10);
+//        a = Math.exp(a/10);
         return a;
     }
 
@@ -97,5 +92,13 @@ public class DictionaryUtil {
             dsum += Math.pow(s, 2);
         }
         return Math.sqrt(dsum / list.size());
+    }
+
+    public static double getMinByList(ArrayList<Double> list){
+        double m = Double.MAX_VALUE;
+        for (Double a : list){
+            m = Math.min(a, m);
+        }
+        return m;
     }
 }

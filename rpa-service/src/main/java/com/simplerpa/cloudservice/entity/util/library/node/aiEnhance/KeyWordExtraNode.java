@@ -42,6 +42,7 @@ public class KeyWordExtraNode extends IRpaTaskNode {
                 if(img != null){
                     String src = img.getAttribute("src");
                     JSONObject ocrResult = AiEnhanceTool.getAiResult(src, AiEnhanceTool.KEY_EXT, Arrays.asList(outputAttributeList));
+                    System.out.println(ocrResult);
                     JSONArray res = ocrResult.getJSONArray("res");
                     getAttributeValue(res);
                 }

@@ -39,6 +39,7 @@ public class OpenWebPageNode extends IRpaTaskNode {
         options.addArguments("lang=zh_CN.UTF-8");
 
         WebDriver webDriver = new ChromeDriver(options);
+        webDriver.manage().window().maximize();
         webDriver.get(URL);
         jsonObject.put(DictionaryUtil.HTML_FLAG, webDriver);
         addOutput(jsonObject);

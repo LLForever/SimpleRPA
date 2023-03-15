@@ -11,6 +11,7 @@ import com.simplerpa.cloudservice.entity.TaskDetail;
 import com.simplerpa.cloudservice.entity.VO.TaskDetailVO;
 import com.simplerpa.cloudservice.entity.util.DictionaryUtil;
 import com.simplerpa.cloudservice.entity.util.RpaTaskStructure;
+import com.simplerpa.cloudservice.mapper.TaskDetailMapper;
 import com.simplerpa.cloudservice.service.ITaskDetailService;
 import com.simplerpa.cloudservice.utils.*;
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -35,6 +37,9 @@ public class PanelTaskController extends BaseController {
     @Autowired
     ITaskDetailService taskDetailService;
 
+    @Autowired
+    TaskDetailMapper mapper;
+
     @PostMapping("/upload/detail")
     public AjaxResult uploadTaskDetailAndStore(@RequestBody TaskDetailVO taskDetailVO){
         LoginUser loginUser = SecurityUtils.getLoginUser();
@@ -48,6 +53,7 @@ public class PanelTaskController extends BaseController {
                 detail.setTaskVersion(System.currentTimeMillis());
                 detail.setLineListJson(JSONObject.toJSONString(taskDetailVO.getLineList()));
                 detail.setNodeListJson(JSONObject.toJSONString(taskDetailVO.getNodeList()));
+                detail.setTaskCreationTime(new Date());
                 Boolean aBoolean = taskDetailService.uploadTaskDetail(detail);
                 return aBoolean? AjaxResult.success("保存成功") : AjaxResult.error("保存失败！");
             }
@@ -84,12 +90,30 @@ public class PanelTaskController extends BaseController {
         if (taskDetailVO.getTaskProgress() - 999 > 0) {
             int node = (int) taskDetailVO.getTaskProgress().doubleValue();
             node -= 1000;
-            uploadTaskDetailAndStore(taskDetailVO);
+
+            TaskDetail detail = new TaskDetail();
+            detail.setId(taskDetailVO.getId());
+//            detail.setTaskId(taskDetailVO.getTaskId());
+//            detail.setLineListJson(JSONObject.toJSONString(taskDetailVO.getLineList()));
+//            detail.setNodeListJson(JSONObject.toJSONString(taskDetailVO.getNodeList()));
+            detail.setTaskCreationTime(new Date());
+            detail.setParams(null);
+            mapper.updateById(detail);
+
             TaskQueueAllocator.setNode(node);
 //            ThreadPoolSingleton.getInstance().submit(new RpaTaskExecutor(taskDetailVO));
             TaskQueueAllocator.pushElement(taskDetailVO);
             return AjaxResult.success("任务启动成功！正在运行...");
         }
         return AjaxResult.error("运行出错！请检查登陆状态是否正常！");
+    }
+
+    @GetMapping("/getrm")
+    public JSONObject getrm(){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("isRunning", TaskQueueAllocator.isIsRunning());
+        jsonObject.put("queue: ", TaskQueueAllocator.getQSize());
+        jsonObject.put("rm", TaskCostCountUtil.getRm());
+        return jsonObject;
     }
 }

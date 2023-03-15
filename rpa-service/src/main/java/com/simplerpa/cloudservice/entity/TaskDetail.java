@@ -1,9 +1,14 @@
 package com.simplerpa.cloudservice.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.core.annotation.Excel;
 import com.ruoyi.common.core.web.domain.BaseEntity;
+
+import java.util.Date;
 
 /**
  * rpa面板任务详情对象 rpa_panel_task_detail
@@ -11,11 +16,13 @@ import com.ruoyi.common.core.web.domain.BaseEntity;
  * @author rpa
  * @date 2022-04-20
  */
+@TableName("rpa_panel_task_detail")
 public class TaskDetail extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** id */
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /** 任务ID */
@@ -45,6 +52,9 @@ public class TaskDetail extends BaseEntity
     /** easy-flow的节点信息 */
     @Excel(name = "easy-flow的节点信息")
     private String nodeListJson;
+
+    @Excel(name = "任务创建时间")
+    private Date taskCreationTime;
 
     /** 创建任务的用户ID */
     @Excel(name = "创建任务的用户ID")
@@ -145,5 +155,13 @@ public class TaskDetail extends BaseEntity
                 .append("nodeListJson", getNodeListJson())
                 .append("userId", getUserId())
                 .toString();
+    }
+
+    public Date getTaskCreationTime() {
+        return taskCreationTime;
+    }
+
+    public void setTaskCreationTime(Date taskCreationTime) {
+        this.taskCreationTime = taskCreationTime;
     }
 }

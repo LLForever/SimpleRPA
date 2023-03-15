@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.simplerpa.cloudservice.mapper.RpaTaskNodeExecLogsMapper">
+    <select id="getSuccessRate" parameterType="Long" resultType="com.simplerpa.cloudservice.entity.VO.SuccessRateVO">
+        SELECT *
+        FROM (
+        SELECT COUNT(1) AS success_num
+        FROM `rpa_task_node_exec_logs`
+        WHERE task_msg = 'exec success' AND task_id = #{id}
+        ) AS a, (
+        SELECT COUNT(1) AS error_num
+        FROM `rpa_task_node_exec_logs`
+        WHERE (task_msg &lt;&gt; 'exec success' OR task_msg IS NULL) AND task_id = #{id}
+        ) AS b
+    </select>
+
+    <select id="getMostErrorInfo" parameterType="Long" resultType="com.simplerpa.cloudservice.entity.VO.MostErrorInfoVO">
+        SELECT *
+        FROM (
+        SELECT node_id, COUNT(1) AS error_num
+        FROM `rpa_task_node_exec_logs`
+        WHERE (task_msg &lt;&gt; 'exec success' OR task_msg IS NULL) AND task_id = #{id}
+        GROUP BY node_id
+        LIMIT 5
+        ) AS a
+        ORDER BY a.error_num DESC
+    </select>
+
+    <select id="getRecentlyExecLog" parameterType="Long" resultType="com.simplerpa.cloudservice.entity.VO.RecentlyExecLogVO">
+        SELECT node_id, task_msg
+        FROM `rpa_task_node_exec_logs`
+        WHERE task_id = #{id}
+        ORDER BY id DESC
+        LIMIT 1
+    </select>
+</mapper>

@@ -113,8 +113,6 @@ public class TaskCostCountUtil {
     public static double getMemCost(int machine, double mem){
         if(machine == 0){
             return 100*mem/9787.14;
-        }else if(machine == 3){
-            return 100*mem/7535.09;
         }
         return 100*mem/MAX_MEM;
     }
@@ -126,7 +124,7 @@ public class TaskCostCountUtil {
                     String machineName = TaskScheduleAllocator.machineName.get(i);
                     JSONObject performanceJSON = TaskScheduleController.getPerformanceJSON();
                     Double Nm = performanceJSON.getJSONObject(machineName).getDouble("mem");
-                    Rm = 105-Nm;
+                    Rm = 95-Nm;
                 }
             }
         }
@@ -134,6 +132,13 @@ public class TaskCostCountUtil {
 
     public static double getRm(int i) {
         initRParams(i);
+        return Rm;
+    }
+
+    public static double getRm(){
+        if(Rm == null){
+            return -1.0;
+        }
         return Rm;
     }
 

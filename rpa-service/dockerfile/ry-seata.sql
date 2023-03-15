@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : mysql-远程服务器
+ Source Server         : 192.168.103.119-mysql
  Source Server Type    : MySQL
  Source Server Version : 80028
- Source Host           : 192.168.103.99:3306
+ Source Host           : 192.168.103.119:3306
  Source Schema         : ry-seata
 
  Target Server Type    : MySQL
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 17/11/2022 16:00:42
+ Date: 28/12/2022 17:02:30
 */
 
 SET NAMES utf8mb4;

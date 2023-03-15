@@ -1,6 +1,25 @@
-FROM openjdk:8
+FROM python:3.8
+ENV LANG zh_CN.UTF-8
 VOLUME /tmp
 workdir .
+RUN sed -i s@/deb.debian.org/@/mirrors.huaweicloud.com/@g /etc/apt/sources.list
+RUN sed -i s@/security.debian.org/@/mirrors.huaweicloud.com/@g /etc/apt/sources.list
 COPY rpa-service.jar .
+COPY paddle .
+RUN apt-get update
+RUN chmod 777 paddlepaddle-2.3.2-cp38-cp38-linux_x86_64.whl
 RUN chmod 777 rpa-service.jar
-ENTRYPOINT ["java","-jar","rpa-service.jar"]
+RUN pip install paddlepaddle-2.3.2-cp38-cp38-linux_x86_64.whl
+RUN pip install --upgrade paddlehub -i https://mirror.baidu.com/pypi/simple
+RUN pip install --upgrade paddlenlp -i https://mirror.baidu.com/pypi/simple
+RUN apt install libgl1-mesa-glx -y
+RUN pip install opencv-contrib-python==4.4.0.46
+RUN pip install pyMultiobjective
+ENV JAVA_HOME=/jdk1.8.0_221
+ENV CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+ENV PATH=$JAVA_HOME/bin:$PATH
+RUN chmod 777 start_cmd.sh
+RUN chmod 777 rpa-service.jar
+RUN chmod 777 jdk1.8.0_221 -R
+RUN chmod 777 ai_server.py
+ENTRYPOINT ["bash","start_cmd.sh"]

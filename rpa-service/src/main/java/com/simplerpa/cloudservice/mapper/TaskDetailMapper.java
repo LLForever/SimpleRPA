@@ -2,6 +2,7 @@ package com.simplerpa.cloudservice.mapper;
 
 import java.util.List;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.simplerpa.cloudservice.entity.TaskDetail;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -13,7 +14,7 @@ import org.apache.ibatis.annotations.Param;
  * @date 2022-04-20
  */
 @Mapper
-public interface TaskDetailMapper
+public interface TaskDetailMapper extends BaseMapper<TaskDetail>
 {
     /**
      * 查询rpa面板任务详情

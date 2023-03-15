@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.simplerpa.cloudservice.mapper.RpaTaskScheduleMapper">
+    
+    <resultMap type="com.simplerpa.cloudservice.entity.RpaTaskSchedule" id="RpaTaskScheduleResult">
+        <result property="id"    column="id"    />
+        <result property="taskId"    column="task_id"    />
+        <result property="taskName"    column="task_name"    />
+        <result property="userId"    column="user_id"    />
+        <result property="creationTime"    column="creation_time"    />
+        <result property="scheduleMeaning"    column="schedule_meaning"    />
+    </resultMap>
+
+    <sql id="selectRpaTaskScheduleVo">
+        select id, task_id, task_name, user_id, creation_time, schedule_meaning from rpa_task_schedule
+    </sql>
+
+    <select id="selectRpaTaskScheduleList" parameterType="com.simplerpa.cloudservice.entity.RpaTaskSchedule" resultMap="RpaTaskScheduleResult">
+        <include refid="selectRpaTaskScheduleVo"/>
+        <where>  
+            <if test="taskId != null "> and task_id = #{taskId}</if>
+            <if test="taskName != null  and taskName != ''"> and task_name like concat('%', #{taskName}, '%')</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="creationTime != null "> and creation_time = #{creationTime}</if>
+            <if test="scheduleMeaning != null  and scheduleMeaning != ''"> and schedule_meaning = #{scheduleMeaning}</if>
+        </where>
+    </select>
+    
+    <select id="selectRpaTaskScheduleById" parameterType="Long" resultMap="RpaTaskScheduleResult">
+        <include refid="selectRpaTaskScheduleVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertRpaTaskSchedule" parameterType="com.simplerpa.cloudservice.entity.RpaTaskSchedule" useGeneratedKeys="true" keyProperty="id">
+        insert into rpa_task_schedule
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">task_id,</if>
+            <if test="taskName != null and taskName != ''">task_name,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="creationTime != null">creation_time,</if>
+            <if test="scheduleMeaning != null">schedule_meaning,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">#{taskId},</if>
+            <if test="taskName != null and taskName != ''">#{taskName},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="creationTime != null">#{creationTime},</if>
+            <if test="scheduleMeaning != null">#{scheduleMeaning},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRpaTaskSchedule" parameterType="com.simplerpa.cloudservice.entity.RpaTaskSchedule">
+        update rpa_task_schedule
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="taskName != null and taskName != ''">task_name = #{taskName},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="creationTime != null">creation_time = #{creationTime},</if>
+            <if test="scheduleMeaning != null">schedule_meaning = #{scheduleMeaning},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRpaTaskScheduleById" parameterType="Long">
+        delete from rpa_task_schedule where id = #{id}
+    </delete>
+
+    <delete id="deleteRpaTaskScheduleByIds" parameterType="String">
+        delete from rpa_task_schedule where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import com.simplerpa.cloudservice.entity.util.RpaTaskOutput;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -18,7 +19,22 @@ public class SingleClickNode extends WebAction {
     @Override
     public RpaTaskOutput operateElement(WebDriver driver, ArrayList<JSONObject> list) {
         WebElement element = getElement(driver, list);
-        element.click();
+        try{
+            int cnt = 2;
+            while(cnt > 0){
+                try {
+                    element.click();
+                    break;
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                cnt--;
+                Thread.sleep(500);
+            }
+        }catch (Exception e){
+            JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
+            javascriptExecutor.executeScript("arguments[0].click();", element);
+        }
         return null;
     }
 

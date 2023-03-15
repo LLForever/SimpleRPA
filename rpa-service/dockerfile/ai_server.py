@@ -9,11 +9,417 @@ import numpy as np
 from PIL import Image
 import uuid
 import os
-from table_ana_tool import *
 from paddlenlp import Taskflow
 from pyMultiobjective.algorithm import non_dominated_sorting_genetic_algorithm_III
 
+class FitnessFuncLib(object) :
+    @staticmethod
+    def  getFitFromFunc(var, type) :
+        if (type == 1) :
+            return FitnessFuncLib.Func1(var)
+        elif(type == 2) :
+            return FitnessFuncLib.Func2(var)
+        elif(type == 3) :
+            return FitnessFuncLib.Func3(var)
+        elif(type == 4) :
+            return FitnessFuncLib.Func4(var)
+        elif(type == 5) :
+            return FitnessFuncLib.Func5(var)
+        elif(type == 6) :
+            return FitnessFuncLib.Func6(var)
+        elif(type == 7) :
+            return FitnessFuncLib.Func7(var)
+        elif(type == 8) :
+            return FitnessFuncLib.Func8(var)
+        elif(type == 9) :
+            return FitnessFuncLib.Func9(var)
+        elif(type == 10) :
+            return FitnessFuncLib.Func10(var)
+        elif(type == 11) :
+            return FitnessFuncLib.Func11(var)
+        elif(type == 12) :
+            return FitnessFuncLib.Func12(var)
+        elif(type == 13) :
+            return FitnessFuncLib.Func13(var)
+        return 1.7976931348623157E308
+    @staticmethod
+    def  getLow( type) :
+        if (type == 1) :
+            return FitnessFuncLib.getFunc1Low()
+        elif(type == 2) :
+            return FitnessFuncLib.getFunc2Low()
+        elif(type == 3) :
+            return FitnessFuncLib.getFunc3Low()
+        elif(type == 4) :
+            return FitnessFuncLib.getFunc4Low()
+        elif(type == 5) :
+            return FitnessFuncLib.getFunc5Low()
+        elif(type == 6) :
+            return FitnessFuncLib.getFunc6Low()
+        elif(type == 7) :
+            return FitnessFuncLib.getFunc7Low()
+        elif(type == 8) :
+            return FitnessFuncLib.getFunc8Low()
+        elif(type == 9) :
+            return FitnessFuncLib.getFunc9Low()
+        elif(type == 10) :
+            return FitnessFuncLib.getFunc10Low()
+        elif(type == 11) :
+            return FitnessFuncLib.getFunc11Low()
+        elif(type == 12) :
+            return FitnessFuncLib.getFunc12Low()
+        elif(type == 13) :
+            return FitnessFuncLib.getFunc13Low()
+        return None
+    @staticmethod
+    def  getUp( type) :
+        if (type == 1) :
+            return FitnessFuncLib.getFunc1Up()
+        elif(type == 2) :
+            return FitnessFuncLib.getFunc2up()
+        elif(type == 3) :
+            return FitnessFuncLib.getFunc3Up()
+        elif(type == 4) :
+            return FitnessFuncLib.getFunc4Up()
+        elif(type == 5) :
+            return FitnessFuncLib.getFunc5Up()
+        elif(type == 6) :
+            return FitnessFuncLib.getFunc6Up()
+        elif(type == 7) :
+            return FitnessFuncLib.getFunc7Up()
+        elif(type == 8) :
+            return FitnessFuncLib.getFunc8Up()
+        elif(type == 9) :
+            return FitnessFuncLib.getFunc9Up()
+        elif(type == 10) :
+            return FitnessFuncLib.getFunc10Up()
+        elif(type == 11) :
+            return FitnessFuncLib.getFunc11Up()
+        elif(type == 12) :
+            return FitnessFuncLib.getFunc12Up()
+        elif(type == 13) :
+            return FitnessFuncLib.getFunc13Up()
+        return None
+    @staticmethod
+    def  Func1( var) :
+        sum = 0
+        i = 0
+        while (i < len(var)) :
+            sum += var[i] * var[i]
+            i += 1
+        return sum
+    @staticmethod
+    def  getFunc1Low() :
+        dimension = 30
+        d = [0.0] * (dimension)
+        j = 0
+        while (j < dimension) :
+            d[j] = -100
+            j += 1
+        return d
+    @staticmethod
+    def  getFunc1Up() :
+        dimension = 30
+        d = [0.0] * (dimension)
+        j = 0
+        while (j < dimension) :
+            d[j] = 100
+            j += 1
+        return d
+    @staticmethod
+    def  Func2( var) :
+        sum = 0
+        i = 0
+        while (i < len(var)) :
+            tmp = 0
+            j = 0
+            while (j <= i) :
+                tmp += var[j]
+                j += 1
+            sum += tmp * tmp
+            i += 1
+        return sum
+    @staticmethod
+    def  getFunc2Low() :
+        return FitnessFuncLib.getFunc1Low()
+    @staticmethod
+    def  getFunc2up() :
+        return FitnessFuncLib.getFunc1Up()
+    @staticmethod
+    def  Func3( var) :
+        sum = 0
+        i = 0
+        while (i < len(var)) :
+            sum += (var[i] + 0.5) * (var[i] + 0.5)
+            i += 1
+        return sum
+    @staticmethod
+    def  getFunc3Low() :
+        return FitnessFuncLib.getFunc1Low()
+    @staticmethod
+    def  getFunc3Up() :
+        return FitnessFuncLib.getFunc1Up()
+    @staticmethod
+    def  Func4( var) :
+        y = 0.0
+        if (len(var) < 2) :
+            y = 9.42
+        else :
+            y = var[1]
+        return math.pow((y - (5.1 / (4 * math.pi * math.pi)) * var[0] * var[0] + (5 / math.pi) * var[0] - 6),2) + 10 + 10 * (1 - (1 / (8 * math.pi)) * math.cos(var[0]))
+    @staticmethod
+    def  getFunc4Low() :
+        d = [0.0] * (2)
+        d[0] = -5
+        d[1] = 0
+        return d
+    @staticmethod
+    def  getFunc4Up() :
+        d = [0.0] * (2)
+        d[0] = 10
+        d[1] = 15
+        return d
+    @staticmethod
+    def  Func5( var) :
+        sum = 0
+        i = 0
+        while (i < len(var) - 1) :
+            sum += 100 * (var[i + 1] - var[i] * var[i]) * (var[i + 1] - var[i] * var[i]) + (var[i] - 1) * (var[i] - 1)
+            i += 1
+        return sum
+    @staticmethod
+    def  getFunc5Low() :
+        dimension = 30
+        d = [0.0] * (dimension)
+        j = 0
+        while (j < dimension) :
+            d[j] = -5
+            j += 1
+        return d
+    @staticmethod
+    def  getFunc5Up() :
+        dimension = 30
+        d = [0.0] * (dimension)
+        j = 0
+        while (j < dimension) :
+            d[j] = 10
+            j += 1
+        return d
+    @staticmethod
+    def  Func6( var) :
+        y = 0.0
+        sum = 0
+        if (len(var) < 2) :
+            y = -0.5471
+        else :
+            y = var[1]
+        sum += 1 + 2.5 * y - 1.5 * var[0]
+        sum += math.sin(var[0] + y)
+        sum += (y - var[0]) * (y - var[0])
+        return sum
+    @staticmethod
+    def  getFunc6Low() :
+        d = [0.0] * (2)
+        d[0] = -1.5
+        d[1] = -3
+        return d
+    @staticmethod
+    def  getFunc6Up() :
+        d = [0.0] * (2)
+        d[0] = 4
+        d[1] = 4
+        return d
+    @staticmethod
+    def  Func7( var) :
+        y = 0.0
+        sum = 0
+        if (len(var) < 2) :
+            y = 0.5
+        else :
+            y = var[1]
+        sum += math.pow((1.5 - var[0] + var[0] * y),2)
+        sum += math.pow((2.25 - var[0] + var[0] * y * y),2)
+        sum += math.pow((2.625 - var[0] + var[0] * y * y * y),2)
+        return sum
+    @staticmethod
+    def  getFunc7Low() :
+        dimension = 2
+        d = [0.0] * (dimension)
+        j = 0
+        while (j < dimension) :
+            d[j] = -4.5
+            j += 1
+        return d
+    @staticmethod
+    def  getFunc7Up() :
+        dimension = 2
+        d = [0.0] * (dimension)
+        j = 0
+        while (j < dimension) :
+            d[j] = 4.5
+            j += 1
+        return d
+    @staticmethod
+    def  Func8( var) :
+        y = 0.0
+        sum = 0
+        if (len(var) < 2) :
+            y = 1
+        else :
+            y = var[1]
+        sum += 100 * mathsqrt(abs(y - 0.01 * var[0] * var[0]))
+        sum += 0.01 * abs(var[0] + 10)
+        return sum
+    @staticmethod
+    def  getFunc8Low() :
+        d = [0.0] * (2)
+        d[0] = -15
+        d[1] = -3
+        return d
+    @staticmethod
+    def  getFunc8Up() :
+        d = [0.0] * (2)
+        d[0] = -5
+        d[1] = 3
+        return d
+    @staticmethod
+    def  Func9( var) :
+        sum = 0
+        i = 0
+        while (i < len(var)) :
+            sum += -var[i] * math.sin(mathsqrt(abs(var[i])))
+            i += 1
+        return sum
+    @staticmethod
+    def  getFunc9Low() :
+        dimension = 30
+        d = [0.0] * (dimension)
+        j = 0
+        while (j < dimension) :
+            d[j] = -500
+            j += 1
+        return d
+    @staticmethod
+    def  getFunc9Up() :
+        dimension = 30
+        d = [0.0] * (dimension)
+        j = 0
+        while (j < dimension) :
+            d[j] = 500
+            j += 1
+        return d
+    @staticmethod
+    def  Func10( var) :
+        sum = 0
+        i = 0
+        while (i < len(var)) :
+            sum += 10 + var[i] * var[i] - 10 * math.cos(2 * math.pi * var[i])
+            i += 1
+        return sum
+    @staticmethod
+    def  getFunc10Low() :
+        dimension = 30
+        d = [0.0] * (dimension)
+        j = 0
+        while (j < dimension) :
+            d[j] = -5.12
+            j += 1
+        return d
+    @staticmethod
+    def  getFunc10Up() :
+        dimension = 30
+        d = [0.0] * (dimension)
+        j = 0
+        while (j < dimension) :
+            d[j] = 5.12
+            j += 1
+        return d
+    @staticmethod
+    def  Func11( var) :
+        sum = 0
+        i = 0
+        while (i < len(var)) :
+            y = var[i]
+            if (abs(var[i]) < 0.5) :
+                y = var[i]
+            else :
+                y = math.round(2 * y) / 2.0
+            sum += y * y - 10 * math.cos(2 * math.pi * y) + 10
+            i += 1
+        return sum
+    @staticmethod
+    def  getFunc11Low() :
+        return FitnessFuncLib.getFunc10Low()
+    @staticmethod
+    def  getFunc11Up() :
+        return FitnessFuncLib.getFunc10Up()
+    @staticmethod
+    def  Func12( var) :
+        sum = 0
+        sum += -20 * math.exp(-0.2 * mathsqrt((1.0 / len(var)) * FitnessFuncLib.Func1(var)))
+        tmp = 0
+        i = 0
+        while (i < len(var)) :
+            tmp += math.cos(2 * math.pi * var[i])
+            i += 1
+        sum += -math.exp((1.0 / len(var)) * tmp + 20)
+        return sum
+    @staticmethod
+    def  getFunc12Low() :
+        dimension = 30
+        d = [0.0] * (dimension)
+        j = 0
+        while (j < dimension) :
+            d[j] = -32
+            j += 1
+        return d
+    @staticmethod
+    def  getFunc12Up() :
+        dimension = 30
+        d = [0.0] * (dimension)
+        j = 0
+        while (j < dimension) :
+            d[j] = 32
+            j += 1
+        return d
+    @staticmethod
+    def  Func13( var) :
+        sum = 0
+        sum += FitnessFuncLib.Func1(var) / 4000
+        sum += 1
+        multi = 1
+        i = 0
+        while (i < len(var)) :
+            multi *= math.cos(var[i] / mathsqrt(i + 1.0))
+            i += 1
+        sum += -multi
+        return sum
+
+    @staticmethod
+    def  getFunc13Low() :
+        dimension = 30
+        d = [0.0] * (dimension)
+        j = 0
+        while (j < dimension) :
+            d[j] = -600
+            j += 1
+        return d
+
+    @staticmethod
+    def  getFunc13Up() :
+        dimension = 30
+        d = [0.0] * (dimension)
+        j = 0
+        while (j < dimension) :
+            d[j] = 600
+            j += 1
+        return d
+
+
 class NSGA_III:
+    def __init__(self, type):
+        self.type = type
+
     def __init__(self, ids, machinesAllocateInfo, machinePerformanceJSON):
         self.ids = ids
         self.n = len(ids)
@@ -30,8 +436,31 @@ class NSGA_III:
         return 100*mem / 7819.15
 
     def checkValueAndChange(self, a):
-        a = math.exp(a/10)
         return a
+
+    def run_test(self):
+        min_values = FitnessFuncLib.getLow(self.type)
+        max_values = FitnessFuncLib.getUp(self.type)
+
+        parameters = {
+            'references': 5,
+            'min_values': min_values,
+            'max_values': max_values,
+            'mutation_rate': 0.1,
+            'generations': 500,
+            'mu': 1,
+            'eta': 1,
+            'k': 2,
+            'verbose': False
+        }
+        sol = non_dominated_sorting_genetic_algorithm_III(list_of_functions = [self.FuncTest, self.FuncZero], **parameters)
+        return sol
+
+    def FuncTest(self, variables=[0,0]):
+        return FitnessFuncLib.getFitFromFunc(variables, self.type)
+
+    def FuncZero(self, variables=[0,0]):
+        return 0
 
     def run(self):
         min_values = []
@@ -56,6 +485,7 @@ class NSGA_III:
 
     def funF(self, variables=[0,0]):
         sumList = [[0,0,0],[0,0,0],[0,0,0],[0,0,0]]
+        T = [0, 0, 0, 0]
         for i in range(self.n):
             target = abs(int(variables[i]))
             if target > 3:
@@ -64,6 +494,7 @@ class NSGA_III:
             sumList[target][0] += costList[0]
             sumList[target][1] += costList[1]
             sumList[target][2] += costList[2]
+            T[target] += costList[3]
         for i in range(4):
             machineName = self.machineName[i]
             machineCostList = self.machinesAllocateInfo.get(machineName).get('id_list')
@@ -79,15 +510,16 @@ class NSGA_III:
             Rc = 100-Nc
             Rm = 100-Nm
             Rn = 100-Nn
-            sumList[i][0] = self.checkValueAndChange(sumList[i][0])
-            sumList[i][1] = self.checkValueAndChange(sumList[i][1])
-            sumList[i][2] = self.checkValueAndChange(sumList[i][2])
-            F += math.sqrt((sumList[i][0]/Rc)*(sumList[i][0]/Rc) + (sumList[i][1]/Rm)*(sumList[i][1]/Rm) + (sumList[i][2]/Rn)*(sumList[i][2]/Rn))
-        return 0.5*F
+            #sumList[i][0] = self.checkValueAndChange(sumList[i][0])
+            #sumList[i][1] = self.checkValueAndChange(sumList[i][1])
+            #sumList[i][2] = self.checkValueAndChange(sumList[i][2])
+            F += math.sqrt((sumList[i][0]/Rc)*(sumList[i][0]/Rc) + (sumList[i][1]/Rm)*(sumList[i][1]/Rm) + (sumList[i][2]/Rn)*(sumList[i][2]/Rn))*T[target]
+        return 0.2*F
 
 
     def funG(self, variables=[0,0]):
         sumList = [[0,0,0],[0,0,0],[0,0,0],[0,0,0]]
+        maxBalance = -1
         for i in range(self.n):
             target = abs(int(variables[i]))
             if target > 3:
@@ -114,8 +546,9 @@ class NSGA_III:
             sumList[i][0] = self.checkValueAndChange(sumList[i][0])
             sumList[i][1] = self.checkValueAndChange(sumList[i][1])
             sumList[i][2] = self.checkValueAndChange(sumList[i][2])
+            maxBalance = max(maxBalance, math.sqrt((sumList[i][0] + Nc)*(sumList[i][0] + Nc) + (sumList[i][1] + Nm)*(sumList[i][1] + Nm) + (sumList[i][2] + Nn)*(sumList[i][2] + Nn)) )
             F += math.sqrt((sumList[i][0] + Nc)*(sumList[i][0] + Nc) + (sumList[i][1] + Nm)*(sumList[i][1] + Nm) + (sumList[i][2] + Nn)*(sumList[i][2] + Nn))
-        return 0.5*F
+        return 0.5*0.8*(F + 4*maxBalance)
 
 errStr = {
     "code" : -1,
@@ -169,31 +602,23 @@ def getTableOcrRes(current_req_json):
 
     return str(successStr)
 
-def getWordExtraRes(current_req_json):
-    strRes = getOcrOriginRes(current_req_json)
-    dictList = strRes['res']
-    schema = current_req_json.get("schema")
-    strRes = ''
-    for i in range(0, len(dictList)):
-        strRes += str(dictList[i]['text'])
-        strRes += ","
-    ie = Taskflow('information_extraction', schema=schema)
-    return str(getSuccessStr(ie(strRes)))
-
 def AIRunFactory(current_req_json):
     data_type = current_req_json.get("type")
     if data_type == "OCR":
         return getOcrRes(current_req_json)
     if data_type == "TABLE_OCR":
         return getTableOcrRes(current_req_json)
-    if data_type == "KEY_WORD_EXTRA":
-        return getWordExtraRes(current_req_json)
     if data_type == 'NSGA3':
-        ids = current_req_json.get('ids');
-        mai = current_req_json.get('mai');
-        mpj = current_req_json.get('mpj');
+        ids = current_req_json.get('ids')
+        mai = current_req_json.get('mai')
+        mpj = current_req_json.get('mpj')
         nsga3 = NSGA_III(ids, mai, mpj)
         sol = nsga3.run()
+        return str(getSuccessStr(" ".join('%f'  %id for id in sol[0])))
+    if data_type == 'NSGA3-TEST':
+        type = current_req_json.get('type_int')
+        nsga3 = NSGA_III(type)
+        sol = nsga3.run_test()
         return str(getSuccessStr(" ".join('%f'  %id for id in sol[0])))
     return str(getSuccessStr("None Type Detect"))
 
@@ -234,4 +659,3 @@ if __name__ == "__main__":
     host, port = httpd.socket.getsockname()
     print('Serving running', host, 'port', port)
     httpd.serve_forever()
-

@@ -62,7 +62,8 @@ public class Individual {
     public double calcFitness(){
         double[][] sumList = new double[4][3];
         double sum;
-        double F = 0.0, G = 0.0, T = 0.0;
+        double F = 0.0, G = 0.0, T[] = new double[TaskScheduleAllocator.machineName.size()];
+        double maxBalance = -1;
         for(int i=0; i<ids.length; i++){
             Gene gene = genes.get(i);
             double val = gene.decode(gene.getGene());
@@ -74,7 +75,7 @@ public class Individual {
             sumList[targetMachine][0] += costListByTaskId.get(0); // cpu
             sumList[targetMachine][1] += costListByTaskId.get(1); // mem
             sumList[targetMachine][2] += costListByTaskId.get(2); // net
-            T += costListByTaskId.get(3);
+            T[targetMachine] += costListByTaskId.get(3);
         }
         for(int i=0; i<4; i++){
             String machineName = TaskScheduleAllocator.machineName.get(i);
@@ -82,7 +83,6 @@ public class Individual {
             sumList[i][0] += machineCostList[0];
             sumList[i][1] += machineCostList[1];
             sumList[i][2] += machineCostList[2];
-            T += machineCostList[3];
         }
         for(int i=0; i<4; i++){
             sumList[i][1] = TaskCostCountUtil.getMemCost(i, sumList[i][1]);
@@ -102,10 +102,11 @@ public class Individual {
             Nm = DictionaryUtil.checkValueAndChange(sumList[i][1] + Nm);
             Nn = DictionaryUtil.checkValueAndChange(sumList[i][2] + Nn);
 
-            F += Math.sqrt(Rc*Rc + Rm*Rm + Rn*Rn);
+            F += Math.sqrt(Rc*Rc + Rm*Rm + Rn*Rn)*T[i];
             G += Math.sqrt(Nc*Nc + Nm*Nm + Nn*Nn);
+            maxBalance = Math.max(maxBalance, Math.sqrt(Nc*Nc + Nm*Nm + Nn*Nn));
         }
-        sum = DictionaryUtil.F_VAL*F + DictionaryUtil.G_VAL*G + DictionaryUtil.T_VAL*T;
+        sum = DictionaryUtil.F_VAL*F + 0.5*DictionaryUtil.G_VAL*(G + maxBalance*TaskScheduleAllocator.machineName.size());
         return 1/Math.log(sum);
     }
 

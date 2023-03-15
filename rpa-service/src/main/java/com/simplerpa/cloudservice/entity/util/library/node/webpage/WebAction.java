@@ -59,12 +59,12 @@ public abstract class WebAction extends IRpaTaskNode {
 
     public WebElement getElement(WebDriver webDriver, ArrayList<JSONObject> list){
         if(StringUtils.isNotEmpty(xPath)){
-            int cnt = 3;
+            int cnt = 24;
             do{
                 try{
-                    new WebDriverWait(webDriver, 30).until(ExpectedConditions.presenceOfElementLocated(By.xpath(xPath)));
-                    new WebDriverWait(webDriver, 30).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xPath)));
-                    new WebDriverWait(webDriver, 30).until(ExpectedConditions.elementToBeClickable(By.xpath(xPath)));
+                    new WebDriverWait(webDriver, 5).until(ExpectedConditions.presenceOfElementLocated(By.xpath(xPath)));
+                    new WebDriverWait(webDriver, 5).until(ExpectedConditions.elementToBeClickable(By.xpath(xPath)));
+                    break;
                 }catch (Exception e){
                     if(cnt <= 1){
                         try {
