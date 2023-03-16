@@ -2,6 +2,8 @@ package com.simplerpa.cloudservice.controller;
 
 import com.ruoyi.common.core.web.controller.BaseController;
 import com.ruoyi.common.core.web.domain.AjaxResult;
+import com.ruoyi.common.core.web.page.TableDataInfo;
+import com.simplerpa.cloudservice.entity.TaskDetail;
 import com.simplerpa.cloudservice.entity.VO.MostErrorInfoVO;
 import com.simplerpa.cloudservice.entity.VO.RecentlyExecLogVO;
 import com.simplerpa.cloudservice.entity.VO.SuccessRateVO;
@@ -16,6 +18,16 @@ import java.util.ArrayList;
 public class RpaAssistController extends BaseController {
     @Autowired
     IRpaTaskNodeExecLogsService execLogsService;
+
+    @Autowired
+    TaskDetailController controller;
+
+    @GetMapping("/rec_list")
+    public TableDataInfo rec_list(){
+        TaskDetail taskDetail = new TaskDetail();
+        taskDetail.setTaskStatus("error");
+        return controller.list(taskDetail);
+    }
 
     @GetMapping("/query/{id}")
     public AjaxResult startExecTask(@PathVariable("id") Long id){

@@ -9,6 +9,13 @@ export function getSuccessRate(data) {
     })
 }
 
+export function get_rec_list() {
+    return request({
+        url: '/rpa/assist/rec_list',
+        method: 'get'
+    })
+}
+
 export function query_most_error(data) {
     return request({
         url: '/rpa/assist/query_most_error/'+data,

@@ -11,15 +11,16 @@ import com.ruoyi.common.core.annotation.Excel;
 import com.ruoyi.common.core.web.domain.BaseEntity;
 
 /**
- * rpa任务计划详情对象 rpa_task_schedule
+ * RPA任务协作对象 rpa_task_cooperation
  * 
  * @author ChenRui98
  * @date 2023-03-15
  */
-public class RpaTaskSchedule
+public class RpaTaskCooperation
 {
     private static final long serialVersionUID = 1L;
 
+    /** id */
     @TableId(type = IdType.AUTO)
     private Long id;
 
@@ -27,22 +28,20 @@ public class RpaTaskSchedule
     @Excel(name = "任务ID")
     private Long taskId;
 
+    /** 导入此任务作为协作者的用户ID */
+    @Excel(name = "导入此任务作为协作者的用户ID")
+    private Long userId;
+
     /** 任务名称 */
     @Excel(name = "任务名称")
     private String taskName;
 
-    /** 创建任务的用户ID */
-    @Excel(name = "创建任务的用户ID")
-    private Long userId;
-
-    /** 任务创建时间 */
+    /** 任务导入时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "任务创建时间", width = 30, dateFormat = "yyyy-MM-dd")
-    private Date creationTime;
+    @Excel(name = "任务导入时间", width = 30, dateFormat = "yyyy-MM-dd")
+    private Date importTime;
 
-    /** 计划含义(中文) */
-    @Excel(name = "计划含义(中文)")
-    private String scheduleMeaning;
+    private Integer coEnable;
 
     public void setId(Long id) 
     {
@@ -62,15 +61,6 @@ public class RpaTaskSchedule
     {
         return taskId;
     }
-    public void setTaskName(String taskName) 
-    {
-        this.taskName = taskName;
-    }
-
-    public String getTaskName() 
-    {
-        return taskName;
-    }
     public void setUserId(Long userId) 
     {
         this.userId = userId;
@@ -80,23 +70,23 @@ public class RpaTaskSchedule
     {
         return userId;
     }
-    public void setCreationTime(Date creationTime) 
+    public void setTaskName(String taskName) 
     {
-        this.creationTime = creationTime;
+        this.taskName = taskName;
     }
 
-    public Date getCreationTime() 
+    public String getTaskName() 
     {
-        return creationTime;
+        return taskName;
     }
-    public void setScheduleMeaning(String scheduleMeaning) 
+    public void setImportTime(Date importTime) 
     {
-        this.scheduleMeaning = scheduleMeaning;
+        this.importTime = importTime;
     }
 
-    public String getScheduleMeaning() 
+    public Date getImportTime() 
     {
-        return scheduleMeaning;
+        return importTime;
     }
 
     @Override
@@ -104,10 +94,17 @@ public class RpaTaskSchedule
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
             .append("taskId", getTaskId())
-            .append("taskName", getTaskName())
             .append("userId", getUserId())
-            .append("creationTime", getCreationTime())
-            .append("scheduleMeaning", getScheduleMeaning())
+            .append("taskName", getTaskName())
+            .append("importTime", getImportTime())
             .toString();
+    }
+
+    public Integer getCoEnable() {
+        return coEnable;
+    }
+
+    public void setCoEnable(Integer coEnable) {
+        this.coEnable = coEnable;
     }
 }

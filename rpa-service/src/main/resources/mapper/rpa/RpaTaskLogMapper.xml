@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.simplerpa.cloudservice.mapper.RpaTaskLogMapper">
+    
+    <resultMap type="com.simplerpa.cloudservice.entity.RpaTaskLog" id="RpaTaskLogResult">
+        <result property="id"    column="id"    />
+        <result property="taskId"    column="task_id"    />
+        <result property="taskName"    column="task_name"    />
+        <result property="nodeId"    column="node_id"    />
+        <result property="createdTime"    column="created_time"    />
+        <result property="taskMsg"    column="task_msg"    />
+    </resultMap>
+
+    <sql id="selectRpaTaskLogVo">
+        select id, task_id, task_name, node_id, created_time, task_msg from rpa_task_node_exec_logs
+    </sql>
+
+    <select id="selectRpaTaskLogList" parameterType="com.simplerpa.cloudservice.entity.RpaTaskLog" resultMap="RpaTaskLogResult">
+        <include refid="selectRpaTaskLogVo"/>
+        <where>  
+            <if test="taskId != null "> and task_id = #{taskId}</if>
+            <if test="taskName != null  and taskName != ''"> and task_name like concat('%', #{taskName}, '%')</if>
+            <if test="nodeId != null  and nodeId != ''"> and node_id = #{nodeId}</if>
+            <if test="createdTime != null "> and created_time = #{createdTime}</if>
+            <if test="taskMsg != null  and taskMsg != ''"> and task_msg = #{taskMsg}</if>
+        </where>
+    </select>
+    
+    <select id="selectRpaTaskLogById" parameterType="Long" resultMap="RpaTaskLogResult">
+        <include refid="selectRpaTaskLogVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertRpaTaskLog" parameterType="com.simplerpa.cloudservice.entity.RpaTaskLog" useGeneratedKeys="true" keyProperty="id">
+        insert into rpa_task_node_exec_logs
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">task_id,</if>
+            <if test="taskName != null">task_name,</if>
+            <if test="nodeId != null">node_id,</if>
+            <if test="createdTime != null">created_time,</if>
+            <if test="taskMsg != null">task_msg,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">#{taskId},</if>
+            <if test="taskName != null">#{taskName},</if>
+            <if test="nodeId != null">#{nodeId},</if>
+            <if test="createdTime != null">#{createdTime},</if>
+            <if test="taskMsg != null">#{taskMsg},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRpaTaskLog" parameterType="com.simplerpa.cloudservice.entity.RpaTaskLog">
+        update rpa_task_node_exec_logs
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="taskName != null">task_name = #{taskName},</if>
+            <if test="nodeId != null">node_id = #{nodeId},</if>
+            <if test="createdTime != null">created_time = #{createdTime},</if>
+            <if test="taskMsg != null">task_msg = #{taskMsg},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRpaTaskLogById" parameterType="Long">
+        delete from rpa_task_node_exec_logs where id = #{id}
+    </delete>
+
+    <delete id="deleteRpaTaskLogByIds" parameterType="String">
+        delete from rpa_task_node_exec_logs where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

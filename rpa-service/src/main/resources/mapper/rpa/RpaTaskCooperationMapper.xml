@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.simplerpa.cloudservice.mapper.RpaTaskCooperationMapper">
+    
+    <resultMap type="com.simplerpa.cloudservice.entity.RpaTaskCooperation" id="RpaTaskCooperationResult">
+        <result property="id"    column="id"    />
+        <result property="taskId"    column="task_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="taskName"    column="task_name"    />
+        <result property="importTime"    column="import_time"    />
+        <result property="coEnable"    column="co_enable"    />
+    </resultMap>
+
+    <sql id="selectRpaTaskCooperationVo">
+        select * from rpa_task_cooperation
+    </sql>
+
+    <select id="selectRpaTaskCooperationList" parameterType="com.simplerpa.cloudservice.entity.RpaTaskCooperation" resultMap="RpaTaskCooperationResult">
+        <include refid="selectRpaTaskCooperationVo"/>
+        <where>
+            <if test="taskId != null "> and task_id = #{taskId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="taskName != null  and taskName != ''"> and task_name like concat('%', #{taskName}, '%')</if>
+            <if test="importTime != null "> and import_time = #{importTime}</if>
+        </where>
+    </select>
+
+    <select id="getAllEnableRpaTaskCooperationTask" resultMap="RpaTaskCooperationResult">
+        <include refid="selectRpaTaskCooperationVo"/>
+        <where>
+            co_enable = 1
+        </where>
+    </select>
+    
+    <select id="selectRpaTaskCooperationById" parameterType="Long" resultMap="RpaTaskCooperationResult">
+        <include refid="selectRpaTaskCooperationVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="getRpaTaskDetailByTaskId" parameterType="Long" resultType="com.simplerpa.cloudservice.entity.TaskDetail">
+        SELECT *
+        FROM rpa_panel_task_detail
+        where task_id = #{id}
+    </select>
+        
+    <insert id="insertRpaTaskCooperation" parameterType="com.simplerpa.cloudservice.entity.RpaTaskCooperation" useGeneratedKeys="true" keyProperty="id">
+        insert into rpa_task_cooperation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">task_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="taskName != null">task_name,</if>
+            <if test="importTime != null">import_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">#{taskId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="taskName != null">#{taskName},</if>
+            <if test="importTime != null">#{importTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRpaTaskCooperation" parameterType="com.simplerpa.cloudservice.entity.RpaTaskCooperation">
+        update rpa_task_cooperation
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="taskName != null">task_name = #{taskName},</if>
+            <if test="importTime != null">import_time = #{importTime},</if>
+            <if test="coEnable != null">co_enable = #{coEnable},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRpaTaskCooperationById" parameterType="Long">
+        delete from rpa_task_cooperation where id = #{id}
+    </delete>
+
+    <delete id="deleteRpaTaskCooperationByIds" parameterType="String">
+        delete from rpa_task_cooperation where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
