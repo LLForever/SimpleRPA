@@ -31,6 +31,7 @@ import java.util.Objects;
  */
 
 @RestController
+@CrossOrigin
 @RequestMapping("/panel-task")
 public class PanelTaskController extends BaseController {
 
@@ -112,7 +113,7 @@ public class PanelTaskController extends BaseController {
     public JSONObject getrm(){
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("isRunning", TaskQueueAllocator.isIsRunning());
-        jsonObject.put("queue: ", TaskQueueAllocator.getQSize());
+        jsonObject.put("queue", TaskQueueAllocator.getQSize());
         jsonObject.put("rm", TaskCostCountUtil.getRm());
         return jsonObject;
     }

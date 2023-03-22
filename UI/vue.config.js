@@ -42,9 +42,44 @@ module.exports = {
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
         }
-      }
+      },
+        '/machine116':{
+            target: "http://192.168.103.116:12022",
+            changeOrigin: true,
+            pathRewrite:{
+                '^/machine116' : ''
+            }
+        },
+        '/machine117':{
+            target: "http://192.168.103.117:12022",
+            changeOrigin: true,
+            pathRewrite:{
+                '^/machine117' : ''
+            }
+        },
+        '/machine118':{
+            target: "http://192.168.103.118:12022",
+            changeOrigin: true,
+            pathRewrite:{
+                '^/machine118' : ''
+            }
+        },
+        '/machine99':{
+            target: "http://192.168.103.99:12022",
+            changeOrigin: true,
+            pathRewrite:{
+                '^/machine99' : ''
+            }
+        },
+        '/get_machine_per':{
+            target: "http://192.168.103.116:12022",
+            changeOrigin: true,
+            pathRewrite:{
+                '^/get_machine_per' : ''
+            }
+        }
     },
-    disableHostCheck: true
+    disableHostCheck: true,
   },
   css: {
     loaderOptions: {
