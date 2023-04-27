@@ -32,6 +32,7 @@ public class RpaTaskExecutor implements Runnable{
     @Transactional
     public void run() {
         RpaTaskStructure rpaTaskStructure = explainTask();
+
         if(rpaTaskStructure != null) {
             TaskCostCountUtil.addCost(TaskCostCountUtil.getSumCostById(taskDetailVO.getId()), taskDetailVO.getId());
             RpaTaskOutput allOutput = new RpaTaskOutput(true);

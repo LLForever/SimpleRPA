@@ -29,7 +29,9 @@ public class TaskScheduleController extends BaseController {
     ITaskDetailService taskDetailService;
 
     @GetMapping("/exec/{id}")
-    public void startExecTask(@PathVariable("id") Long id, @RequestParam("start") Integer integer){
+    public void startExecTask(@PathVariable("id") Long id,
+                              @RequestParam("start") Integer integer,
+                              @RequestParam("al_type") Integer algorithm){
         TaskDetail taskDetail = taskDetailService.selectTaskDetailById(id);
         TaskDetailVO taskDetailVO = new TaskDetailVO(taskDetail);
         new Thread(() -> {
@@ -37,6 +39,7 @@ public class TaskScheduleController extends BaseController {
             try {
                 TaskScheduleAllocator.setSchedule_type(schedule_type);
                 TaskScheduleAllocator.setStartStatus(integer);
+                TaskScheduleAllocator.setAlgorithm_type(algorithm);
                 allocator.AllocateTask(taskDetailVO);
             } catch (Exception e) {
                 e.printStackTrace();
