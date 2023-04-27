@@ -29,7 +29,8 @@ public class TaskScheduleAllocator {
     private static final String SERVER_HOST = "http://192.168.103.";
     private static final String END_POINT = "12022";
     private static final String CMD_TAIL = "/panel-task/run_task", GET_COST_TAIL = "/schedule/get_cost";
-    private static String[] serverList;
+    private static ArrayList<String> serverList;
+    private static String[] stServer;
     private static final AtomicInteger pos = new AtomicInteger();
     private static final ArrayList<TaskDetailVO> waitingQueue;
     public static final ArrayList<String> machineName;
@@ -54,10 +55,26 @@ public class TaskScheduleAllocator {
         TaskSendThreshold = 21;
     }
 
+    public static void removeServerlist(int i){
+        int j = 0;
+        for (; j<serverList.size(); j++){
+            if (stServer[i].equals(serverList.get(j))){
+                break;
+            }
+        }
+        serverList.remove(j);
+    }
+
+    public static void addServerlist(int i){
+        serverList.add(stServer[i]);
+    }
+
     public void initParams(Integer num, String[] ips){
-        serverList = new String[num];
+        serverList = new ArrayList<>();
+        stServer = new String[num];
         for(int i=0; i<num; i++){
-            serverList[i] = SERVER_HOST + ips[i] + ":" + END_POINT;
+            serverList.add(SERVER_HOST + ips[i] + ":" + END_POINT);
+            stServer[i] = SERVER_HOST + ips[i] + ":" + END_POINT;
         }
     }
 
@@ -68,7 +85,7 @@ public class TaskScheduleAllocator {
 
     private void LunXunSchedule(ArrayList<TaskDetailVO> list) throws Exception {
         for (TaskDetailVO item : list){
-            int i = pos.get() % serverList.length;
+            int i = pos.get() % serverList.size();
             pos.incrementAndGet();
             SendTask(item, i);
         }
@@ -266,7 +283,7 @@ public class TaskScheduleAllocator {
     }
 
     private void SendTask(TaskDetailVO vo, int i) throws Exception{
-        String url = serverList[i] + CMD_TAIL;
+        String url = serverList.get(i) + CMD_TAIL;
         vo.setTaskProgress((double)(1000 + i));
 //        String msg = "*************************\n" + schedule_type + " send a task to : \n" + url + "\n" + vo.getTaskId() + " " + vo.getTaskName() + "\n" + "*************************";
 //        System.out.println(msg);
@@ -343,8 +360,8 @@ public class TaskScheduleAllocator {
 
     private JSONObject getMachinesCostInfo(){
         JSONObject res = new JSONObject();
-        for(int i=0; i<serverList.length; i++){
-            String url = serverList[i] + GET_COST_TAIL;
+        for(int i=0; i<serverList.size(); i++){
+            String url = serverList.get(i) + GET_COST_TAIL;
             JSONObject jsonObject = sendGetRequest(url);
             res.put(machineName.get(i), jsonObject);
         }

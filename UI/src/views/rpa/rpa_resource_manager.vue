@@ -118,6 +118,7 @@ import {
 
 import axios from 'axios'
 import {floor} from "lodash";
+import {add_server} from "@/api/rpa/RpaTaskSchedule";
 
 export default {
     name: "RpaTaskCooperation",
@@ -367,11 +368,15 @@ export default {
         /** 删除按钮操作 */
         handleDelete(row) {
             row.enable = false
-            this.$message.success("停用机器成功！")
+            remove_server(row.id).then(res => {
+                this.$message.success("停用机器成功！")
+            })
         },
         handleStartMachine(row) {
             row.enable = true
-            this.$message.success("启用机器成功！")
+            add_server(row.id).then(res => {
+                this.$message.success("启用机器成功！")
+            })
         },
         changeCoEnableStatus(row){
             changeRpaTaskCooperationStatus(row).then(res => {

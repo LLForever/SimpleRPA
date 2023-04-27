@@ -44,6 +44,16 @@ public class TaskScheduleController extends BaseController {
         }).start();
     }
 
+    @GetMapping("/addserver/{id}")
+    public void add_server(@PathVariable("id") Integer id){
+        TaskScheduleAllocator.addServerlist(id-1);
+    }
+
+    @GetMapping("/removeserver/{id}")
+    public void remove_server(@PathVariable("id") Integer id){
+        TaskScheduleAllocator.removeServerlist(id-1);
+    }
+
     @GetMapping("/get_schedule_type")
     public String get_schedule_type(){
         return schedule_type;

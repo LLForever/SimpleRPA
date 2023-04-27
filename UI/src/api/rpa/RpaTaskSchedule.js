@@ -42,3 +42,18 @@ export function delRpaTaskSchedule(id) {
     method: 'delete'
   })
 }
+
+
+export function add_server(id) {
+    return request({
+        url: '/rpa/schedule/addserver/' + id,
+        method: 'get'
+    })
+}
+
+export function remove_server(id) {
+    return request({
+        url: '/rpa/schedule/removeserver/' + id,
+        method: 'get'
+    })
+}
