@@ -16,8 +16,10 @@ public class TaskCostCountUtil {
     public static final String COST_VAL = "cost", LIST = "id_list", MEM = "mem", CPU = "cpu", NETWORK = "net";
     private static volatile Double Rm = null;
     private static Integer nodeNum;
+    public static Integer runningTaskNum;
 
     static {
+        runningTaskNum = 0;
         Arrays.fill(machineCurrentCost, 0);
 
         taskCostMap = new HashMap<>();
@@ -42,10 +44,15 @@ public class TaskCostCountUtil {
         taskCostMap.put(35L, getInitList(6.05, 9.24, 190.16, 1.915, 87.0));
         taskCostMap.put(36L, getInitList(4.04, 6.59, 124.59, 1.382, 32.0));
         taskCostMap.put(38L, getInitList(6.55, 11.71, 115.48, 1.074, 189.0));
+        taskCostMap.put(33L, getInitList(8.11, 11.55, 120.75, 7.602, 29.0));
+        taskCostMap.put(37L, getInitList(11.40, 13.20, 166.77, 17.893, 25.0));
     }
 
     public static synchronized void addCost(Double num, Long id){
         cost.addAndGet(num);
+        synchronized (taskCostMap){
+            Rm -= getMemCost(nodeNum, taskCostMap.get(id).get(MEM_ID));
+        }
         if(taskCostMap.containsKey(id)){
             machineCurrentCost[CPU_ID] += taskCostMap.get(id).get(CPU_ID);
             machineCurrentCost[MEM_ID] += taskCostMap.get(id).get(MEM_ID);
@@ -63,7 +70,9 @@ public class TaskCostCountUtil {
             machineCurrentCost[NET_ID] -= taskCostMap.get(id).get(NET_ID);
             machineCurrentCost[TIME_ID] -= taskCostMap.get(id).get(TIME_ID);
 
-            Rm += getMemCost(nodeNum, taskCostMap.get(id).get(MEM_ID));
+            synchronized (taskCostMap) {
+                Rm += getMemCost(nodeNum, taskCostMap.get(id).get(MEM_ID));
+            }
         }
         if(machineCurrentCost[CPU_ID] <= 1e-20){
             machineCurrentCost[CPU_ID] = 0;
@@ -137,16 +146,16 @@ public class TaskCostCountUtil {
 
     public static double getRm(){
         if(Rm == null){
-            return -1.0;
+            return -1;
         }
         return Rm;
     }
 
-    public static void setRm(double rm) {
-        Rm = rm;
-    }
-
     public static void setNodeNum(Integer nodeNum) {
         TaskCostCountUtil.nodeNum = nodeNum;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(taskCostMap);
     }
 }

@@ -69,25 +69,25 @@
             <el-divider>集群资源情况</el-divider>
             <el-row>
                 <el-col :span="8">
-                    <iframe src="http://192.168.103.116:30300/d-solo/SnndmSBVk/kubernetes-cluster-monitoring-via-prometheus?orgId=1&refresh=10s&from=1679476849219&to=1679477149219&var-Node=All&panelId=4" width="450" height="200" frameborder="0"></iframe>
+                    <iframe :src="clusterCURL" width="450" height="200" frameborder="0"></iframe>
                 </el-col>
                 <el-col :span="8">
-                    <iframe src="http://192.168.103.116:30300/d-solo/SnndmSBVk/kubernetes-cluster-monitoring-via-prometheus?orgId=1&refresh=10s&from=1679478887019&to=1679479187020&var-Node=All&panelId=6" width="450" height="200" frameborder="0"></iframe>
+                    <iframe :src="clusterMURL" width="450" height="200" frameborder="0"></iframe>
                 </el-col>
                 <el-col :span="8">
-                    <iframe src="http://192.168.103.116:30300/d-solo/SnndmSBVk/kubernetes-cluster-monitoring-via-prometheus?orgId=1&refresh=10s&from=1679478912905&to=1679479212905&var-Node=All&panelId=7" width="450" height="200" frameborder="0"></iframe>
+                    <iframe :src="clusterFURL" width="450" height="200" frameborder="0"></iframe>
                 </el-col>
             </el-row>
             <el-divider>各节点资源变化图</el-divider>
             <el-row>
                 <el-col :span="8">
-                    <iframe src="http://192.168.103.116:30300/d-solo/H62-FCS4z/prometheus-2-0-stats?orgId=1&from=1679480388464&to=1679483988464&panelId=3" width="450" height="200" frameborder="0"></iframe>
+                    <iframe :src="nodeCURL" width="450" height="200" frameborder="0"></iframe>
                 </el-col>
                 <el-col :span="8">
-                    <iframe src="http://192.168.103.116:30300/d-solo/H62-FCS4z/prometheus-2-0-stats?orgId=1&from=1679480388464&to=1679483988464&panelId=16" width="450" height="200" frameborder="0"></iframe>
+                    <iframe :src="nodeMURL" width="450" height="200" frameborder="0"></iframe>
                 </el-col>
                 <el-col :span="8">
-                    <iframe src="http://192.168.103.116:30300/d-solo/H62-FCS4z/prometheus-2-0-stats?orgId=1&from=1679480388464&to=1679483988464&panelId=29" width="450" height="200" frameborder="0"></iframe>
+                    <iframe :src="nodeNURL" width="450" height="200" frameborder="0"></iframe>
                 </el-col>
             </el-row>
         </el-card>
@@ -136,6 +136,12 @@ export default {
             showSearch: true,
             // 总条数
             total: 0,
+            clusterCURL: 'http://192.168.103.116:30300/d-solo/A18vG1wVk/kubernetes-cluster-monitoring-via-prometheus?orgId=1&refresh=10s&from={from}&to={to}&var-Node=All&panelId=6',
+            clusterMURL: 'http://192.168.103.116:30300/d-solo/A18vG1wVk/kubernetes-cluster-monitoring-via-prometheus?orgId=1&refresh=10s&from={from}&to={to}&var-Node=All&panelId=4',
+            clusterFURL: 'http://192.168.103.116:30300/d-solo/A18vG1wVk/kubernetes-cluster-monitoring-via-prometheus?orgId=1&refresh=10s&from={from}&to={to}&var-Node=All&panelId=7',
+            nodeCURL: 'http://192.168.103.116:30300/d-solo/A18vG1wVk/kubernetes-cluster-monitoring-via-prometheus?orgId=1&refresh=10s&from={from}&to={to}&var-Node=All&panelId=51',
+            nodeMURL: 'http://192.168.103.116:30300/d-solo/A18vG1wVk/kubernetes-cluster-monitoring-via-prometheus?orgId=1&refresh=10s&from={from}&to={to}&var-Node=All&panelId=49',
+            nodeNURL: 'http://192.168.103.116:30300/d-solo/A18vG1wVk/kubernetes-cluster-monitoring-via-prometheus?orgId=1&refresh=10s&from={from}&to={to}&var-Node=All&panelId=47',
             // RPA任务协作表格数据
             RpaTaskCooperationList: [
                 {
@@ -214,6 +220,18 @@ export default {
         };
     },
     created() {
+        clusterCURL.replaceAll('{to}', Date.now())
+        clusterMURL.replaceAll('{to}', Date.now())
+        clusterFURL.replaceAll('{to}', Date.now())
+        nodeCURL.replaceAll('{to}', Date.now())
+        nodeMURL.replaceAll('{to}', Date.now())
+        nodeNURL.replaceAll('{to}', Date.now())
+        clusterCURL.replaceAll('{from}', Date.now()-3600000)
+        clusterMURL.replaceAll('{from}', Date.now()-3600000)
+        clusterFURL.replaceAll('{from}', Date.now()-3600000)
+        nodeCURL.replaceAll('{from}', Date.now()-3600000)
+        nodeMURL.replaceAll('{from}', Date.now()-3600000)
+        nodeNURL.replaceAll('{from}', Date.now()-3600000)
     },
     mounted() {
         this.$nextTick(()=>{

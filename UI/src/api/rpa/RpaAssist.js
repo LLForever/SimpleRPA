@@ -31,3 +31,11 @@ export function get_recently_exec_log(data) {
         data: data
     })
 }
+
+export function get_screenshot(data) {
+    return request({
+        url: '/rpa/panel-task/get_screenshot',
+        method: 'get',
+        params: data
+    })
+}

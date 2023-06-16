@@ -75,7 +75,7 @@ public class ParticleSwarm {
             }else{
                 position[i] = getRandPosition(x_up[i], x_low[i]) * flag;
             }
-            velecity[i] = rand1.nextDouble() * flag;
+            velecity[i] = getRandPosition(x_up[i], x_low[i]) * flag * 0.2;
         }
     }
 
@@ -84,15 +84,15 @@ public class ParticleSwarm {
     }
 
     public static double getR1(int i, int MaxIter){
-//        return rand1.nextDouble();
-        double no = (double)i / MaxIter;
-        return (1 - no);
+        return rand1.nextDouble();
+//        double no = (double)i / MaxIter;
+//        return (1 - no);
     }
 
     public static double getR2(int i, int MaxIter){
-//        return rand1.nextDouble();
-        double no = (double)i / MaxIter;
-        return (0.01 + no);
+        return rand1.nextDouble();
+//        double no = (double)i / MaxIter;
+//        return (0.01 + no);
     }
 }
 
@@ -465,17 +465,9 @@ class PSO{
             for (int j = 0; j < nVar; j++) {
                 pop[i].velecity[j] = w * pop[i].velecity[j] + R1 * (pop[i].P_position[j] - pop[i].position[j]) * getC1(it, MaxIter) + R2 * (best_solution[j] - pop[i].position[j]) * getC2(it, MaxIter);
 
-                if (Math.abs(pop[i].velecity[j]) < 0.1) {
+                if (Math.abs(pop[i].velecity[j]) < (x_up[j] - x_low[j]) * 0.1) {
                     if (pop[i].velecity[j] > 0) {
-                        pop[i].velecity[j] = 0.1;
-                    } else {
-                        pop[i].velecity[j] = -0.1;
-                    }
-                }
-
-                if (Math.abs(pop[i].velecity[j]) > (x_up[j] - x_low[j]) * 0.1) {
-                    if (pop[i].velecity[j] > 0) {
-                        pop[i].velecity[j] = 0.1;
+                        pop[i].velecity[j] = (x_up[j] - x_low[j]) * 0.1;
                     } else {
                         pop[i].velecity[j] = -(x_up[j] - x_low[j]) * 0.1;
                     }
@@ -483,13 +475,13 @@ class PSO{
 
                 pop[i].position[j] = pop[i].position[j] + pop[i].velecity[j];
 
-                if (Double.isNaN(pop[i].position[j])) {
-                    pop[i].position[j] = 0;
-                }
-
-                if(Double.isNaN(pop[i].velecity[j])){
-                    pop[i].velecity[j] = BestFitSet.rand.nextGaussian();
-                }
+//                if (Double.isNaN(pop[i].position[j])) {
+//                    pop[i].position[j] = BestFitSet.rand.nextGaussian()*(x_up[j] - x_low[j]) + x_low[j];
+//                }
+//
+//                if(Double.isNaN(pop[i].velecity[j])){
+//                    pop[i].velecity[j] = BestFitSet.rand.nextGaussian()*(x_up[j] - x_low[j]) + x_low[j];
+//                }
 
                 if (pop[i].position[j] > x_up[j]) {
                     pop[i].position[j] = x_up[j];
@@ -506,10 +498,10 @@ class PSO{
             //计算适应值
             pop[i].fitness = function_fitness(pop[i].position);
 //            worstFitness = Math.max(pop[i].fitness, worstFitness);
-            if(worstFitness < pop[i].fitness){
-                worstFitness = pop[i].fitness;
-                worst_solution = pop[i].position;
-            }
+//            if(worstFitness < pop[i].fitness){
+//                worstFitness = pop[i].fitness;
+//                worst_solution = pop[i].position;
+//            }
 
             if(pop[i].fitness == best_fitness){
                 bestFitSet.putPosition(pop[i].position.clone());
@@ -700,7 +692,7 @@ class PSO{
             G += Math.sqrt(Nc*Nc + Nm*Nm + Nn*Nn);
             maxBalance = Math.max(maxBalance, Math.sqrt(Nc*Nc + Nm*Nm + Nn*Nn));
         }
-        System.out.println("cost: " + F);
+        System.out.println("exec cost: " + F);
         System.out.println("balance: " + G);
         System.out.println("maxBalance: " + TaskScheduleAllocator.machineName.size()*maxBalance);
     }
@@ -719,6 +711,7 @@ class PSO{
     // PSO 程序开始运行
     public JSONObject run()
     {
+        ParticleSwarm.rand1 = new Random(2);
 //        up_date();
         // 按照设置的最大迭代次数迭代计算
         for(int it =0;it<MaxIter;it++){
@@ -771,7 +764,7 @@ class PSO{
     }
 
     private double getW(int k, int T){
-        double w = this.w;
+        double w = 0.8 - ((double) k / T)*0.5;
         if(standard_pso == -1){
             double wmax = 0.9, wmin = 0.4;
             double percent = (double) k / T;

@@ -24,12 +24,12 @@ public class TaskQueueAllocator implements Runnable{
                     }
                 }
             }
-            double rm = TaskCostCountUtil.getRm(node);
             TaskDetailVO first = queue.getFirst();
             List<Double> costListByTaskId = TaskCostCountUtil.getCostListByTaskId(first.getId());
             Double memory = costListByTaskId.get(TaskCostCountUtil.MEM_ID);
             memory = TaskCostCountUtil.getMemCost(node, memory);
-            if(rm - memory >= 0 || rm > 15){
+            double rm = TaskCostCountUtil.getRm(node);
+            if(rm - memory >= 30 || rm > 30){
                 try{
                     ThreadPoolSingleton.getInstance().submit(new RpaTaskExecutor(first));
                 }catch (Exception e){
@@ -37,7 +37,6 @@ public class TaskQueueAllocator implements Runnable{
                     continue;
                 }
                 queue.removeFirst();
-                TaskCostCountUtil.setRm(rm - memory);
             }else{
                 Thread.sleep(500);
             }

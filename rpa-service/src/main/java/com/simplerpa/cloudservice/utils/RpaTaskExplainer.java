@@ -47,6 +47,7 @@ public class RpaTaskExplainer {
 //            throw new Exception("RpaTaskExplainer : 无法完成拓扑排序，请检查是否存在环！");
 //        }
         rpaTaskStructure.setTaskId(detail.getTaskId());
+        rpaTaskStructure.setTaskLineDetails(detail.getLineList());
         return rpaTaskStructure;
     }
 }

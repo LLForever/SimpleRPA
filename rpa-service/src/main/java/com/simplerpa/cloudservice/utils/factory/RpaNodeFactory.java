@@ -6,6 +6,8 @@ import com.simplerpa.cloudservice.utils.factory.aiEnhance.ImageOcrNodeFactory;
 import com.simplerpa.cloudservice.utils.factory.aiEnhance.ImageTableOcrNodeFactory;
 import com.simplerpa.cloudservice.utils.factory.aiEnhance.KeyWordExtraNodeFactory;
 import com.simplerpa.cloudservice.utils.factory.dataproc.*;
+import com.simplerpa.cloudservice.utils.factory.judge.ConditionEndNodeFactory;
+import com.simplerpa.cloudservice.utils.factory.judge.SingleConditionNodeFactory;
 import com.simplerpa.cloudservice.utils.factory.loop.ForLoopNodeFactory;
 import com.simplerpa.cloudservice.utils.factory.loop.LoopEndNodeFactory;
 import com.simplerpa.cloudservice.utils.factory.other.*;
@@ -36,6 +38,10 @@ public interface RpaNodeFactory {
             case "generate_text": return new GenerateTextNodeFactory(taskNodeDetail);
             case "calculate": return new CalculateNodeFactory(taskNodeDetail);
             case "get_obj_row": return new GetObjRowNodeFactory(taskNodeDetail);
+
+            // id: 4X
+            case "single_condition" : return new SingleConditionNodeFactory(taskNodeDetail);
+            case "condition_end" : return new ConditionEndNodeFactory(taskNodeDetail);
 
             // id: 5X
             case "loop_end": return new LoopEndNodeFactory(taskNodeDetail);

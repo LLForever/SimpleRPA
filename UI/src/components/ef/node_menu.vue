@@ -240,13 +240,26 @@ export default {
                             ico: 'el-icon-set-up',
                             // 自定义覆盖样式
                             style: {},
-                            params: {}
+                            params: {
+                                inputText: '',
+                                judgeType: '',
+                                targetText: ''
+                            }
                         },
                         {
                             id: '42',
                             type: 'multi_condition',
                             name: 'IF多条件',
                             ico: 'el-icon-set-up',
+                            // 自定义覆盖样式
+                            style: {},
+                            params: {}
+                        },
+                        {
+                            id: '43',
+                            type: 'condition_end',
+                            name: '判断结束',
+                            ico: 'el-icon-video-pause',
                             // 自定义覆盖样式
                             style: {},
                             params: {}

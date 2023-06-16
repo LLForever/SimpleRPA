@@ -62,6 +62,17 @@
                         <s-input v-model="node.params.inputText" :list="inputParamList"></s-input>
                     </el-form-item>
 
+                    <el-form-item label="判断类型" v-if="node.id && node.params.judgeType !== undefined">
+                        <el-select v-model="node.params.judgeType" placeholder="请选择">
+                            <el-option
+                                v-for="i in judgeTypeItems"
+                                :key="i.value"
+                                :label="i.label"
+                                :value="i.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+
                     <el-form-item label="休眠时间" v-if="node.id && node.params.sleepTime !== undefined">
                         <el-input v-model="node.params.sleepTime"></el-input>
                     </el-form-item>
@@ -164,8 +175,9 @@
             <el-dialog
                 title="查看图片"
                 :visible.sync="screenshot_show_dialog"
+                width="70%"
             >
-                <img :src="screenshot_img64"/>
+                <el-image :src="screenshot_img64" fit="contain" style="width: 100%"></el-image>
                 <span slot="footer" class="dialog-footer">
                     <el-button type="primary" @click="screenshot_show_dialog = false">确 定</el-button>
                 </span>
@@ -179,6 +191,7 @@
     import { cloneDeep } from 'lodash'
     import { blobToBase64, initNodeParams } from '../../views/rpa/utils/NodeParamsHandler'
     import sInput from '../../views/rpa/components/SpecialInput.vue'
+    import {get_screenshot} from "@/api/rpa/RpaAssist";
 
     export default {
         data() {
@@ -227,7 +240,26 @@
                         label: '除',
                         value: 3
                     }
-                ]
+                ],
+                judgeTypeItems:[{
+                    label: '等于',
+                    value: 'equal'
+                }, {
+                    label: '不等于',
+                    value: 'notequal'
+                }, {
+                    label: '包含',
+                    value: 'contain'
+                }, {
+                    label: '不包含',
+                    value: 'notcontain'
+                }, {
+                    label: '元素出现',
+                    value: 'appear'
+                }, {
+                    label: '元素消失',
+                    value: 'disappear'
+                }]
             }
         },
         components: {
@@ -322,8 +354,14 @@
                 this.node.params.inputSource.childSource = json.childParam
             },
             openScreenshotDialog(){
-                this.screenshot_show_dialog = true
-                this.screenshot_img64 = 'data:image/png;base64,' + this.node.params.img64
+                const screen_param = {
+                    taskid: this.data.taskId,
+                    nodeid: this.node.id
+                }
+                get_screenshot(screen_param).then(res => {
+                    this.screenshot_show_dialog = true
+                    this.screenshot_img64 = 'data:image/png;base64,' + res
+                })
             },
             outputAttributeListTagClose(tag) {
                 this.node.params.outputAttributeList.splice(this.node.params.outputAttributeList.indexOf(tag), 1);

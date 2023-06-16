@@ -3,4 +3,8 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.simplerpa.cloudservice.mapper.RpaTaskNodeFileMapper">
+    <select id="get_screenshot" parameterType="Long" resultType="java.lang.String">
+        SELECT to_base64(file) FROM `rpa_task_node_file`
+        WHERE task_id = #{taskid} AND node_id = #{nodeid}
+    </select>
 </mapper>

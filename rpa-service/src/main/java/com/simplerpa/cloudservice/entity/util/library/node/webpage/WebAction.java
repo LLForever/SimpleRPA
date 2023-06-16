@@ -59,7 +59,7 @@ public abstract class WebAction extends IRpaTaskNode {
 
     public WebElement getElement(WebDriver webDriver, ArrayList<JSONObject> list){
         if(StringUtils.isNotEmpty(xPath)){
-            int cnt = 24;
+            int cnt = 12;
             do{
                 try{
                     new WebDriverWait(webDriver, 5).until(ExpectedConditions.presenceOfElementLocated(By.xpath(xPath)));

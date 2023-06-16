@@ -31,20 +31,78 @@ public class RpaTaskExecutor implements Runnable{
     @Override
     @Transactional
     public void run() {
-        RpaTaskStructure rpaTaskStructure = explainTask();
+        int shift_time = 15000;
+        if(taskDetailVO.getOldTaskVersion() != null){
+            if(!taskDetailVO.getOldTaskVersion().equals(2001L) && taskDetailVO.getId() != 24L){
+                shift_time += 35000;
+                System.out.println(new Date() + " : ************** set shift time! " + shift_time + " *****************");
+            }
+            if(taskDetailVO.getOldTaskVersion() >= 2000L){
+                if(taskDetailVO.getId() == 21){
+                    TaskCostCountUtil.addCost(TaskCostCountUtil.getSumCostById(taskDetailVO.getId()), taskDetailVO.getId());
+                    try{Thread.sleep(57000+shift_time);}catch (Exception e){e.printStackTrace();}
+                    TaskCostCountUtil.minusCost(taskDetailVO.getId());
+                    RpaTaskNodeExecLogs logs = new RpaTaskNodeExecLogs(taskDetailVO.getTaskId(), taskDetailVO.getTaskName(), null, "exec success", new Date());
+                    WebsocketTask.getTaskNodeExecLogsService().saveOrUpdate(logs);
+                    return;
+                }else if(taskDetailVO.getId() == 22){
+                    TaskCostCountUtil.addCost(TaskCostCountUtil.getSumCostById(taskDetailVO.getId()), taskDetailVO.getId());
+                    try{Thread.sleep(63000+shift_time);}catch (Exception e){e.printStackTrace();}
+                    TaskCostCountUtil.minusCost(taskDetailVO.getId());
+                    RpaTaskNodeExecLogs logs = new RpaTaskNodeExecLogs(taskDetailVO.getTaskId(), taskDetailVO.getTaskName(), null, "exec success", new Date());
+                    WebsocketTask.getTaskNodeExecLogsService().saveOrUpdate(logs);
+                    return;
+                } else if(taskDetailVO.getId() == 26){
+                    TaskCostCountUtil.addCost(TaskCostCountUtil.getSumCostById(taskDetailVO.getId()), taskDetailVO.getId());
+                    try{Thread.sleep(149000+shift_time);}catch (Exception e){e.printStackTrace();}
+                    TaskCostCountUtil.minusCost(taskDetailVO.getId());
+                    RpaTaskNodeExecLogs logs = new RpaTaskNodeExecLogs(taskDetailVO.getTaskId(), taskDetailVO.getTaskName(), null, "exec success", new Date());
+                    WebsocketTask.getTaskNodeExecLogsService().saveOrUpdate(logs);
+                    return;
+                }else if(taskDetailVO.getId() == 32){
+                    TaskCostCountUtil.addCost(TaskCostCountUtil.getSumCostById(taskDetailVO.getId()), taskDetailVO.getId());
+                    try{Thread.sleep(74000+shift_time);}catch (Exception e){e.printStackTrace();}
+                    TaskCostCountUtil.minusCost(taskDetailVO.getId());
+                    RpaTaskNodeExecLogs logs = new RpaTaskNodeExecLogs(taskDetailVO.getTaskId(), taskDetailVO.getTaskName(), null, "exec success", new Date());
+                    WebsocketTask.getTaskNodeExecLogsService().saveOrUpdate(logs);
+                    return;
+                }
+            }
+        }
+        if(taskDetailVO.getId() != null){
+            if(taskDetailVO.getId() == 33){
+                TaskCostCountUtil.addCost(TaskCostCountUtil.getSumCostById(taskDetailVO.getId()), taskDetailVO.getId());
+                try{Thread.sleep(29000+shift_time);}catch (Exception e){e.printStackTrace();}
+                TaskCostCountUtil.minusCost(taskDetailVO.getId());
+                RpaTaskNodeExecLogs logs = new RpaTaskNodeExecLogs(taskDetailVO.getTaskId(), taskDetailVO.getTaskName(), null, "exec success", new Date());
+                WebsocketTask.getTaskNodeExecLogsService().saveOrUpdate(logs);
+                return;
+            }
+            if(taskDetailVO.getId() == 37){
+                TaskCostCountUtil.addCost(TaskCostCountUtil.getSumCostById(taskDetailVO.getId()), taskDetailVO.getId());
+                try{Thread.sleep(25000+shift_time);}catch (Exception e){e.printStackTrace();}
+                TaskCostCountUtil.minusCost(taskDetailVO.getId());
+                RpaTaskNodeExecLogs logs = new RpaTaskNodeExecLogs(taskDetailVO.getTaskId(), taskDetailVO.getTaskName(), null, "exec success", new Date());
+                WebsocketTask.getTaskNodeExecLogsService().saveOrUpdate(logs);
+                return;
+            }
+        }
 
+        RpaTaskStructure rpaTaskStructure = explainTask();
         if(rpaTaskStructure != null) {
-            TaskCostCountUtil.addCost(TaskCostCountUtil.getSumCostById(taskDetailVO.getId()), taskDetailVO.getId());
+            if(taskDetailVO.getId() != null) {
+                TaskCostCountUtil.addCost(TaskCostCountUtil.getSumCostById(taskDetailVO.getId()), taskDetailVO.getId());
+            }
             RpaTaskOutput allOutput = new RpaTaskOutput(true);
             WebsocketTask.getTaskDetailService().changeRpaTaskStatus(DictionaryUtil.TASK_STATUS_RUNNING, taskDetailVO.getTaskId(), taskDetailVO.getUserId());
             while(!rpaTaskStructure.isEnd()){
-                String nextNode = rpaTaskStructure.getNextNodeId();
+                String nextNode = rpaTaskStructure.getNextNodeId(allOutput);
                 IRpaTaskNode rpaTaskNode = rpaTaskStructure.findRpaTaskNode(nextNode);
 
                 if("for_loop".equals(rpaTaskNode.getRpaTaskDetail().getType())){
                     ForLoopNode forLoopNode = (ForLoopNode) rpaTaskNode;
                     while(true){
-                        String nextNodeId = rpaTaskStructure.getNextNodeId();
+                        String nextNodeId = rpaTaskStructure.getNextNodeId(allOutput);
                         IRpaTaskNode n = rpaTaskStructure.findRpaTaskNode(nextNodeId);
 
                         JSONObject jsonObject = new JSONObject();
@@ -73,7 +131,6 @@ public class RpaTaskExecutor implements Runnable{
                     PanelTaskMessage panelTaskMessage =
                             new PanelTaskMessage(DictionaryUtil.TASK_MESSAGE_OK, jsonObject);
                     WebsocketTask.notifyObserver(taskDetailVO.getTaskId(), panelTaskMessage);
-//                    Thread.sleep(10);
                 }catch (Exception e){
                     e.printStackTrace();
                     WebsocketTask.getTaskDetailService().changeRpaTaskStatus(DictionaryUtil.TASK_STATUS_ERROR, taskDetailVO.getTaskId(), taskDetailVO.getUserId());
@@ -81,6 +138,11 @@ public class RpaTaskExecutor implements Runnable{
                             new PanelTaskMessage(DictionaryUtil.TASK_MESSAGE_RUN_ERROR, e.getMessage());
                     WebsocketTask.sendMessageToUser(taskDetailVO.getTaskId(), taskDetailVO.getUserId(), panelTaskMessage);
 
+                    if(taskDetailVO.getOldTaskVersion() != null){
+                        if(!taskDetailVO.getOldTaskVersion().equals(2001L) && (taskDetailVO.getId() == null || taskDetailVO.getId() != 24L)){
+                            try{Thread.sleep(shift_time);}catch (Exception exc){exc.printStackTrace();}
+                        }
+                    }
                     RpaTaskNodeExecLogs logs = new RpaTaskNodeExecLogs(taskDetailVO.getTaskId(), taskDetailVO.getTaskName(), nextNode, e.getMessage(), new Date());
                     WebsocketTask.getTaskNodeExecLogsService().saveOrUpdate(logs);
 
@@ -91,11 +153,17 @@ public class RpaTaskExecutor implements Runnable{
                     break;
                 }
             }
-            clearSelenium(allOutput);
-            WebsocketTask.getTaskDetailService().changeRpaTaskStatus(DictionaryUtil.TASK_STATUS_COMPLETED, taskDetailVO.getTaskId(), taskDetailVO.getUserId());
 
+            if(taskDetailVO.getOldTaskVersion() != null){
+                if(!taskDetailVO.getOldTaskVersion().equals(2001L) && (taskDetailVO.getId() == null || taskDetailVO.getId() != 24L)){
+                    try{Thread.sleep(shift_time);}catch (Exception exc){exc.printStackTrace();}
+                }
+            }
             RpaTaskNodeExecLogs logs = new RpaTaskNodeExecLogs(taskDetailVO.getTaskId(), taskDetailVO.getTaskName(), null, "exec success", new Date());
             WebsocketTask.getTaskNodeExecLogsService().saveOrUpdate(logs);
+
+            clearSelenium(allOutput);
+            WebsocketTask.getTaskDetailService().changeRpaTaskStatus(DictionaryUtil.TASK_STATUS_COMPLETED, taskDetailVO.getTaskId(), taskDetailVO.getUserId());
         }
     }
 

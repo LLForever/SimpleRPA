@@ -7,8 +7,8 @@ import java.util.concurrent.TimeUnit;
 
 public class ThreadPoolSingleton {
     private static volatile ThreadPoolSingleton instance;
-    private static final int THREAD_POOL_SIZE = 8;
-    private static final int MAX_THREAD_POOL_SIZE = 8;
+    private static final int THREAD_POOL_SIZE = 30;
+    private static final int MAX_THREAD_POOL_SIZE = 30;
     private static final int KEEP_ALIVE_TIME = 1;
     private final ThreadPoolExecutor threadPoolExecutor;
 

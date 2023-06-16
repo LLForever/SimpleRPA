@@ -6,16 +6,14 @@
                 <div class="ef-tooltar">
                     <el-link type="primary" :underline="false">{{ data.taskName }}</el-link>
                     <el-divider direction="vertical"></el-divider>
-                    <el-button type="text" icon="el-icon-caret-right" size="large" @click="startRunTask">运行任务</el-button>
+                    <el-button type="text" icon="el-icon-caret-right" size="large" @click="openResourceManagerPanel">启动任务</el-button>
                     <el-divider direction="vertical"></el-divider>
                     <el-button type="text" icon="el-icon-delete" size="large" @click="clearElement">清空画布</el-button>
                     <el-divider direction="vertical"></el-divider>
-                    <el-button type="text" icon="el-icon-upload" size="large" @click="uploadData">保存</el-button>
+                    <el-button type="text" icon="el-icon-upload" size="large" @click="uploadData">保存任务</el-button>
                     <div style="float: right;margin-right: 5px">
-                        <el-button type="info" plain round icon="el-icon-document" @click="dataInfo" size="mini">流程信息
-                        </el-button>
-                        <el-button type="info" plain round icon="el-icon-document" @click="openHelp" size="mini">帮助
-                        </el-button>
+<!--                        <el-button type="info" plain round icon="el-icon-document" @click="dataInfo" size="mini">流程信息</el-button>-->
+                        <el-button type="info" plain round icon="el-icon-document" @click="openHelp" size="mini">帮助</el-button>
                     </div>
                 </div>
             </el-col>
@@ -53,6 +51,31 @@
         <!-- 流程数据详情 -->
         <flow-info v-if="flowInfoVisible" ref="flowInfo" :data="data"></flow-info>
         <flow-help v-if="flowHelpVisible" ref="flowHelp"></flow-help>
+
+        <el-dialog
+            title="RPA任务启动资源设置"
+            :visible.sync="resourcePanel"
+            width="35%">
+            <el-form label-position="right" label-width="120px" :model="resourceManagerTable">
+                <el-form-item label="CPU配额">
+                    <el-input v-model="resourceManagerTable.cpu"></el-input>
+                    <el-tag effect="plain" type="info">单位：CPU核心数量</el-tag>
+                </el-form-item>
+                <el-form-item label="内存配额">
+                    <el-input v-model="resourceManagerTable.mem"></el-input>
+                    <el-tag effect="plain" type="info">单位：MB</el-tag>
+                </el-form-item>
+                <el-form-item label="网络下行速度">
+                    <el-input v-model="resourceManagerTable.network"></el-input>
+                    <el-tag effect="plain" type="info">单位：MB/s</el-tag>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="resourcePanel = false">取消</el-button>
+                <el-button type="primary" @click="startRunTask">启动RPA任务</el-button>
+            </span>
+        </el-dialog>
+
     </div>
 
 </template>
@@ -89,6 +112,12 @@ export default {
             // 是否加载完毕标志位
             loadEasyFlowFinish: false,
             flowHelpVisible: false,
+            resourcePanel: false,
+            resourceManagerTable: {
+                cpu: '',
+                mem: '',
+                network: ''
+            },
             // 数据
             data: {
                 taskName: 'new Panel', // 用户自主配置的任务名称
@@ -532,6 +561,9 @@ export default {
         repaintEverything() {
             this.jsPlumb.repaint()
         },
+        openResourceManagerPanel(){
+            this.resourcePanel = true
+        },
         startRunTask(){
             // this.data.userId = this.userId
             this.data.nodeList.filter((node) => {
@@ -546,6 +578,7 @@ export default {
             sendRunTaskSig(tempData).then(res => {
                 if(res.code === 200){
                     this.$message.success(res.msg);
+                    this.resourcePanel = false
                 }else{
                     // this.$message.error(res.msg);
                 }

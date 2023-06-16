@@ -12,6 +12,7 @@ import com.simplerpa.cloudservice.entity.VO.TaskDetailVO;
 import com.simplerpa.cloudservice.entity.util.DictionaryUtil;
 import com.simplerpa.cloudservice.entity.util.RpaTaskStructure;
 import com.simplerpa.cloudservice.mapper.TaskDetailMapper;
+import com.simplerpa.cloudservice.service.IRpaTaskNodeFileService;
 import com.simplerpa.cloudservice.service.ITaskDetailService;
 import com.simplerpa.cloudservice.utils.*;
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -37,6 +38,9 @@ public class PanelTaskController extends BaseController {
 
     @Autowired
     ITaskDetailService taskDetailService;
+
+    @Autowired
+    IRpaTaskNodeFileService rpaTaskNodeFileService;
 
     @Autowired
     TaskDetailMapper mapper;
@@ -116,5 +120,11 @@ public class PanelTaskController extends BaseController {
         jsonObject.put("queue", TaskQueueAllocator.getQSize());
         jsonObject.put("rm", TaskCostCountUtil.getRm());
         return jsonObject;
+    }
+
+    @GetMapping("/get_screenshot")
+    public String getBase64Img(@RequestParam("taskid") Long taskID,
+                               @RequestParam("nodeid") Long nodeID){
+        return rpaTaskNodeFileService.get_screenshot(taskID, nodeID);
     }
 }

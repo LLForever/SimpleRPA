@@ -9,6 +9,7 @@ package com.simplerpa.cloudservice.entity;
 public class TaskLineDetail {
     private String from;
     private String to;
+    private String label;
 
     public String getFrom() {
         return from;
@@ -24,5 +25,13 @@ public class TaskLineDetail {
 
     public void setTo(String to) {
         this.to = to;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 }

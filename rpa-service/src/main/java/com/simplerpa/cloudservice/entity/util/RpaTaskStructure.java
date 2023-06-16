@@ -1,6 +1,7 @@
 package com.simplerpa.cloudservice.entity.util;
 
 import com.alibaba.fastjson.JSONObject;
+import com.simplerpa.cloudservice.entity.TaskLineDetail;
 import com.simplerpa.cloudservice.entity.TaskNodeDetail;
 import com.simplerpa.cloudservice.entity.util.base.IRpaTaskNode;
 import com.simplerpa.cloudservice.entity.util.library.node.loop.ForLoopNode;
@@ -8,6 +9,7 @@ import com.simplerpa.cloudservice.entity.util.library.node.loop.ForLoopNode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * @Description: TODO
@@ -30,6 +32,8 @@ public class RpaTaskStructure {
 
     // 节点执行序列
     private ArrayList<String> executeList;
+
+    private List<TaskLineDetail> taskLineDetails;
 
     private Long taskId;
 
@@ -81,7 +85,7 @@ public class RpaTaskStructure {
         inDegreeList.put(target, integer+1);
     }
 
-    public String getNextNodeId(){
+    public String getNextNodeId(RpaTaskOutput allOutput){
         if(startNodeId == null){
             return "";
         }
@@ -100,17 +104,69 @@ public class RpaTaskStructure {
                 nowExecuteNodeType = tempDetail.getType();
             }
             if(adjacencyList.containsKey(node)){
+                boolean conditionNodeAdd = false;
                 for(String nextNodeId : adjacencyList.get(node)){
                     // 将邻接节点的入度减1
                     inDegreeList.put(nextNodeId, inDegreeList.get(nextNodeId)-1);
                     // 如果邻接节点的入度为0，则将其添加到队列中
-                    if(inDegreeList.get(nextNodeId) == 0) {
+                    if(!"single_condition".equals(nowExecuteNodeType)){
+                        if(inDegreeList.get(nextNodeId) == 0) {
 //                        if (!specialNodeType.contains(nowExecuteNodeType)) {
 //                            globalQueue.add(nextNodeId);
 //                        }
-                        globalQueue.add(nextNodeId);
+                            globalQueue.add(nextNodeId);
+                        }else{
+                            tempDetail = findRpaTaskNode(nextNodeId).getRpaTaskDetail();
+                            if("condition_end".equals(tempDetail.getType())){
+                                globalQueue.add(nextNodeId);
+                            }
+                        }
+                    }else{
+                        TaskLineDetail oneLine = getOneLine(node, nextNodeId);
+                        if(oneLine != null){
+                            if("真".equals(oneLine.getLabel())){
+                                try {
+                                    RpaTaskOutput runJudgeRes = findRpaTaskNode(node).run(allOutput);
+                                    ArrayList<JSONObject> resultByParamName = runJudgeRes.getResultByParamName(DictionaryUtil.JUDGE_FLAG);
+                                    for (JSONObject jsonObject : resultByParamName){
+                                        if(jsonObject.containsKey(DictionaryUtil.JUDGE_FLAG)){
+                                            boolean resJudge = jsonObject.getBoolean(DictionaryUtil.JUDGE_FLAG);
+                                            if(resJudge){
+                                                globalQueue.add(nextNodeId);
+                                                conditionNodeAdd = true;
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                            }else if("假".equals(oneLine.getLabel())){
+                                try {
+                                    RpaTaskOutput runJudgeRes = findRpaTaskNode(node).run(allOutput);
+                                    ArrayList<JSONObject> resultByParamName = runJudgeRes.getResultByParamName(DictionaryUtil.JUDGE_FLAG);
+                                    for (JSONObject jsonObject : resultByParamName){
+                                        if(jsonObject.containsKey(DictionaryUtil.JUDGE_FLAG)){
+                                            boolean resJudge = jsonObject.getBoolean(DictionaryUtil.JUDGE_FLAG);
+                                            if(!resJudge){
+                                                globalQueue.add(nextNodeId);
+                                                conditionNodeAdd = true;
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
                     }
                 }
+//                if("single_condition".equals(nowExecuteNodeType)){
+//                    if(!conditionNodeAdd){
+//                        globalQueue.add(adjacencyList.get(node).get(0));
+//                    }
+//                }
             }
 //            if(specialNodeType.contains(nowExecuteNodeType)){
 //                RpaTaskOutput temp = new RpaTaskOutput();
@@ -126,6 +182,15 @@ public class RpaTaskStructure {
 //            }
         }
         return node;
+    }
+
+    private TaskLineDetail getOneLine(String src, String target){
+        for (TaskLineDetail detail : taskLineDetails){
+            if(detail.getFrom().equals(src) && detail.getTo().equals(target)){
+                return detail;
+            }
+        }
+        return null;
     }
 
     public String globalQueueTop(){
@@ -244,5 +309,13 @@ public class RpaTaskStructure {
 
     public void setTaskId(Long taskId) {
         this.taskId = taskId;
+    }
+
+    public List<TaskLineDetail> getTaskLineDetails() {
+        return taskLineDetails;
+    }
+
+    public void setTaskLineDetails(List<TaskLineDetail> taskLineDetails) {
+        this.taskLineDetails = taskLineDetails;
     }
 }

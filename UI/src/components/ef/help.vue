@@ -15,8 +15,8 @@
                 <div>
                     鼠标点中需要删除的节点，点击左上角的删除图标
                 </div>
-                <el-divider content-position="left">通过代码删除</el-divider>
-                <pre>this.deleteNode(nodeId)</pre>
+<!--                <el-divider content-position="left">通过代码删除</el-divider>-->
+<!--                <pre>this.deleteNode(nodeId)</pre>-->
             </el-tab-pane>
             <el-tab-pane label="如何移动">
                 <el-divider content-position="left">如何移动</el-divider>
